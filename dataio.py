@@ -2,7 +2,7 @@ import csv
 import glob
 import math
 import os
-import h5py, cv2
+import h5py
 
 import matplotlib.colors as colors
 import numpy as np
@@ -17,7 +17,7 @@ import torch
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize
-
+from scipy import interpolate
 
 
 def get_mgrid(sidelen, dim=2):
@@ -562,10 +562,17 @@ class FastMRIBrain(Dataset):
 
         data = data[left:right, bottom:top]
 
-        data = cv2.resize(data,(320,320))
+        interp_size = (320, 320)
+        X = np.linspace(0,s,s)
+        Y = X
+        x, y = np.meshgrid(X,Y)
 
+        interpf = interpolate.interp2d(x, y, data, kind='cubic')
+        Xnew = np.linspace(0,s,interp_size[0])
+        Ynew = np.linspace(0,s,interp_size[1])
+        data_resize = interpf(Xnew, Ynew)
 
-        return data
+        return data_resize
 
 
 class CelebA(Dataset):
