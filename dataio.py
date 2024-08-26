@@ -521,7 +521,7 @@ class FastMRIBrain(Dataset):
         # SIZE (128 x 128)
         assert split in ['train', 'test', 'val'], "Unknown split"
 
-        self.root = '/home/martijb4@ds.vanderbilt.edu/fastMRIdata/'
+        self.root = '../../fastMRIdata/'
         self.img_channels = 1
 
         self.downsampled = downsampled
