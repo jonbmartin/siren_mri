@@ -506,7 +506,7 @@ class MRIImageDomain(Dataset):
         self.downsampled = downsampled
 
         # self.data dimensions: [nx, ny, n_images]
-        matdata = sio.loadmat('data/IRData.mat') 
+        matdata = sio.loadmat('../data/IRData.mat') 
         self.data = np.squeeze(matdata['IRData'])
 
     def __len__(self):
