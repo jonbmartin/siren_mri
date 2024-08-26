@@ -543,11 +543,12 @@ class FastMRIBrain(Dataset):
     def __getitem__(self, idx):
         filename = self.fnames[idx]
 
-        with h5py.File(filename, "r") as f:
-            # return data as numpy array
-            data = f['reconstruction'][()]
+        f = h5py.File(filename, "r")
+        
+        # return data as numpy array
+        data = f['reconstruction'][()]
 
-            f.close()
+        f.close()
 
         slices, width, height = np.shape(data)
         # only using one slice for now
@@ -662,7 +663,7 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
                 Normalize(torch.Tensor([0.5]), torch.Tensor([0.5]))
             ])
         else:
-            print('Resize transform does not work on numpy format. Size is unchanged.')
+            print('JBM: Resize transform does not work on numpy format. Size is unchanged.')
             # resize does not work on numpy files. just leave as is
             self.transform = Compose([
                 #Resize(sidelength),
