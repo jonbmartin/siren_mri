@@ -561,10 +561,6 @@ class FastMRIBrain(Dataset):
         top = (height - s) // 2
         right = (width + s) // 2
         bottom = (height + s) // 2
-        print(left)
-        print(right)
-        print(bottom)
-        print(top)
 
         data = data[left:right, top:bottom]
 
