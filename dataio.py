@@ -535,6 +535,7 @@ class FastMRIBrain(Dataset):
 
         self.root = self.root + self.dir
         self.fnames = os.listdir(self.root)
+        print(self.fnames)
 
     def __len__(self):
         return len(self.fnames)
