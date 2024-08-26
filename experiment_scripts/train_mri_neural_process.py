@@ -51,7 +51,7 @@ if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
 
 img_dataset = dataio.MRIImageDomain(split='train', downsampled=True)
-coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=(128, 128))
+coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=(128, 128), image=False)
 generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
                                                            generalization_mode=gmode)
