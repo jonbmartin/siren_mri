@@ -597,17 +597,26 @@ class AudioFile(Dataset):
 
 
 class Implicit2DWrapper(torch.utils.data.Dataset):
-    def __init__(self, dataset, sidelength=None, compute_diff=None):
+    def __init__(self, dataset, sidelength=None, compute_diff=None, image=True):
 
         if isinstance(sidelength, int):
             sidelength = (sidelength, sidelength)
         self.sidelength = sidelength
 
-        self.transform = Compose([
-            Resize(sidelength),
-            ToTensor(),
-            Normalize(torch.Tensor([0.5]), torch.Tensor([0.5]))
-        ])
+        if image:
+            self.transform = Compose([
+                Resize(sidelength),
+                ToTensor(),
+                Normalize(torch.Tensor([0.5]), torch.Tensor([0.5]))
+            ])
+        else:
+            print('Resize transform does not work on numpy format. Size is unchanged.')
+            # resize does not work on numpy files. just leave as is
+            self.transform = Compose([
+                #Resize(sidelength),
+                ToTensor(),
+                Normalize(torch.Tensor([0.5]), torch.Tensor([0.5]))
+            ])
 
         self.compute_diff = compute_diff
         self.dataset = dataset
