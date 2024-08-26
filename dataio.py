@@ -5,7 +5,7 @@ import os
 
 import matplotlib.colors as colors
 import numpy as np
-import scipy.io.loadmat as loadmat
+import scipy.io as sio
 import scipy.io.wavfile as wavfile
 import scipy.ndimage
 import scipy.special
@@ -506,7 +506,7 @@ class MRIImageDomain(Dataset):
         self.downsampled = downsampled
 
         # self.data dimensions: [nx, ny, n_images]
-        matdata = loadmat('data/IRData.mat') 
+        matdata = sio.loadmat('data/IRData.mat') 
         self.data = np.squeeze(matdata['IRData'])
 
     def __len__(self):
