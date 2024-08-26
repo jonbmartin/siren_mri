@@ -543,7 +543,7 @@ class FastMRIBrain(Dataset):
     def __getitem__(self, idx):
         filename = self.fnames[idx]
 
-        f = h5py.File(filename, "r")
+        f = h5py.File(self.root + filename, "r")
         
         # return data as numpy array
         data = f['reconstruction'][()]
