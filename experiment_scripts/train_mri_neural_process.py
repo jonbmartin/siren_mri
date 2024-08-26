@@ -50,7 +50,7 @@ assert opt.dataset == 'mri_image'
 if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
 
-img_dataset = dataio.MRIImageDomain(split='train', downsampled=True)
+img_dataset = dataio.FastMRIBrain(split='train', downsampled=True)
 coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=(128, 128), image=False)
 generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
