@@ -545,20 +545,23 @@ class FastMRIBrain(Dataset):
         with h5py.File(filename, "r") as f:
             # return data as numpy array
             data = f['reconstruction'][()]
-            slices, width, height = np.shape(data)
-            # only using one slice for now
-            data = np.squeeze(data[0,:,:])
 
-            # crop down size to square
-            s = min(width, height)
-            left = (width - s) / 2
-            top = (height - s) / 2
-            right = (width + s) / 2
-            bottom = (height + s) / 2
+            f.close()
 
-            data = data[left:right, bottom:top]
+        slices, width, height = np.shape(data)
+        # only using one slice for now
+        data = np.squeeze(data[0,:,:])
 
-            data = cv2.resize(data,(320,320))
+        # crop down size to square
+        s = min(width, height)
+        left = (width - s) / 2
+        top = (height - s) / 2
+        right = (width + s) / 2
+        bottom = (height + s) / 2
+
+        data = data[left:right, bottom:top]
+
+        data = cv2.resize(data,(320,320))
 
 
         return data
