@@ -2,6 +2,7 @@ import csv
 import glob
 import math
 import os
+import h5py, cv2
 
 import matplotlib.colors as colors
 import numpy as np
@@ -514,6 +515,53 @@ class MRIImageDomain(Dataset):
     
     def __getitem__(self, idx):
         return np.squeeze(self.data[:,:, idx])
+    
+class FastMRIBrain(Dataset):
+    def __init__(self, split, downsampled=False):
+        # SIZE (128 x 128)
+        assert split in ['train', 'test', 'val'], "Unknown split"
+
+        self.root = '/home/martijb4@ds.vanderbilt.edu/fastMRIdata/'
+        self.img_channels = 1
+
+        self.downsampled = downsampled
+
+        if split =='train':
+            self.dir = 'multicoil_train_recon/'
+        elif split =='test':
+            self.dir = 'multicoil_test_recon/'
+        elif split =='val':
+            self.dir = 'multicoil_val_recon/'
+
+        self.root = self.root + self.dir
+        self.fnames = os.listdir(self.root)
+
+    def __len__(self):
+        return len(self.fnames)
+    
+    def __getitem__(self, idx):
+        filename = self.fnames[idx]
+
+        with h5py.File(filename, "r") as f:
+            # return data as numpy array
+            data = f['reconstruction'][()]
+            slices, width, height = np.shape(data)
+            # only using one slice for now
+            data = np.squeeze(data[0,:,:])
+
+            # crop down size to square
+            s = min(width, height)
+            left = (width - s) / 2
+            top = (height - s) / 2
+            right = (width + s) / 2
+            bottom = (height + s) / 2
+
+            data = data[left:right, bottom:top]
+
+            data = cv2.resize(data,(320,320))
+
+
+        return data
 
 
 class CelebA(Dataset):
