@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# JBM don't want to commit logs
+experiment_scripts/logs/
