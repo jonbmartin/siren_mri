@@ -51,11 +51,11 @@ if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
 
 img_dataset = dataio.FastMRIBrain(split='train', downsampled=True)
-coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=(320, 320), image=False)
+coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=(240, 240), image=False)
 generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
                                                            generalization_mode=gmode)
-image_resolution = (320, 320)
+image_resolution = (240, 240)
 
 dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size, pin_memory=True, num_workers=0)
 
