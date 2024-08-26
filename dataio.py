@@ -535,7 +535,7 @@ class FastMRIBrain(Dataset):
 
         self.root = self.root + self.dir
         self.fnames = os.listdir(self.root)
-        print(self.fnames)
+        #print(self.fnames)
 
     def __len__(self):
         return len(self.fnames)
@@ -556,10 +556,11 @@ class FastMRIBrain(Dataset):
 
         # crop down size to square
         s = min(width, height)
-        left = (width - s) / 2
-        top = (height - s) / 2
-        right = (width + s) / 2
-        bottom = (height + s) / 2
+
+        left = (width - s) // 2
+        top = (height - s) // 2
+        right = (width + s) // 2
+        bottom = (height + s) // 2
 
         data = data[left:right, bottom:top]
 
