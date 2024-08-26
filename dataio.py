@@ -5,6 +5,7 @@ import os
 
 import matplotlib.colors as colors
 import numpy as np
+import scipy.io.loadmat as loadmat
 import scipy.io.wavfile as wavfile
 import scipy.ndimage
 import scipy.special
@@ -15,6 +16,7 @@ import torch
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize
+
 
 
 def get_mgrid(sidelen, dim=2):
@@ -492,6 +494,26 @@ class ImageFile(Dataset):
 
     def __getitem__(self, idx):
         return self.img
+    
+class MRIImageDomain(Dataset):
+    def __init__(self, split, downsampled=False):
+        # SIZE (128 x 128)
+        assert split in ['train', 'test', 'val'], "Unknown split"
+
+        self.img_channels = 1
+        self.fnames = []
+
+        self.downsampled = downsampled
+
+        # self.data dimensions: [nx, ny, n_images]
+        matdata = loadmat('data/IRData.mat') 
+        self.data = np.squeeze(matdata['IRData'])
+
+    def __len__(self):
+        return np.shape(self.data)[2]
+    
+    def __getitem__(self, idx):
+        return np.squeeze(self.data[:,:, idx])
 
 
 class CelebA(Dataset):
