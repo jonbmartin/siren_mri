@@ -564,7 +564,7 @@ class FastMRIBrain(Dataset):
 
         data = data[left:right, top:bottom]
 
-        data = cv2.resize(data,(240,240))
+        data = cv2.resize(data,(256,256))
         print(np.shape(data))
 
         return data
