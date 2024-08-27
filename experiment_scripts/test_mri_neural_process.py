@@ -72,7 +72,7 @@ model_input = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
                'coords_sub': generalization_dataset_train[0][0]['coords_sub'].unsqueeze(0).cuda()}
 model_output = model(model_input)
 
-out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1, 2, 0).detach().cpu().numpy()
+out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1, 0).detach().cpu().numpy()
 out_img += 1
 out_img /= 2.
 out_img = np.clip(out_img, 0., 1.)
