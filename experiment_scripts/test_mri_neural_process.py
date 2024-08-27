@@ -77,6 +77,8 @@ model_output = model(model_input)
 out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1, 0).detach().cpu().numpy()
 out_img += 1
 out_img /= 2.
+print('pre clip:')
+print(out_img)
 out_img = np.clip(out_img, 0., 1.)
 out_img = out_img * 500
 print(out_img)
