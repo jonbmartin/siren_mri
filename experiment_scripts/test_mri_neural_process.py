@@ -124,7 +124,7 @@ for i in np.linspace(0, 1, 8):
                                                                                             0).detach().cpu().numpy()
     out_img += 1
     out_img /= 2.
-    out_img = np.clip(out_img, 0., 1.)
+    #out_img = np.clip(out_img, 0., 1.)
 
     if i == 0.:
         out_img_cat = out_img
