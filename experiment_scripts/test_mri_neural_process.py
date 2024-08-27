@@ -99,6 +99,7 @@ out_img = np.clip(out_img, 0., 1.)
 
 out_img = Image.fromarray(out_img)
 out_img = out_img.convert("L")
+sio.savemat(os.path.join(root_path, 'outside_range.mat'),{'out_img':out_img})
 
 imageio.imwrite(os.path.join(root_path, 'outside_range.png'), out_img)
 
@@ -131,6 +132,8 @@ for i in np.linspace(0, 1, 8):
 
 out_img_cat = Image.fromarray(out_img_cat)
 out_img_cat = out_img_cat.convert("L")
+
+sio.savemat(os.path.join(root_path, 'interpolated_image.mat'),{'out_img_cat':out_img_cat})
 
 imageio.imwrite(os.path.join(root_path, 'interpolated_image.png'), out_img_cat)
 
