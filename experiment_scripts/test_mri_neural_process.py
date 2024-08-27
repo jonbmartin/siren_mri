@@ -46,14 +46,14 @@ assert opt.dataset == 'mri_image'
 #img_dataset_test = dataio.CelebA(split='test', downsampled=True)
 img_dataset_test = dataio.FastMRIBrain(split='test', downsampled=True)
 coord_dataset_test = dataio.Implicit2DWrapper(img_dataset_test, sidelength=(256, 256), image=False)
-generalization_dataset_test = dataio.ImageGeneralizationWrapper(coord_dataset_test, test_sparsity=10,
+generalization_dataset_test = dataio.ImageGeneralizationWrapper(coord_dataset_test, test_sparsity=100,
                                                                 generalization_mode='cnp_test')
 image_resolution = (256, 256)
 
 #img_dataset_train = dataio.CelebA(split='train', downsampled=True)
 img_dataset_train = dataio.FastMRIBrain(split='train', downsampled=True)
 coord_dataset_train = dataio.Implicit2DWrapper(img_dataset_train, sidelength=(256, 256), image=False)
-generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_train, test_sparsity=10,
+generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_train, test_sparsity=100,
                                                                  generalization_mode='cnp_test')
 
 # Define the model.
@@ -105,7 +105,7 @@ out_img = out_img.convert("L")
 imageio.imwrite(os.path.join(root_path, 'outside_range.png'), out_img)
 
 # Third experiment: interpolate between latent codes
-idx1, idx2 = 57, 57
+idx1, idx2 = 57, 181
 model_input_1 = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
                  'img_sub': generalization_dataset_train[idx1][0]['img_sub'].unsqueeze(0).cuda(),
                  'coords_sub': generalization_dataset_train[idx1][0]['coords_sub'].unsqueeze(0).cuda()}
