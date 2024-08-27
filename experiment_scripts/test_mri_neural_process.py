@@ -42,14 +42,14 @@ else:
 assert opt.dataset == 'mri_image'
 #img_dataset_test = dataio.CelebA(split='test', downsampled=True)
 img_dataset_test = dataio.FastMRIBrain(split='test', downsampled=True)
-coord_dataset_test = dataio.Implicit2DWrapper(img_dataset_test, sidelength=(256, 256))
+coord_dataset_test = dataio.Implicit2DWrapper(img_dataset_test, sidelength=(256, 256), image=False)
 generalization_dataset_test = dataio.ImageGeneralizationWrapper(coord_dataset_test, test_sparsity=10,
                                                                 generalization_mode='cnp_test')
 image_resolution = (256, 256)
 
 #img_dataset_train = dataio.CelebA(split='train', downsampled=True)
 img_dataset_train = dataio.FastMRIBrain(split='train', downsampled=True)
-coord_dataset_train = dataio.Implicit2DWrapper(img_dataset_train, sidelength=(256, 256))
+coord_dataset_train = dataio.Implicit2DWrapper(img_dataset_train, sidelength=(256, 256), image=False)
 generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_train, test_sparsity=10,
                                                                  generalization_mode='cnp_test')
 
