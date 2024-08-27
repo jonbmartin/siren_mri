@@ -52,11 +52,11 @@ else: gmode = 'cnp'
 
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True)
 img_dataset = dataio.MRIImageDomain(split='train',downsample=True)
-coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=(240, 240), image=False)
+coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=(128, 128), image=False)
 generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
                                                            generalization_mode=gmode)
-image_resolution = (240, 240)
+image_resolution = (128, 128)
 
 dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size, pin_memory=True, num_workers=0)
 
