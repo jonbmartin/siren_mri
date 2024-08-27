@@ -156,6 +156,8 @@ def getTestMSE(dataloader, subdir):
             sparse_img = np.ones((image_resolution[0], image_resolution[1], 3))
             coords_sub = model_input['coords_sub'].squeeze().detach().cpu().numpy()
             rgb_sub = model_input['img_sub'].squeeze().detach().cpu().numpy()
+            print(f'RGB sub:')
+            print(np.shape(rgb_sub))
             for index in range(0, coords_sub.shape[0]):
                 r = int(round((coords_sub[index][0] + 1) / 2 * 31))
                 c = int(round((coords_sub[index][1] + 1) / 2 * 31))
