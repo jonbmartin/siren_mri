@@ -567,6 +567,7 @@ class FastMRIBrain(Dataset):
         bottom = (height + s) // 2
 
         data = data[left:right, top:bottom]
+        data = data * 1000
 
         data = cv2.resize(data,self.resolution)
 
