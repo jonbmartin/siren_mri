@@ -43,16 +43,17 @@ else:
     opt.experiment_name = opt.checkpoint_path.split('/')[-3] + '_' + opt.experiment_name
 
 assert opt.dataset == 'mri_image'
+image_resolution = (64, 64)
+
 #img_dataset_test = dataio.CelebA(split='test', downsampled=True)
 img_dataset_test = dataio.FastMRIBrain(split='val', downsampled=True)
-coord_dataset_test = dataio.Implicit2DWrapper(img_dataset_test, sidelength=(256, 256), image=False)
+coord_dataset_test = dataio.Implicit2DWrapper(img_dataset_test, sidelength=image_resolution, image=False)
 generalization_dataset_test = dataio.ImageGeneralizationWrapper(coord_dataset_test, test_sparsity=200,
                                                                 generalization_mode='cnp_test')
-image_resolution = (256, 256)
 
 #img_dataset_train = dataio.CelebA(split='train', downsampled=True)
 img_dataset_train = dataio.FastMRIBrain(split='train', downsampled=True)
-coord_dataset_train = dataio.Implicit2DWrapper(img_dataset_train, sidelength=(256, 256), image=False)
+coord_dataset_train = dataio.Implicit2DWrapper(img_dataset_train, sidelength=image_resolution, image=False)
 generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_train, test_sparsity=200,
                                                                  generalization_mode='cnp_test')
 
@@ -179,8 +180,8 @@ def getTestMSE(dataloader, subdir):
             rgb_sub = model_input['img_sub'].squeeze().detach().cpu().numpy()
             print(f'RGB sub: {np.shape(rgb_sub)}')
             for index in range(0, coords_sub.shape[0]):
-                r = int(round((coords_sub[index][0] + 1) / 2 * 255))
-                c = int(round((coords_sub[index][1] + 1) / 2 * 255))
+                r = int(round((coords_sub[index][0] + 1) / 2 * 63))
+                c = int(round((coords_sub[index][1] + 1) / 2 * 63))
                 sparse_img[r, c, :] = np.clip((rgb_sub[index] + 1) / 2, 0., 1.)
 
             sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
