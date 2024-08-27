@@ -520,7 +520,7 @@ class MRIImageDomain(Dataset):
         return np.squeeze(self.data[:,:, idx])
     
 class FastMRIBrain(Dataset):
-    def __init__(self, split, downsampled=False):
+    def __init__(self, split, downsampled=False, image_resolution=(64, 64)):
         # SIZE (128 x 128)
         assert split in ['train', 'test', 'val'], "Unknown split"
 
@@ -538,6 +538,7 @@ class FastMRIBrain(Dataset):
 
         self.root = self.root + self.dir
         self.fnames = os.listdir(self.root)
+        self.resolution = image_resolution
         #print(self.fnames)
 
     def __len__(self):
@@ -567,7 +568,7 @@ class FastMRIBrain(Dataset):
 
         data = data[left:right, top:bottom]
 
-        data = cv2.resize(data,(256,256))
+        data = cv2.resize(data,self.resolution)
 
         return data
 
