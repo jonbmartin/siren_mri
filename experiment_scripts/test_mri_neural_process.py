@@ -180,8 +180,8 @@ def getTestMSE(dataloader, subdir):
             rgb_sub = model_input['img_sub'].squeeze().detach().cpu().numpy()
             print(f'RGB sub: {np.shape(rgb_sub)}')
             for index in range(0, coords_sub.shape[0]):
-                r = int(round((coords_sub[index][0] + 1) / 2 * 31))
-                c = int(round((coords_sub[index][1] + 1) / 2 * 31))
+                r = int(round((coords_sub[index][0] + 1) / 2 * (image_resolution[0]-1)))
+                c = int(round((coords_sub[index][1] + 1) / 2 * (image_resolution[1]-1)))
                 sparse_img[r, c, :] = np.clip((rgb_sub[index] + 1) / 2, 0., 1.)
 
             sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
