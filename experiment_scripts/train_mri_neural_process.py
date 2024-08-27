@@ -26,7 +26,7 @@ p.add_argument('--kl_weight', type=float, default=1e-1,
                help='Weight for l2 loss term on code vectors z (lambda_latent in paper).')
 p.add_argument('--fw_weight', type=float, default=1e2,
                help='Weight for the l2 loss term on the weights of the sine network')
-p.add_argument('--train_sparsity_range', type=int, nargs='+', default=[100, 1000],
+p.add_argument('--train_sparsity_range', type=int, nargs='+', default=[10, 200],
                help='Two integers: lowest number of sparse pixels sampled followed by highest number of sparse'
                     'pixels sampled when training the conditional neural process')
 
