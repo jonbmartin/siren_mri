@@ -543,10 +543,10 @@ class FastMRIBrain(Dataset):
 
     def __len__(self):
         # JBM: ASSUMING 16 slices per dataset
-        return len(self.fnames)*16
+        return len(self.fnames)*14
     
     def __getitem__(self, idx):
-        filename = self.fnames[idx//16]
+        filename = self.fnames[idx//14]
 
         f = h5py.File(self.root + filename, "r")
         
@@ -558,7 +558,7 @@ class FastMRIBrain(Dataset):
         slices, width, height = np.shape(data)
         
         # get slice indices from mod of index
-        data = np.squeeze(data[idx%16,:,:])
+        data = np.squeeze(data[idx%14,:,:])
 
         # crop down size to square
         s = min(width, height)
