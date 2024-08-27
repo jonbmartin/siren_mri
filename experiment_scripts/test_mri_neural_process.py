@@ -44,7 +44,7 @@ else:
 
 assert opt.dataset == 'mri_image'
 #img_dataset_test = dataio.CelebA(split='test', downsampled=True)
-img_dataset_test = dataio.FastMRIBrain(split='test', downsampled=True)
+img_dataset_test = dataio.FastMRIBrain(split='val', downsampled=True)
 coord_dataset_test = dataio.Implicit2DWrapper(img_dataset_test, sidelength=(256, 256), image=False)
 generalization_dataset_test = dataio.ImageGeneralizationWrapper(coord_dataset_test, test_sparsity=10000,
                                                                 generalization_mode='cnp_test')
@@ -156,7 +156,7 @@ def getTestMSE(dataloader, subdir):
 
     with tqdm(total=len(dataloader)) as pbar:
         for step, (model_input, gt) in enumerate(dataloader):
-            model_input['idx'] = torch.Tensor([model_input['idx']]).long()+1
+            model_input['idx'] = torch.Tensor([model_input['idx']]).long()
             model_input = {key: value.cuda() for key, value in model_input.items()}
             gt = {key: value.cuda() for key, value in gt.items()}
 
