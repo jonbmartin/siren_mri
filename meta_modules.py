@@ -58,7 +58,7 @@ class NeuralProcessImplicit2DHypernet(nn.Module):
     def __init__(self, in_features, out_features, image_resolution=None, encoder_nl='sine'):
         super().__init__()
 
-        latent_dim = 1024 # JBM was 256
+        latent_dim = 128 # JBM was 256
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
                                              in_features=2)
         self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=256,
