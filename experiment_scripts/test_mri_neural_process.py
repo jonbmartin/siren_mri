@@ -127,8 +127,8 @@ for i in np.linspace(0, 1, 8):
     else:
         out_img_cat = np.concatenate((out_img_cat, out_img), axis=1)
 
-out_img = Image.fromarray(out_img)
-out_img = out_img.convert("L")
+out_img_cat = Image.fromarray(out_img_cat)
+out_img_cat = out_img_cat.convert("L")
 
 imageio.imwrite(os.path.join(root_path, 'interpolated_image.png'), out_img_cat)
 
