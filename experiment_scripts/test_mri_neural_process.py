@@ -105,7 +105,7 @@ out_img = out_img.convert("L")
 imageio.imwrite(os.path.join(root_path, 'outside_range.png'), out_img)
 
 # Third experiment: interpolate between latent codes
-idx1, idx2 = 57, 181
+idx1, idx2 = 57, 57
 model_input_1 = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
                  'img_sub': generalization_dataset_train[idx1][0]['img_sub'].unsqueeze(0).cuda(),
                  'coords_sub': generalization_dataset_train[idx1][0]['coords_sub'].unsqueeze(0).cuda()}
