@@ -16,6 +16,8 @@ from tqdm.autonotebook import tqdm
 import utils
 import skimage
 
+from PIL import Image
+
 p = configargparse.ArgumentParser()
 p.add('-c', '--config_filepath', required=False, is_config_file=True, help='Path to config file.')
 
@@ -77,6 +79,9 @@ out_img += 1
 out_img /= 2.
 out_img = np.clip(out_img, 0., 1.)
 
+out_img = Image.fromarray(out_img)
+out_img = out_img.convert("L")
+
 imageio.imwrite(os.path.join(root_path, 'upsampled_train.png'), out_img)
 
 # Second experiment: sample larger range
@@ -89,6 +94,9 @@ out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().
 out_img += 1
 out_img /= 2.
 out_img = np.clip(out_img, 0., 1.)
+
+out_img = Image.fromarray(out_img)
+out_img = out_img.convert("L")
 
 imageio.imwrite(os.path.join(root_path, 'outside_range.png'), out_img)
 
@@ -118,6 +126,9 @@ for i in np.linspace(0, 1, 8):
         out_img_cat = out_img
     else:
         out_img_cat = np.concatenate((out_img_cat, out_img), axis=1)
+
+out_img = Image.fromarray(out_img)
+out_img = out_img.convert("L")
 
 imageio.imwrite(os.path.join(root_path, 'interpolated_image.png'), out_img_cat)
 
