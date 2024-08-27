@@ -46,14 +46,14 @@ assert opt.dataset == 'mri_image'
 #img_dataset_test = dataio.CelebA(split='test', downsampled=True)
 img_dataset_test = dataio.FastMRIBrain(split='val', downsampled=True)
 coord_dataset_test = dataio.Implicit2DWrapper(img_dataset_test, sidelength=(256, 256), image=False)
-generalization_dataset_test = dataio.ImageGeneralizationWrapper(coord_dataset_test, test_sparsity=10000,
+generalization_dataset_test = dataio.ImageGeneralizationWrapper(coord_dataset_test, test_sparsity=200,
                                                                 generalization_mode='cnp_test')
 image_resolution = (256, 256)
 
 #img_dataset_train = dataio.CelebA(split='train', downsampled=True)
 img_dataset_train = dataio.FastMRIBrain(split='train', downsampled=True)
 coord_dataset_train = dataio.Implicit2DWrapper(img_dataset_train, sidelength=(256, 256), image=False)
-generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_train, test_sparsity=10000,
+generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_train, test_sparsity=200,
                                                                  generalization_mode='cnp_test')
 
 # Define the model.
@@ -167,12 +167,12 @@ def getTestMSE(dataloader, subdir):
                                                                                                     ).detach().cpu().numpy()
             out_img += 1
             out_img /= 2.
-            out_img = np.clip(out_img, 0., 1.)
             gt_img = dataio.lin2img(gt['img'], image_resolution).squeeze().permute(0,1).detach().cpu().numpy()
             gt_img += 1
             gt_img /= 2.
-            sio.savemat(os.path.join(root_path, 'ground_truth_img.mat'),{'gt_img':gt_img})
+            sio.savemat(os.path.join(root_path, 'ground_truth_img.mat'),{'gt_img':gt_img, 'pred_img':out_img})
             
+            out_img = np.clip(out_img, 0., 1.)
             gt_img = np.clip(gt_img, 0., 1.)
 
             sparse_img = np.ones((image_resolution[0], image_resolution[1], 3))
