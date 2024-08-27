@@ -183,11 +183,11 @@ def getTestMSE(dataloader, subdir):
                 c = int(round((coords_sub[index][1] + 1) / 2 * 31))
                 sparse_img[r, c, :] = np.clip((rgb_sub[index] + 1) / 2, 0., 1.)
 
-            sio.savemat(os.path.join(root_path, 'ground_truth_img.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
+            sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
 
-            imageio.imwrite(os.path.join(root_path, subdir, str(total_steps) + '_sparse.png'), to_uint8(sparse_img))
-            imageio.imwrite(os.path.join(root_path, subdir, str(total_steps) + '.png'), to_uint8(out_img))
-            imageio.imwrite(os.path.join(root_path, 'ground_truth', str(total_steps) + '.png'), to_uint8(gt_img))
+            #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps) + '_sparse.png'), to_uint8(sparse_img))
+            #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps) + '.png'), to_uint8(out_img))
+            #imageio.imwrite(os.path.join(root_path, 'ground_truth', str(total_steps) + '.png'), to_uint8(gt_img))
 
             MSE = np.mean((out_img - gt_img) ** 2)
             MSEs.append(MSE)
