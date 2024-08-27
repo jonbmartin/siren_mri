@@ -565,8 +565,6 @@ class FastMRIBrain(Dataset):
         data = data[left:right, top:bottom]
 
         data = cv2.resize(data,(240,240))
-        data = np.ndarray(data)
-
 
         return data
 
