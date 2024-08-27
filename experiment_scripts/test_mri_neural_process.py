@@ -115,7 +115,7 @@ for i in np.linspace(0, 1, 8):
     embedding = i * embedding_1 + (1. - i) * embedding_2
     model_input = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(), 'embedding': embedding}
     model_output = model(model_input)
-    print(model_output)
+    model_output *=1000
 
     out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,
                                                                                             0).detach().cpu().numpy()
