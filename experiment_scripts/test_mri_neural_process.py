@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import dataio, meta_modules
 import numpy as np
+import scipy.io as sio
 
 import torch
 from torch.utils.data import DataLoader
@@ -78,10 +79,8 @@ out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().
 out_img += 1
 out_img /= 2.
 print('pre clip:')
-print(out_img)
+sio.savemat('upsampled_train.mat',{'out_img':out_img})
 out_img = np.clip(out_img, 0., 1.)
-out_img = out_img * 100
-print(out_img)
 out_img = Image.fromarray(out_img)
 out_img = out_img.convert("L")
 
