@@ -156,7 +156,7 @@ def getTestMSE(dataloader, subdir):
 
     with tqdm(total=len(dataloader)) as pbar:
         for step, (model_input, gt) in enumerate(dataloader):
-            model_input['idx'] = torch.Tensor([model_input['idx']]).long()
+            model_input['idx'] = torch.Tensor([model_input['idx']]).long()+1
             model_input = {key: value.cuda() for key, value in model_input.items()}
             gt = {key: value.cuda() for key, value in gt.items()}
 
