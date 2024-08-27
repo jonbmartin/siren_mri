@@ -171,6 +171,8 @@ def getTestMSE(dataloader, subdir):
             gt_img = dataio.lin2img(gt['img'], image_resolution).squeeze().permute(0,1).detach().cpu().numpy()
             gt_img += 1
             gt_img /= 2.
+            sio.savemat(os.path.join(root_path, 'ground_truth_img.mat'),{'gt_img':gt_img})
+            
             gt_img = np.clip(gt_img, 0., 1.)
 
             sparse_img = np.ones((image_resolution[0], image_resolution[1], 3))
