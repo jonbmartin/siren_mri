@@ -78,6 +78,7 @@ out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().
 out_img += 1
 out_img /= 2.
 out_img = np.clip(out_img, 0., 1.)
+print(out_img)
 
 out_img = Image.fromarray(out_img)
 out_img = out_img.convert("L")
@@ -118,7 +119,6 @@ for i in np.linspace(0, 1, 8):
 
     out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,
                                                                                             0).detach().cpu().numpy()
-    out_img *=1000
     out_img += 1
     out_img /= 2.
     out_img = np.clip(out_img, 0., 1.)
