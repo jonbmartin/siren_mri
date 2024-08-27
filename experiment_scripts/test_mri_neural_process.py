@@ -95,11 +95,12 @@ model_output = model(model_input)
 out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,0).detach().cpu().numpy()
 out_img += 1
 out_img /= 2.
+sio.savemat(os.path.join(root_path, 'outside_range.mat'),{'out_img':out_img})
+
 out_img = np.clip(out_img, 0., 1.)
 
 out_img = Image.fromarray(out_img)
 out_img = out_img.convert("L")
-sio.savemat(os.path.join(root_path, 'outside_range.mat'),{'out_img':out_img})
 
 imageio.imwrite(os.path.join(root_path, 'outside_range.png'), out_img)
 
@@ -130,10 +131,11 @@ for i in np.linspace(0, 1, 8):
     else:
         out_img_cat = np.concatenate((out_img_cat, out_img), axis=1)
 
+sio.savemat(os.path.join(root_path, 'interpolated_image.mat'),{'out_img_cat':out_img_cat})
+
 out_img_cat = Image.fromarray(out_img_cat)
 out_img_cat = out_img_cat.convert("L")
 
-sio.savemat(os.path.join(root_path, 'interpolated_image.mat'),{'out_img_cat':out_img_cat})
 
 imageio.imwrite(os.path.join(root_path, 'interpolated_image.png'), out_img_cat)
 
