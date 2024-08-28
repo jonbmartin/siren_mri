@@ -69,7 +69,9 @@ else:
     model = meta_modules.NeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels + 2,
                                                          out_features=img_dataset.img_channels,
                                                          image_resolution=image_resolution)
-model.cuda()
+    
+device = 4
+model.cuda(device)
 
 # Define the loss
 loss_fn = partial(loss_functions.image_hypernetwork_loss, None, opt.kl_weight, opt.fw_weight)
