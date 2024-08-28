@@ -45,7 +45,8 @@ p.add_argument('--checkpoint_path', default=None, help='Checkpoint to trained mo
 p.add_argument('--conv_encoder', action='store_true', default=False, help='Use convolutional encoder process')
 opt = p.parse_args()
 
-
+# JBM OVERRIDE TO A CONV_CNP
+opt.conv_encoder = True
 assert opt.dataset == 'mri_image'
 if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
