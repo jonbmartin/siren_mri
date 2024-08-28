@@ -71,7 +71,7 @@ else:
                                                          out_features=img_dataset.img_channels,
                                                          image_resolution=image_resolution)
     
-device = 4
+device = 0
 model.cuda(device)
 
 # Define the loss
