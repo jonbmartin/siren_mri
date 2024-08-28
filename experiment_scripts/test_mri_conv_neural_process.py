@@ -187,6 +187,9 @@ def getTestMSE(dataloader, subdir):
 
             pbar.update(1)
             total_steps += 1
+            
+            # TODO: JBM JUST PULLING ONE EXAMPLE
+            break
 
     return MSEs
 
