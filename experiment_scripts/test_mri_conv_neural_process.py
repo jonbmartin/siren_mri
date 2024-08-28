@@ -82,6 +82,11 @@ out_img += 1
 out_img /= 2.
 out_img = np.clip(out_img, 0., 1.)
 
+sio.savemat(os.path.join(root_path, 'upsampled_train.mat'),{'out_img':out_img})
+out_img = np.clip(out_img, 0., 1.)
+out_img = Image.fromarray(out_img)
+out_img = out_img.convert("L")
+
 imageio.imwrite(os.path.join(root_path, 'upsampled_train.png'), out_img)
 
 # Second experiment: sample larger range
@@ -92,7 +97,13 @@ model_output = model(model_input)
 out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(0,1).detach().cpu().numpy()
 out_img += 1
 out_img /= 2.
+
+sio.savemat(os.path.join(root_path, 'outside_range.mat'),{'out_img':out_img})
+
 out_img = np.clip(out_img, 0., 1.)
+
+out_img = Image.fromarray(out_img)
+out_img = out_img.convert("L")
 
 imageio.imwrite(os.path.join(root_path, 'outside_range.png'), out_img)
 
@@ -113,12 +124,17 @@ for i in np.linspace(0,1,8):
     out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(0,1).detach().cpu().numpy()
     out_img += 1
     out_img /= 2.
-    out_img = np.clip(out_img, 0., 1.)
+    #out_img = np.clip(out_img, 0., 1.)
 
     if i == 0.:
         out_img_cat = out_img
     else:
         out_img_cat = np.concatenate((out_img_cat, out_img), axis=1)
+
+sio.savemat(os.path.join(root_path, 'interpolated_image.mat'),{'out_img_cat':out_img_cat})
+
+out_img_cat = Image.fromarray(out_img_cat)
+out_img_cat = out_img_cat.convert("L")
 
 imageio.imwrite(os.path.join(root_path, 'interpolated_image.png'), out_img_cat)
 
@@ -159,9 +175,11 @@ def getTestMSE(dataloader, subdir):
             sparse_img = np.clip(sparse_img, 0., 1.)
             sparse_img[mask, ...] = 1.
 
-            imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'_sparse.png'), to_uint8(sparse_img))
-            imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'.png'), to_uint8(out_img))
-            imageio.imwrite(os.path.join(root_path, 'ground_truth', str(total_steps)+'.png'), to_uint8(gt_img))
+            sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
+
+            #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'_sparse.png'), to_uint8(sparse_img))
+            #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'.png'), to_uint8(out_img))
+            #imageio.imwrite(os.path.join(root_path, 'ground_truth', str(total_steps)+'.png'), to_uint8(gt_img))
 
             MSE = np.mean((out_img - gt_img) ** 2)
             MSEs.append(MSE)
