@@ -687,7 +687,6 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         img = self.transform(self.dataset[idx])
-        img.to("cuda:4")
 
         if self.compute_diff == 'gradients':
             img *= 1e1
