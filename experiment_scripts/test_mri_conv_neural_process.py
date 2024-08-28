@@ -73,75 +73,54 @@ utils.cond_mkdir(root_path)
 model.load_state_dict(torch.load(opt.checkpoint_path))
 
 # First experiment: Upsample training image
-model_input = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
-               'img_sub': generalization_dataset_train[0][0]['img_sub'].unsqueeze(0).cuda(),
-               'coords_sub': generalization_dataset_train[0][0]['coords_sub'].unsqueeze(0).cuda()}
+model_input = {'coords':dataio.get_mgrid(image_resolution)[None,:].cuda(),
+               'img_sparse':generalization_dataset_train[0][0]['img_sparse'].unsqueeze(0).cuda()}
 model_output = model(model_input)
 
 out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(0,1).detach().cpu().numpy()
 out_img += 1
 out_img /= 2.
-print('pre clip:')
-sio.savemat(os.path.join(root_path, 'upsampled_train.mat'),{'out_img':out_img})
 out_img = np.clip(out_img, 0., 1.)
-out_img = Image.fromarray(out_img)
-out_img = out_img.convert("L")
 
 imageio.imwrite(os.path.join(root_path, 'upsampled_train.png'), out_img)
 
 # Second experiment: sample larger range
-model_input = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda() * 5,
-               'img_sub': generalization_dataset_train[0][0]['img_sub'].unsqueeze(0).cuda(),
-               'coords_sub': generalization_dataset_train[0][0]['coords_sub'].unsqueeze(0).cuda()}
+model_input = {'coords':dataio.get_mgrid(image_resolution)[None,:].cuda()*5,
+               'img_sparse':generalization_dataset_train[0][0]['img_sparse'].unsqueeze(0).cuda()}
 model_output = model(model_input)
 
 out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(0,1).detach().cpu().numpy()
 out_img += 1
 out_img /= 2.
-sio.savemat(os.path.join(root_path, 'outside_range.mat'),{'out_img':out_img})
-
 out_img = np.clip(out_img, 0., 1.)
-
-out_img = Image.fromarray(out_img)
-out_img = out_img.convert("L")
 
 imageio.imwrite(os.path.join(root_path, 'outside_range.png'), out_img)
 
 # Third experiment: interpolate between latent codes
 idx1, idx2 = 57, 181
 model_input_1 = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
-                 'img_sub': generalization_dataset_train[idx1][0]['img_sub'].unsqueeze(0).cuda(),
-                 'coords_sub': generalization_dataset_train[idx1][0]['coords_sub'].unsqueeze(0).cuda()}
+                 'img_sparse': generalization_dataset_train[idx1][0]['img_sparse'].unsqueeze(0).cuda()}
 model_input_2 = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
-                 'img_sub': generalization_dataset_train[idx2][0]['img_sub'].unsqueeze(0).cuda(),
-                 'coords_sub': generalization_dataset_train[idx2][0]['coords_sub'].unsqueeze(0).cuda()}
+                 'img_sparse': generalization_dataset_train[idx2][0]['img_sparse'].unsqueeze(0).cuda()}
 
 embedding_1 = model.get_hypo_net_weights(model_input_1)[1]
 embedding_2 = model.get_hypo_net_weights(model_input_2)[1]
-for i in np.linspace(0, 1, 8):
-    embedding = i * embedding_1 + (1. - i) * embedding_2
+for i in np.linspace(0,1,8):
+    embedding = i*embedding_1 + (1.-i)*embedding_2
     model_input = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(), 'embedding': embedding}
     model_output = model(model_input)
 
-    out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(0,
-                                                                                            1).detach().cpu().numpy()
+    out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(0,1).detach().cpu().numpy()
     out_img += 1
     out_img /= 2.
-    #out_img = np.clip(out_img, 0., 1.)
+    out_img = np.clip(out_img, 0., 1.)
 
     if i == 0.:
         out_img_cat = out_img
     else:
         out_img_cat = np.concatenate((out_img_cat, out_img), axis=1)
 
-sio.savemat(os.path.join(root_path, 'interpolated_image.mat'),{'out_img_cat':out_img_cat})
-
-out_img_cat = Image.fromarray(out_img_cat)
-out_img_cat = out_img_cat.convert("L")
-
-
 imageio.imwrite(os.path.join(root_path, 'interpolated_image.png'), out_img_cat)
-
 
 # Fourth experiment: Fit test images
 def to_uint8(img):
@@ -149,10 +128,8 @@ def to_uint8(img):
     img = img.astype(np.uint8)
     return img
 
-
 def getTestMSE(dataloader, subdir):
     MSEs = []
-    PSNRs = []
     total_steps = 0
     utils.cond_mkdir(os.path.join(root_path, subdir))
     utils.cond_mkdir(os.path.join(root_path, 'ground_truth'))
@@ -166,45 +143,33 @@ def getTestMSE(dataloader, subdir):
             with torch.no_grad():
                 model_output = model(model_input)
 
-            out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(0,1
-                                                                                                    ).detach().cpu().numpy()
+            out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(0,1).detach().cpu().numpy()
             out_img += 1
             out_img /= 2.
+            out_img = np.clip(out_img, 0., 1.)
             gt_img = dataio.lin2img(gt['img'], image_resolution).squeeze().permute(0,1).detach().cpu().numpy()
             gt_img += 1
             gt_img /= 2.
-            
-            out_img = np.clip(out_img, 0., 1.)
             gt_img = np.clip(gt_img, 0., 1.)
 
-            sparse_img = np.ones((image_resolution[0], image_resolution[1], 1))
-            coords_sub = model_input['coords_sub'].squeeze().detach().cpu().numpy()
-            rgb_sub = model_input['img_sub'].squeeze().detach().cpu().numpy()
-            print(f'RGB sub: {np.shape(rgb_sub)}')
-            for index in range(0, coords_sub.shape[0]):
-                r = int(round((coords_sub[index][0] + 1) / 2 * (image_resolution[0]-1)))
-                c = int(round((coords_sub[index][1] + 1) / 2 * (image_resolution[1]-1)))
-                sparse_img[r, c, :] = np.clip((rgb_sub[index] + 1) / 2, 0., 1.)
+            sparse_img = model_input['img_sparse'].squeeze().detach().cpu().permute(0,1).numpy()
+            mask = np.sum((sparse_img == 0), axis=2) == 3
+            sparse_img += 1
+            sparse_img /= 2.
+            sparse_img = np.clip(sparse_img, 0., 1.)
+            sparse_img[mask, ...] = 1.
 
-            sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
-
-            #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps) + '_sparse.png'), to_uint8(sparse_img))
-            #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps) + '.png'), to_uint8(out_img))
-            #imageio.imwrite(os.path.join(root_path, 'ground_truth', str(total_steps) + '.png'), to_uint8(gt_img))
+            imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'_sparse.png'), to_uint8(sparse_img))
+            imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'.png'), to_uint8(out_img))
+            imageio.imwrite(os.path.join(root_path, 'ground_truth', str(total_steps)+'.png'), to_uint8(gt_img))
 
             MSE = np.mean((out_img - gt_img) ** 2)
             MSEs.append(MSE)
 
-            PSNR = skimage.measure.compare_psnr(out_img, gt_img, data_range=1)
-            PSNRs.append(PSNR)
-
             pbar.update(1)
             total_steps += 1
-            
-            # JBM JUST PULLING ONE EXAMPLE
-            break
 
-    return MSEs, PSNRs
+    return MSEs
 
 
 sparsities = [10, 100, 1000, 3000, 'full', 'half']
