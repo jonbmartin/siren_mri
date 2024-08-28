@@ -33,8 +33,9 @@ p.add_argument('--dataset', type=str, default='mri_image',
                help='Time interval in seconds until tensorboard summary is saved.')
 p.add_argument('--model_type', type=str, default='sine',
                help='Nonlinearity in the neural implicit representation')
-p.add_argument('--test_sparsity', type=float, default=200,
+p.add_argument('--test_sparsity', type=float, default=3000,
                help='Amount of subsampled pixels input into the set encoder')
+p.add_argument('--partial_conv', action='store_true', default=False, help='Use a partial convolution encoder')
 opt = p.parse_args()
 
 if opt.experiment_name is None:
