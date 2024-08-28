@@ -349,7 +349,7 @@ class ConvImgEncoder(nn.Module):
         )
 
         self.relu_2 = nn.ReLU(inplace=True)
-        self.fc = nn.Linear(1024, 1)
+        self.fc = nn.Linear(image_resolution[0]*image_resolution[1], 1)
 
         self.image_resolution = image_resolution
 
