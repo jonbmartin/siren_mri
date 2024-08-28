@@ -198,7 +198,6 @@ sparsities = [10, 100, 1000, 3000, 'full', 'half']
 for sparsity in sparsities:
     generalization_dataset_test.update_test_sparsity(sparsity)
     dataloader = DataLoader(generalization_dataset_test, shuffle=False, batch_size=1, pin_memory=True, num_workers=0)
-    MSE, PSNR = getTestMSE(dataloader, 'test_' + str(sparsity) + '_pixels')
+    MSE = getTestMSE(dataloader, 'test_' + str(sparsity) + '_pixels')
     np.save(os.path.join(root_path, 'MSE_' + str(sparsity) + '_context.npy'), MSE)
-    np.save(os.path.join(root_path, 'PSNR_' + str(sparsity) + '_context.npy'), PSNR)
     print(np.mean(MSE))
