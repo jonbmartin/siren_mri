@@ -633,9 +633,8 @@ class FastMRIBrainKspace(Dataset):
         kspace = np.fft.fftshift(np.fft.fft2(data))
         kspace_real = np.real(kspace)
         kspace_imag = np.imag(kspace)
-        print(f'kspace shape = {np.shape(kspace_real)}')
 
-        return np.concatenate((kspace_real, kspace_imag),axis=2)
+        return np.dstack((kspace_real, kspace_imag))
 
 class CelebA(Dataset):
     def __init__(self, split, downsampled=False):
