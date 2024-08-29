@@ -739,7 +739,7 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
             self.transform = Compose([
                 #Resize(sidelength),
                 ToTensor(),
-                #Normalize(torch.Tensor([0.5]), torch.Tensor([0.5]))
+                Normalize(torch.Tensor([0.5]), torch.Tensor([0.5]))
             ])
 
         self.compute_diff = compute_diff
