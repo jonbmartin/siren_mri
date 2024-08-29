@@ -575,6 +575,66 @@ class FastMRIBrain(Dataset):
 
         return data
 
+class FastMRIBrainKspace(Dataset):
+    def __init__(self, split, downsampled=False, image_resolution=(64, 64)):
+        # SIZE (128 x 128)
+        assert split in ['train', 'test', 'val'], "Unknown split"
+
+        self.root = '../../fastMRIdata/'
+        self.img_channels = 1
+
+        self.downsampled = downsampled
+
+        if split =='train':
+            self.dir = 'multicoil_train_recon/'
+        elif split =='test':
+            self.dir = 'multicoil_test_recon/'
+        elif split =='val':
+            self.dir = 'multicoil_val_recon/'
+
+        self.root = self.root + self.dir
+        self.fnames = os.listdir(self.root)
+        self.resolution = image_resolution
+        #print(self.fnames)
+
+    def __len__(self):
+        # JBM: ASSUMING 10 slices per dataset
+        return len(self.fnames)*10
+    
+    def __getitem__(self, idx):
+        filename = self.fnames[idx//10]
+
+        f = h5py.File(self.root + filename, "r")
+        
+        # return data as numpy array
+        data = f['reconstruction'][()]
+
+        f.close()
+
+        slices, width, height = np.shape(data)
+        
+        # get slice indices from mod of index
+        data = np.squeeze(data[idx%10,:,:])
+
+        # crop down size to square
+        s = min(width, height)
+
+        left = (width - s) // 2
+        top = (height - s) // 2
+        right = (width + s) // 2
+        bottom = (height + s) // 2
+
+        data = data[left:right, top:bottom]
+        data = data * 1000
+
+        data = cv2.resize(data,self.resolution)
+
+        # naive - just pretending a single-channel dataset
+        kspace = np.fft.fftshift(np.fft.fft2(data))
+        kspace_real = np.real(kspace)
+        kspace_imag = np.imag(kspace)
+
+        return np.concatenate((kspace_real, kspace_imag),axis=2)
 
 class CelebA(Dataset):
     def __init__(self, split, downsampled=False):
