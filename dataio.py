@@ -851,7 +851,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 img_sparse = spatial_img
             elif self.test_sparsity == 'half':
                 img_sparse = spatial_img
-                img_sparse[:, 16:, :] = 0.
+                img_sparse[:, 64:, :] = 0.
             else:
                 if self.generalization_mode == 'conv_cnp_test':
                     num_context = int(self.test_sparsity)
