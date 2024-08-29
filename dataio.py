@@ -860,6 +860,8 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                         torch.empty(1).uniform_(self.train_sparsity_range[0], self.train_sparsity_range[1]).item())
                 mask = spatial_img.new_empty(
                     1, spatial_img.size(1), spatial_img.size(2)).bernoulli_(p=num_context / np.prod(self.sidelength))
+                # JBM add ACS lines to kspace mask: 
+                mask[:,59:69,:] = 1
                 img_sparse = mask * spatial_img
             in_dict = {'idx': idx, 'coords': self.mgrid, 'img_sparse': img_sparse}
         # case where we use the set encoder for generalization, either testing or training
