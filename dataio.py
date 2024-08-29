@@ -581,7 +581,7 @@ class FastMRIBrainKspace(Dataset):
         assert split in ['train', 'test', 'val'], "Unknown split"
 
         self.root = '../../fastMRIdata/'
-        self.img_channels = 1
+        self.img_channels = 2
 
         self.downsampled = downsampled
 
