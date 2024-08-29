@@ -637,7 +637,7 @@ class FastMRIBrainKspace(Dataset):
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
 
         # return is [Nchannels, Nx, Ny]
-        return kspace_stacked
+        return kspace_stacked.astype(float)
 
 class CelebA(Dataset):
     def __init__(self, split, downsampled=False):
