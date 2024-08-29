@@ -25,7 +25,8 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
         self._spatial_dims = [0,1]
         self._contrast_dims = [contrast_dim]
         self._B_spatial = torch.randn((num_input_channels-len(self._contrast_dims), mapping_size_spatial)) * scale
-        self._B_contrast = torch.randn((len(self._contrast_dims), mapping_size_contrast)) * scale
+        if mapping_size_contrast > 0:
+            self._B_contrast = torch.randn((len(self._contrast_dims), mapping_size_contrast)) * scale
 
     def forward(self, x):
         print(f'size of input to feature transform: {np.shape(x)}')
@@ -33,9 +34,11 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
         x_spatial = x[:,:,self._spatial_dims]
 
         x_spatial = x_spatial @ self._B_spatial.to(x_spatial.device)
-        x_contrast = x_contrast @ self._B_contrast.to(x_contrast.device)
+        
+        if mapping_size_contrast > 0:
+            x_contrast = x_contrast @ self._B_contrast.to(x_contrast.device)
 
-        x = torch.cat([x_spatial, x_contrast],dim=2)
+            x = torch.cat([x_spatial, x_contrast],dim=2)
 
         x = 2 * np.pi * x
         return torch.cat([torch.sin(x), torch.cos(x)], dim=2)
