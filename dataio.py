@@ -633,8 +633,9 @@ class FastMRIBrainKspace(Dataset):
         kspace = np.fft.fftshift(np.fft.fft2(data))
         kspace_real = np.real(kspace)
         kspace_imag = np.imag(kspace)
-
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
+
+        kspace = kspace/np.max(np.abs(kspace))
 
         # return is [Nchannels, Nx, Ny]
         return np.float32(kspace_stacked)
@@ -720,7 +721,7 @@ class AudioFile(Dataset):
 
 
 class Implicit2DWrapper(torch.utils.data.Dataset):
-    def __init__(self, dataset, sidelength=None, compute_diff=None, image=True):
+    def __init__(self, dataset, sidelength=None, compute_diff=None, image=True, kspace=False):
 
         if isinstance(sidelength, int):
             sidelength = (sidelength, sidelength)
