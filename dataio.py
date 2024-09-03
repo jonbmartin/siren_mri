@@ -636,7 +636,7 @@ class FastMRIBrainKspace(Dataset):
         kspace_imag = np.imag(kspace)
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
 
-        #kspace = kspace/np.max(np.abs(kspace))
+        kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
 
         # return is [Nchannels, Nx, Ny]
         return np.float32(kspace_stacked)
