@@ -582,6 +582,7 @@ class FastMRIBrainKspace(Dataset):
 
         self.root = '../../fastMRIdata/'
         self.img_channels = 2
+        self._nframes = 10
 
         self.downsampled = downsampled
 
@@ -599,10 +600,10 @@ class FastMRIBrainKspace(Dataset):
 
     def __len__(self):
         # JBM: ASSUMING 10 slices per dataset
-        return len(self.fnames)*10
+        return len(self.fnames)*self._nframes
     
     def __getitem__(self, idx):
-        filename = self.fnames[idx//10]
+        filename = self.fnames[idx//self._nframes]
 
         f = h5py.File(self.root + filename, "r")
         
@@ -614,7 +615,7 @@ class FastMRIBrainKspace(Dataset):
         slices, width, height = np.shape(data)
         
         # get slice indices from mod of index
-        data = np.squeeze(data[idx%10,:,:])
+        data = np.squeeze(data[idx%self._nframes,:,:])
 
         # crop down size to square
         s = min(width, height)
