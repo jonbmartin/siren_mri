@@ -633,9 +633,14 @@ class FastMRIBrainKspace(Dataset):
 
         # naive - just pretending a single-channel dataset
         kspace = np.fft.fftshift(np.fft.fft2(data))
-        kspace_mag = np.log(np.abs(kspace)+1e-12)
-        kspace_phase = np.angle(kspace)
-        kspace_stacked = np.dstack((kspace_mag, kspace_phase))
+        # Log transform the magnitudes
+        kspace_mag = np.abs(kspace)
+        kspace_phs = np.angle(kspace)
+        kspace_mag = np.log(kspace_mag+1e-12)
+        kspace = kspace_mag *np.exp(1j*kspace_phs)
+        kspace_real = np.real(kspace)
+        kspace_imag = np.imag(kspace)
+        kspace_stacked = np.dstack((kspace_real, kspace_imag))
 
 
         kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
