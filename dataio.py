@@ -798,7 +798,8 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
         spatial_img = img.clone()
         img = img.permute(1, 2, 0).view(-1, self.dataset.img_channels)
         print('INSIDE IMPLICIT 2D WRAPPER')
-        img = self.fourier_feature_transform(img)
+        if self.fourier_features:
+            img = self.fourier_feature_transform(img)
         print(np.shape(img))
 
         gt_dict = {'img': img}
