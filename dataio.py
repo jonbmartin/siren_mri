@@ -632,7 +632,7 @@ class FastMRIBrainKspace(Dataset):
         data = cv2.resize(data,self.resolution)
 
         # naive - just pretending a single-channel dataset
-        kspace = np.fft.fftshift(np.fft.fft2(data))
+        kspace = (np.fft.fft2(data))
         # Log transform the magnitudes
         #kspace_mag = np.abs(kspace)
         #kspace_phs = np.angle(kspace)
