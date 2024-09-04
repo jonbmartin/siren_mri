@@ -26,9 +26,9 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
         self._B_spatial = torch.randn((num_input_channels, mapping_size_spatial)) * scale
 
     def forward(self, x):
-        print(f'size of input to feature transform: {np.shape(x)}')
+        #print(f'size of input to feature transform: {np.shape(x)}')
 
         x = x @ self._B_spatial.to(x.device)
-        print(f'Size after transform: {np.shape(x)}')
+        #print(f'Size after transform: {np.shape(x)}')
         x = 2 * np.pi * x
-        return torch.cat([torch.sin(x), torch.cos(x)], dim=2)
+        return torch.cat([torch.sin(x), torch.cos(x)], dim=1)
