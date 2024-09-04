@@ -82,7 +82,7 @@ loss_fn = partial(loss_functions.image_hypernetwork_loss, None, opt.kl_weight, o
 summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
 root_path = os.path.join(opt.logging_root, opt.experiment_name)
-ma
+
 training.train(model=model, train_dataloader=dataloader, epochs=opt.num_epochs, lr=opt.lr,
                steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
                model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True)
