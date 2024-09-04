@@ -85,5 +85,4 @@ root_path = os.path.join(opt.logging_root, opt.experiment_name)
 
 training.train(model=model, train_dataloader=dataloader, epochs=opt.num_epochs, lr=opt.lr,
                steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
-               model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-               double_precision=True)
+               model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,)
