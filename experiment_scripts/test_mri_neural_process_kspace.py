@@ -82,10 +82,10 @@ out_img /= 2.
 print('pre clip:')
 sio.savemat(os.path.join(root_path, 'upsampled_train.mat'),{'out_img':out_img})
 out_img = np.clip(out_img, 0., 1.)
-out_img = Image.fromarray(out_img)
-out_img = out_img.convert("L")
+#out_img = Image.fromarray(out_img)
+#out_img = out_img.convert("L")
 
-imageio.imwrite(os.path.join(root_path, 'upsampled_train.png'), out_img)
+#imageio.imwrite(os.path.join(root_path, 'upsampled_train.png'), out_img)
 
 # Second experiment: sample larger range
 model_input = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda() * 5,
@@ -100,10 +100,10 @@ sio.savemat(os.path.join(root_path, 'outside_range.mat'),{'out_img':out_img})
 
 out_img = np.clip(out_img, 0., 1.)
 
-out_img = Image.fromarray(out_img)
-out_img = out_img.convert("L")
+#out_img = Image.fromarray(out_img)
+#out_img = out_img.convert("L")
 
-imageio.imwrite(os.path.join(root_path, 'outside_range.png'), out_img)
+#imageio.imwrite(os.path.join(root_path, 'outside_range.png'), out_img)
 
 # Third experiment: interpolate between latent codes
 idx1, idx2 = 57, 181
@@ -134,11 +134,11 @@ for i in np.linspace(0, 1, 8):
 
 sio.savemat(os.path.join(root_path, 'interpolated_image.mat'),{'out_img_cat':out_img_cat})
 
-out_img_cat = Image.fromarray(out_img_cat)
-out_img_cat = out_img_cat.convert("L")
+#out_img_cat = Image.fromarray(out_img_cat)
+#out_img_cat = out_img_cat.convert("L")
 
 
-imageio.imwrite(os.path.join(root_path, 'interpolated_image.png'), out_img_cat)
+#imageio.imwrite(os.path.join(root_path, 'interpolated_image.png'), out_img_cat)
 
 
 # Fourth experiment: Fit test images
