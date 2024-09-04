@@ -52,7 +52,7 @@ if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
 
 image_resolution = (128, 128)
-
+num_fourier_features = 256
 img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.MRIImageDomain(split='train',downsample=True)
@@ -65,7 +65,7 @@ generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
 dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size, pin_memory=True, num_workers=0)
 
 if opt.conv_encoder:
-    model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
+    model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels*256,
                                                                       out_features=img_dataset.img_channels,
                                                                       image_resolution=image_resolution)
 else:
