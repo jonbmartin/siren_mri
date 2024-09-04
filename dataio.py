@@ -644,7 +644,7 @@ class FastMRIBrainKspace(Dataset):
         #kspace_phs = np.angle(kspace)
         #kspace_phs = kspace_phs/np.max(np.abs(kspace_phs))
         kspace_real = np.real(kspace)
-        kspace_imag = np.real(kspace)
+        kspace_imag = np.imag(kspace)
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
 
         kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
