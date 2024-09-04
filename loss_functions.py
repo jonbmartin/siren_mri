@@ -13,8 +13,7 @@ def image_mse(mask, model_output, gt):
     else:
         return {'img_loss': (mask * (model_output['model_out'] - gt['img']) ** 2).mean()}
 
-def kspace_log(mask, mo    print(np.shape(model_output['model_out']))
-del_output, gt):
+def kspace_log(mask, model_output, gt):
     # TODO: Needs to be implemented still
     #print(np.shape(model_output['model_out']))
     if mask is None:
