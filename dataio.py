@@ -723,7 +723,7 @@ class AudioFile(Dataset):
 
 
 class Implicit2DWrapper(torch.utils.data.Dataset):
-    def __init__(self, dataset, sidelength=None, compute_diff=None, image=True, kspace=False, fourier_features=False):
+    def __init__(self, dataset, sidelength=None, compute_diff=None, image=True, kspace=False, use_fourier_features=False):
 
         if isinstance(sidelength, int):
             sidelength = (sidelength, sidelength)
@@ -747,9 +747,9 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
         self.compute_diff = compute_diff
         self.dataset = dataset
         self.mgrid = get_mgrid(sidelength)
-        self.fourier_features = fourier_features
+        self.use_fourier_features = use_fourier_features
         
-        if self.fourier_features:
+        if self.use_fourier_features:
             self.fourier_feature_transform = GaussianFourierFeatureTransform(mapping_size_spatial=256, scale=15)
 
     def __len__(self):
@@ -798,7 +798,7 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
         spatial_img = img.clone()
         img = img.permute(1, 2, 0).view(-1, self.dataset.img_channels)
         print('INSIDE IMPLICIT 2D WRAPPER')
-        if self.fourier_features:
+        if self.use_fourier_features:
             img = self.fourier_feature_transform(img)
         print(np.shape(img))
 
