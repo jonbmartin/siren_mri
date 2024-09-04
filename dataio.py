@@ -637,7 +637,6 @@ class FastMRIBrainKspace(Dataset):
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
 
         kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
-        sio.savemat('JBM_test_kspace_output.mat',{'kspace_stacked':kspace_stacked})
 
         # return is [Nchannels, Nx, Ny]
         return np.float32(kspace_stacked)
@@ -793,6 +792,8 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
         img = self.transform(self.dataset[idx])
         spatial_img = img.clone()
         img = img.permute(1, 2, 0).view(-1, self.dataset.img_channels)
+        print('INSIDE IMPLICIT 2D WRAPPER')
+        print(np.shape(img))
 
         gt_dict = {'img': img}
 
