@@ -637,6 +637,7 @@ class FastMRIBrainKspace(Dataset):
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
 
         kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
+        sio.savemat('JBM_test_kspace_output.mat',{'kspace_stacked':kspace_stacked})
 
         # return is [Nchannels, Nx, Ny]
         return np.float32(kspace_stacked)
