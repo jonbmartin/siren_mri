@@ -93,7 +93,7 @@ class NeuralProcessImplicit2DHypernet(nn.Module):
 
 
 class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
-    def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False):
+    def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, fourier_features_size=512):
         super().__init__()
         latent_dim = 256
 
@@ -102,7 +102,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
         else:
             self.encoder = modules.ConvImgEncoder(channel=in_features, image_resolution=image_resolution)
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
-                                             in_features=512)
+                                             in_features=fourier_features_size) # JBM USED TO BE 2 input
         self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=256,
                                       hypo_module=self.hypo_net)
         print(self)
