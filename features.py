@@ -32,3 +32,27 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
         #print(f'Size after transform: {np.shape(x)}')
         x = 2 * np.pi * x
         return torch.cat([torch.sin(x), torch.cos(x)], dim=1)
+    
+
+class InverseFourierFeatureTransform(torch.nn.Module):
+    """
+    A simple inverse fourier transform for simple 2D cartesian recon. 
+
+    Given an input of size [batches, number_of_coordinates, num_input_channels],
+     returns a tensor of size [batches, Nx, Nx].
+   
+    """
+
+    def __init__(self, num_input_channels, image_resolution = (64, 64)):
+        super().__init__()
+
+        self._num_input_channels = num_input_channels
+        self._image_resolution = image_resolution
+
+    def forward(self, x):
+        #print(f'size of input to feature transform: {np.shape(x)}')
+
+        x = x @ self._B_spatial.to(x.device)
+        #print(f'Size after transform: {np.shape(x)}')
+        x = 2 * np.pi * x
+        return torch.cat([torch.sin(x), torch.cos(x)], dim=1)

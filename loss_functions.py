@@ -13,7 +13,7 @@ def image_mse(mask, model_output, gt):
     else:
         return {'img_loss': (mask * (model_output['model_out'] - gt['img']) ** 2).mean()}
 
-def kspace_log(mask, model_output, gt):
+def ift_image_mse(mask, model_output, gt):
     # TODO: Needs to be implemented still
     #print(np.shape(model_output['model_out']))
     mag_output = torch.abs(model_output['model_out'][:,:,0] + 1j * model_output['model_out'][:,:,1])
@@ -87,8 +87,8 @@ def image_hypernetwork_loss(mask, kl, fw, model_output, gt):
             'latent_loss': kl * latent_loss(model_output),
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
-def image_hypernetwork_loss_logmag(mask, kl, fw, model_output, gt):
-    return {'img_loss': kspace_log(mask, model_output, gt)['img_loss'],
+def image_hypernetwork_ift_loss(mask, kl, fw, model_output, gt):
+    return {'img_loss': image_mse(mask, model_output, gt)['img_loss'],
             'latent_loss': kl * latent_loss(model_output),
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
