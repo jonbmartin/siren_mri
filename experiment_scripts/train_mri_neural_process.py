@@ -51,7 +51,7 @@ assert opt.dataset == 'mri_image'
 if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
 
-image_resolution = (128, 128)
+image_resolution = (64, 64)
 num_fourier_features = 256
 img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)

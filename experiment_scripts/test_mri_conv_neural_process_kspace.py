@@ -44,7 +44,7 @@ else:
     opt.experiment_name = opt.checkpoint_path.split('/')[-3] + '_' + opt.experiment_name
 
 assert opt.dataset == 'mri_image'
-image_resolution = (128, 128)
+image_resolution = (64, 64)
 
 #img_dataset_test = dataio.CelebA(split='test', downsampled=True)
 img_dataset_test = dataio.FastMRIBrainKspace(split='val', downsampled=True, image_resolution=image_resolution)
