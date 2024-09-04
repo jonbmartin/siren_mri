@@ -750,7 +750,7 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
         self.use_fourier_features = use_fourier_features
         
         if self.use_fourier_features:
-            self.fGaussianFourourier_feature_transform = GaussianFourierFeatureTransform(num_input_channels=2,mapping_size_spatial=256, scale=15)
+            self.fourier_feature_transform = GaussianFourierFeatureTransform(num_input_channels=2,mapping_size_spatial=256, scale=15)
 
     def __len__(self):
         return len(self.dataset)
