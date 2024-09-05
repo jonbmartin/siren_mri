@@ -24,7 +24,7 @@ def ift_image_mse(mask, model_output, gt):
     kspace_gt = kspace_gt[:,0,:,:] + 1j * kspace_gt[:,1,:,:]
     img_gt = torch.abs(torch.fft.ifft2(kspace_gt))
 
-    print(f'size of output in LOSS = {np.shape(kspace_gt)}')
+    #print(f'size of output in LOSS = {np.shape(kspace_gt)}')
     if mask is None:
         return {'img_loss': ((img_output - img_gt) ** 2).sum()}
     else:
