@@ -899,6 +899,18 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 in_dict = {'idx': idx, 'coords': self.mgrid, 'img_sub': img, 'coords_sub': self.mgrid}
             elif self.test_sparsity == 'half':
                 in_dict = {'idx': idx, 'coords': self.mgrid, 'img_sub': img[:512, :], 'coords_sub': self.mgrid[:512, :]}
+            elif self.test_sparsity == 'CS_cartesian':
+                #print('Using a CS Cartesian mask!')
+                row_inds = [int(number) for number in range(spatial_img.size(1))]
+                random.shuffle(row_inds)
+                mask = torch.zeros_like(img)
+                mask[row_inds[0:10],:] = 1
+                mask[32-3:32+3,:] = 1
+                img = img*mask
+                outgrid = self.mgrid * mask
+
+                in_dict = {'idx': idx, 'coords': self.mgrid, 'img_sub': img, 'coords_sub': outgrid}
+
             else:
                 if self.generalization_mode == 'cnp_test':
                     subsamples = int(self.test_sparsity)
