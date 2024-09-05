@@ -18,12 +18,17 @@ def ift_image_mse(mask, model_output, gt):
     # TODO: Needs to be implemented still
     #print(np.shape(model_output['model_out']))
     kspace_output = dataio.lin2img(model_output['model_out'])
+    kspace_output = kspace_output[:,0,:,:] + 1j * kspace_output[:,1,:,:]
+    img_output = torch.fft.ifft2(kspace_output)
     kspace_gt = dataio.lin2img(gt['img'])
+    kspace_gt = kspace_gt[:,0,:,:] + 1j * kspace_gt[:,1,:,:]
+    img_gt = torch.fft.ifft2(kspace_gt)
+
     print(f'size of output in LOSS = {np.shape(kspace_gt)}')
     if mask is None:
-        return {'img_loss': ((kspace_output - kspace_gt) ** 2).mean()}
+        return {'img_loss': ((img_output - img_gt) ** 2).mean()}
     else:
-        return {'img_loss': (mask * (kspace_output - kspace_gt) ** 2).mean()}
+        return {'img_loss': (mask * (img_output - img_gt) ** 2).mean()}
 
 def image_l1(mask, model_output, gt):
     if mask is None:
