@@ -904,7 +904,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 row_inds = [int(number) for number in range(spatial_img.size(1))]
                 random.shuffle(row_inds)
                 mask = torch.zeros_like(img)
-                mask[row_inds[0:10],:] = 1
+                mask[row_inds[0:20],:] = 1
                 mask[32-3:32+3,:] = 1
                 img = img*mask
                 outgrid = self.mgrid * mask
