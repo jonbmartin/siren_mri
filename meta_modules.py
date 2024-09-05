@@ -95,7 +95,7 @@ class NeuralProcessImplicit2DHypernet(nn.Module):
 class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
     def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, fourier_features_size=512):
         super().__init__()
-        latent_dim = 512
+        latent_dim = 256
 
         if partial_conv:
             self.encoder = modules.PartialConvImgEncoder(channel=in_features, image_resolution=image_resolution)
@@ -105,7 +105,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
                                              in_features=2) 
         
         # JBM changed number of hyper hidden layers to 3
-        self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=512,
+        self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=256,
                                       hypo_module=self.hypo_net)
         print(self)
 

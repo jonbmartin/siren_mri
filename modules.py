@@ -345,7 +345,7 @@ class ConvImgEncoder(nn.Module):
             Conv2dResBlock(256, 256),
             Conv2dResBlock(256, 256),
             Conv2dResBlock(256, 256),
-            nn.Conv2d(256, 512, 1, 1, 0)
+            nn.Conv2d(256, 256, 1, 1, 0)
         )
 
         self.relu_2 = nn.ReLU(inplace=True)
@@ -357,7 +357,7 @@ class ConvImgEncoder(nn.Module):
         o = self.relu(self.conv_theta(I))
         o = self.cnn(o)
 
-        o = self.fc(self.relu_2(o).view(o.shape[0], 512, -1)).squeeze(-1)
+        o = self.fc(self.relu_2(o).view(o.shape[0], 256, -1)).squeeze(-1)
         return o
 
 
