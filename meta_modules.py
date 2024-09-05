@@ -95,7 +95,7 @@ class NeuralProcessImplicit2DHypernet(nn.Module):
 class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
     def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, fourier_features_size=512):
         super().__init__()
-        latent_dim = 256
+        latent_dim = 512
 
         if partial_conv:
             self.encoder = modules.PartialConvImgEncoder(channel=in_features, image_resolution=image_resolution)
