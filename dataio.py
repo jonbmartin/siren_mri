@@ -47,7 +47,7 @@ def get_mgrid(sidelen, dim=2):
 
 def lin2img(tensor, image_resolution=None):
     batch_size, num_samples, channels = tensor.shape
-    print(f'INSIDE LIN2IMG: Batch size={batch_size}, num_samples={num_samples}, channels={channels}')
+    #print(f'INSIDE LIN2IMG: Batch size={batch_size}, num_samples={num_samples}, channels={channels}')
     if image_resolution is None:
         width = np.sqrt(num_samples).astype(int)
         height = width
@@ -56,7 +56,7 @@ def lin2img(tensor, image_resolution=None):
         width = image_resolution[1]
 
     out_tensor = tensor.permute(0, 2, 1).view(batch_size, channels, height, width)
-    print(np.shape(out_tensor))
+    #print(np.shape(out_tensor))
     return out_tensor
 
 
