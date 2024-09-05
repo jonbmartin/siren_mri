@@ -26,9 +26,9 @@ def ift_image_mse(mask, model_output, gt):
 
     print(f'size of output in LOSS = {np.shape(kspace_gt)}')
     if mask is None:
-        return {'img_loss': (1000*(img_output - img_gt) ** 2).mean()}
+        return {'img_loss': ((img_output - img_gt) ** 2).sum()}
     else:
-        return {'img_loss': (1000* mask * (img_output - img_gt) ** 2).mean()}
+        return {'img_loss': ( mask * (img_output - img_gt) ** 2).sum()}
 
 def image_l1(mask, model_output, gt):
     if mask is None:
