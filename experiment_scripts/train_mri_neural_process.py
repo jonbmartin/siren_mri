@@ -69,15 +69,14 @@ dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.bat
 
 if opt.conv_encoder:
     if use_fourier_features:
-        model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
+        model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=img_dataset.img_channels,
                                                                 out_features=img_dataset.img_channels,
                                                                 image_resolution=image_resolution,
                                                                 fourier_features_size=2*num_fourier_features)
     else:
-        model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=img_dataset.img_channels,
+        model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
                                                                         out_features=img_dataset.img_channels,
-                                                                        image_resolution=image_resolution,
-                                                                        fourier_features_size=2*num_fourier_features)
+                                                                        image_resolution=image_resolution)
 else:
     model = meta_modules.NeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels + 2,
                                                          out_features=img_dataset.img_channels,
