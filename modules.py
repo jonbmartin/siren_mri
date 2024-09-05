@@ -345,7 +345,7 @@ class ConvImgEncoder(nn.Module):
             Conv2dResBlock(256, 256),
             Conv2dResBlock(256, 256),
             Conv2dResBlock(256, 256),
-            nn.Conv2d(256, 256, 1, 1, 0)
+            nn.Conv2d(256, 512, 1, 1, 0)
         )
 
         self.relu_2 = nn.ReLU(inplace=True)
