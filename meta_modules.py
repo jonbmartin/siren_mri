@@ -98,7 +98,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
         latent_dim = 256
 
         if partial_conv:
-            self.encoder = modules.PartialConvImgEncoder(channel=in_features, image_resolution=image_resolution)
+            self.encoder = modules.PartialConvImgEncoder(channel=fourier_features_size, image_resolution=image_resolution)
         else:
             self.encoder = modules.ConvImgEncoder(channel=in_features, image_resolution=image_resolution)
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
