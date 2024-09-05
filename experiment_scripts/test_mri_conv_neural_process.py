@@ -78,9 +78,6 @@ model_input = {'coords':dataio.get_mgrid(image_resolution)[None,:].cuda(),
 model_output = model(model_input)
 
 out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
-out_img += 1
-out_img /= 2.
-out_img = np.clip(out_img, 0., 1.)
 
 sio.savemat(os.path.join(root_path, 'upsampled_train.mat'),{'out_img':out_img})
 #out_img = np.clip(out_img, 0., 1.)
@@ -95,12 +92,9 @@ model_input = {'coords':dataio.get_mgrid(image_resolution)[None,:].cuda()*5,
 model_output = model(model_input)
 
 out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
-out_img += 1
-out_img /= 2.
 
 sio.savemat(os.path.join(root_path, 'outside_range.mat'),{'out_img':out_img})
 
-out_img = np.clip(out_img, 0., 1.)
 
 #fromarrayout_img = Image.fromarray(out_img)
 #out_img = out_img.convert("L")
@@ -122,9 +116,6 @@ for i in np.linspace(0,1,8):
     model_output = model(model_input)
 
     out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
-    out_img += 1
-    out_img /= 2.
-    #out_img = np.clip(out_img, 0., 1.)
 
     if i == 0.:
         out_img_cat = out_img
@@ -160,28 +151,14 @@ def getTestMSE(dataloader, subdir):
                 model_output = model(model_input)
 
             out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
-            out_img += 1
-            out_img /= 2.
-            out_img = np.clip(out_img, 0., 1.)
             gt_img = dataio.lin2img(gt['img'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
-            gt_img += 1
-            gt_img /= 2.
-            gt_img = np.clip(gt_img, 0., 1.)
 
             # TODO: Throwing a bug so I commented out
-            sparse_img = model_input['img_sparse'].squeeze().detach().cpu().permute(0,1).numpy()
+            sparse_img = model_input['img_sparse'].squeeze().detach().cpu().permute(1,2,0).numpy()
             mask = np.sum((sparse_img == 0), axis=2) == 3
-            sparse_img += 1
-            sparse_img /= 2.
-            sparse_img = np.clip(sparse_img, 0., 1.)
             sparse_img[mask, ...] = 1.
 
             sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
-
-            #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'_sparse.png'), to_uint8(sparse_img))
-            #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'.png'), to_uint8(out_img))
-            #imageio.imwrite(os.path.join(root_path, 'ground_truth', str(total_steps)+'.png'), to_uint8(gt_img))
-
             MSE = np.mean((out_img - gt_img) ** 2)
             MSEs.append(MSE)
 
