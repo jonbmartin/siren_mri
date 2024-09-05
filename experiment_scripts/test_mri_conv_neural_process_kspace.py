@@ -156,9 +156,6 @@ def getTestMSE(dataloader, subdir):
             # TODO: Throwing a bug so I commented out
             sparse_img = model_input['img_sparse'].squeeze().detach().cpu().permute(1,2,0).numpy()
             mask = np.sum((sparse_img == 0), axis=2) == 3
-            sparse_img += 1
-            sparse_img /= 2.
-            sparse_img = np.clip(sparse_img, 0., 1.)
             sparse_img[mask, ...] = 1.
 
             sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
