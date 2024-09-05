@@ -876,8 +876,9 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
             elif self.test_sparsity == 'CS_cartesian':
                 row_inds = [int(number) for number in range(spatial_img.size(1))]
                 random.shuffle(row_inds)
-                img_sparse = torch.zeros_like(spatial_img)
-                img_sparse[:,row_inds[0:15],:] = 1
+                mask = torch.zeros_like(spatial_img)
+                mask[:,row_inds[0:15],:] = 1
+                img_sparse = mask * img_sparse
             else:
                 if self.generalization_mode == 'conv_cnp_test':
                     num_context = int(self.test_sparsity)
