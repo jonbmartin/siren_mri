@@ -102,7 +102,48 @@ class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
         else:
             self.encoder = modules.ConvImgEncoder(channel=in_features, image_resolution=image_resolution)
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
-                                             in_features=2) # JBM USED TO BE 2 input
+                                             in_features=2) 
+        
+        # JBM changed number of hyper hidden layers to 3
+        self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=3, hyper_hidden_features=256,
+                                      hypo_module=self.hypo_net)
+        print(self)
+
+    def forward(self, model_input):
+        if model_input.get('embedding', None) is None:
+            embedding = self.encoder(model_input['img_sparse'])
+        else:
+            embedding = model_input['embedding']
+        hypo_params = self.hyper_net(embedding)
+
+        model_output = self.hypo_net(model_input, params=hypo_params)
+
+        return {'model_in': model_output['model_in'], 'model_out': model_output['model_out'], 'latent_vec': embedding,
+                'hypo_params': hypo_params}
+
+    def get_hypo_net_weights(self, model_input):
+        embedding = self.encoder(model_input['img_sparse'])
+        hypo_params = self.hyper_net(embedding)
+        return hypo_params, embedding
+
+    def freeze_hypernet(self):
+        for param in self.hyper_net.parameters():
+            param.requires_grad = False
+        for param in self.encoder.parameters():
+            param.requires_grad = False
+
+
+class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
+    def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, fourier_features_size=512):
+        super().__init__()
+        latent_dim = 256
+
+        if partial_conv:
+            self.encoder = modules.PartialConvImgEncoder(channel=in_features, image_resolution=image_resolution)
+        else:
+            self.encoder = modules.ConvImgEncoder(channel=in_features, image_resolution=image_resolution)
+        self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
+                                             in_features=fourier_features_size) # JBM USED TO BE 2 input
         self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=256,
                                       hypo_module=self.hypo_net)
         print(self)

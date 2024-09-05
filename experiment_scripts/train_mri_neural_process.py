@@ -53,11 +53,12 @@ else: gmode = 'cnp'
 
 image_resolution = (64, 64)
 num_fourier_features = 256
+use_fourier_features = True
 img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.MRIImageDomain(split='train',downsample=True)
 coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False,
-                                         use_fourier_features=False)
+                                         use_fourier_features=use_fourier_features)
 # TODO: right now, test_sparsity= ... overwrites train sparsity for training. using this to get CS
 generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
@@ -67,10 +68,16 @@ generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
 dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size, pin_memory=True, num_workers=0)
 
 if opt.conv_encoder:
-    model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
-                                                                      out_features=img_dataset.img_channels,
-                                                                      image_resolution=image_resolution,
-                                                                      fourier_features_size=2*num_fourier_features)
+    if use_fourier_features:
+        model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
+                                                                out_features=img_dataset.img_channels,
+                                                                image_resolution=image_resolution,
+                                                                fourier_features_size=2*num_fourier_features)
+    else:
+        model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=img_dataset.img_channels,
+                                                                        out_features=img_dataset.img_channels,
+                                                                        image_resolution=image_resolution,
+                                                                        fourier_features_size=2*num_fourier_features)
 else:
     model = meta_modules.NeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels + 2,
                                                          out_features=img_dataset.img_channels,
