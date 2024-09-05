@@ -335,7 +335,7 @@ class ConvImgEncoder(nn.Module):
         super().__init__()
 
         # conv_theta is input convolution
-        self.conv_theta = nn.Conv2d(channel, 128, 3, 1, 1)
+        self.conv_theta = nn.Conv2d(channel, 128, 9, 1, 1) # formerly was 3. but we need something much larger!
         self.relu = nn.ReLU(inplace=True)
 
         self.cnn = nn.Sequential(
