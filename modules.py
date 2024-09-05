@@ -357,7 +357,7 @@ class ConvImgEncoder(nn.Module):
         o = self.relu(self.conv_theta(I))
         o = self.cnn(o)
 
-        o = self.fc(self.relu_2(o).view(o.shape[0], 256, -1)).squeeze(-1)
+        o = self.fc(self.relu_2(o).view(o.shape[0], 512, -1)).squeeze(-1)
         return o
 
 
