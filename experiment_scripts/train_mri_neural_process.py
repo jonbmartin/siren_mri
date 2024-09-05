@@ -57,7 +57,7 @@ img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_r
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.MRIImageDomain(split='train',downsample=True)
 coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False,
-                                         use_fourier_features=False)
+                                         use_fourier_features=True)
 # TODO: right now, test_sparsity= ... overwrites train sparsity for training. using this to get CS
 generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
