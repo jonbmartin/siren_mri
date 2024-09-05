@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import diff_operators
 import modules
 import numpy as np
+import dataio
 
 
 def image_mse(mask, model_output, gt):
@@ -16,12 +17,13 @@ def image_mse(mask, model_output, gt):
 def ift_image_mse(mask, model_output, gt):
     # TODO: Needs to be implemented still
     #print(np.shape(model_output['model_out']))
-    mag_output = torch.abs(model_output['model_out'][:,:,0] + 1j * model_output['model_out'][:,:,1])
-    mag_gt = torch.abs(gt['img'][:,:,0] + 1j * gt['img'][:,:,1])
+    kspace_output = dataio.lin2img(model_output['model_out'])
+    kspace_gt = dataio.lin2img(gt['img'])
+    print(f'size of output in LOSS = {np.shape(kspace_gt)}')
     if mask is None:
-        return {'img_loss': ((torch.log(mag_output) - torch.log(mag_gt)) ** 2).mean()}
+        return {'img_loss': ((kspace_output - kspace_gt) ** 2).mean()}
     else:
-        return {'img_loss': (mask * (torch.log(mag_output) - torch.log(mag_gt)) ** 2).mean()}
+        return {'img_loss': (mask * (kspace_output - kspace_gt) ** 2).mean()}
 
 def image_l1(mask, model_output, gt):
     if mask is None:
