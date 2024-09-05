@@ -169,14 +169,14 @@ def getTestMSE(dataloader, subdir):
             gt_img = np.clip(gt_img, 0., 1.)
 
             # TODO: Throwing a bug so I commented out
-            #sparse_img = model_input['img_sparse'].squeeze().detach().cpu().permute(0,1).numpy()
-            #mask = np.sum((sparse_img == 0), axis=2) == 3
-            #sparse_img += 1
-            #sparse_img /= 2.
-            #sparse_img = np.clip(sparse_img, 0., 1.)
-            #sparse_img[mask, ...] = 1.
+            sparse_img = model_input['img_sparse'].squeeze().detach().cpu().permute(0,1).numpy()
+            mask = np.sum((sparse_img == 0), axis=2) == 3
+            sparse_img += 1
+            sparse_img /= 2.
+            sparse_img = np.clip(sparse_img, 0., 1.)
+            sparse_img[mask, ...] = 1.
 
-            sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img})
+            sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
 
             #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'_sparse.png'), to_uint8(sparse_img))
             #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'.png'), to_uint8(out_img))

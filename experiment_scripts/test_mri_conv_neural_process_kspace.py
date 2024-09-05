@@ -133,10 +133,6 @@ sio.savemat(os.path.join(root_path, 'interpolated_image.mat'),{'out_img_cat':out
 #imageio.imwrite(os.path.join(root_path, 'interpolated_image.png'), out_img_cat)
 
 # Fourth experiment: Fit test images
-def to_uint8(img):
-    img = img * 255
-    img = img.astype(np.uint8)
-    return img
 
 def getTestMSE(dataloader, subdir):
     MSEs = []
@@ -166,10 +162,6 @@ def getTestMSE(dataloader, subdir):
             #sparse_img[mask, ...] = 1.
 
             sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img})
-
-            #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'_sparse.png'), to_uint8(sparse_img))
-            #imageio.imwrite(os.path.join(root_path, subdir, str(total_steps)+'.png'), to_uint8(out_img))
-            #imageio.imwrite(os.path.join(root_path, 'ground_truth', str(total_steps)+'.png'), to_uint8(gt_img))
 
             MSE = np.mean((out_img - gt_img) ** 2)
             MSEs.append(MSE)
