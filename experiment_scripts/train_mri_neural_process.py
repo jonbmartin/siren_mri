@@ -53,7 +53,7 @@ else: gmode = 'cnp'
 
 image_resolution = (64, 64)
 num_fourier_features = 256
-use_fourier_features = True
+use_fourier_features = False
 img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.MRIImageDomain(split='train',downsample=True)
