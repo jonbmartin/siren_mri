@@ -154,7 +154,7 @@ def getTestMSE(dataloader, subdir):
 
 
             # TODO: Throwing a bug so I commented out
-            sparse_img = model_input['img_sparse'].squeeze().detach().cpu().permute(0,1).numpy()
+            sparse_img = model_input['img_sparse'].squeeze().detach().cpu().permute(1,2,0).numpy()
             mask = np.sum((sparse_img == 0), axis=2) == 3
             sparse_img += 1
             sparse_img /= 2.
