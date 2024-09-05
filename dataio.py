@@ -14,6 +14,7 @@ import skimage
 import skimage.filters
 import skvideo.io
 import torch
+import random
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize
@@ -872,6 +873,11 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
             elif self.test_sparsity == 'half':
                 img_sparse = spatial_img
                 img_sparse[:, 64:, :] = 0.
+            elif self.test_sparsity == 'CS_cartesian':
+                row_inds = [int(number) for number in spatial_img.size(1)]
+                random.shuffle(row_inds)
+                img_sparse = torch.zeros_like(spatial_img)
+                img_sparse[:,row_inds[0:15],:] = 1
             else:
                 if self.generalization_mode == 'conv_cnp_test':
                     num_context = int(self.test_sparsity)

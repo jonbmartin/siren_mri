@@ -205,7 +205,7 @@ def getTestMSE(dataloader, subdir):
     return MSEs, PSNRs
 
 
-sparsities = [10, 100, 1000, 3000, 'full', 'half']
+sparsities = [10, 100, 1000, 3000, 'full', 'half', 'CS_cartesian']
 for sparsity in sparsities:
     generalization_dataset_test.update_test_sparsity(sparsity)
     dataloader = DataLoader(generalization_dataset_test, shuffle=False, batch_size=1, pin_memory=True, num_workers=0)
