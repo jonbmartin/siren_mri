@@ -61,7 +61,7 @@ coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolutio
 # TODO: right now, test_sparsity= ... overwrites train sparsity for training. using this to get CS
 generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
-                                                           test_sparsity= 'CS_cartesian'
+                                                           test_sparsity= 'CS_cartesian',
                                                            generalization_mode=gmode)
 
 dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size, pin_memory=True, num_workers=0)
