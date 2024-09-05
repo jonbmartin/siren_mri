@@ -46,7 +46,7 @@ p.add_argument('--conv_encoder', action='store_true', default=False, help='Use c
 opt = p.parse_args()
 
 # JBM OVERRIDE TO A CONV_CNP
-opt.conv_encoder = True
+opt.conv_encoder = False
 assert opt.dataset == 'mri_image'
 if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
