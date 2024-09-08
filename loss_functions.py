@@ -28,7 +28,7 @@ def ift_image_mse(mask, model_output, gt):
     img_gt = torch.abs(torch.fft.ifft2(kspace_gt))
 
     # TODO: data consistency
-    print(np.shape(gt['dc_mask']))
+    learned_data_mask = torch.squeeze(learned_data_mask[:,0,:,:])
     print(np.shape(img_output))
     print(np.shape(img_gt))
 
