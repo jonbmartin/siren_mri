@@ -892,7 +892,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 # JBM add ACS lines to kspace mask: 
                 # mask[:,59:69,:] = 1
                 img_sparse = mask * spatial_img
-            in_dict = {'idx': idx, 'coords': self.mgrid, 'img_sparse': img_sparse}
+            in_dict = {'idx': idx, 'coords': self.mgrid, 'img_sparse': img_sparse, 'dc_mask':mask}
         # case where we use the set encoder for generalization, either testing or training
         elif self.generalization_mode == 'cnp' or self.generalization_mode == 'cnp_test':
             if self.test_sparsity == 'full':
@@ -938,6 +938,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         spatial_img, img, gt_dict = self.dataset.get_item_small(idx)
         in_dict = self.get_generalization_in_dict(spatial_img, img, idx)
+        gt_dict['dc_mask'] = in_dict['dc_mask']
         return in_dict, gt_dict
 
 

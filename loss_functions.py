@@ -17,6 +17,7 @@ def image_mse(mask, model_output, gt):
 def ift_image_mse(mask, model_output, gt):
     # TODO: Needs to be implemented still
     #print(np.shape(model_output['model_out']))
+    dc_mask = gt['dc_mask']
     kspace_output = dataio.lin2img(model_output['model_out'])
     kspace_output = kspace_output[:,0,:,:] + 1j * kspace_output[:,1,:,:]
     img_output = torch.abs(torch.fft.ifft2(kspace_output))
@@ -24,15 +25,17 @@ def ift_image_mse(mask, model_output, gt):
     kspace_gt = kspace_gt[:,0,:,:] + 1j * kspace_gt[:,1,:,:]
     img_gt = torch.abs(torch.fft.ifft2(kspace_gt))
 
+    # TODO: data consistency
+
     # add l1 reg in kspace dim to encourage sparsity
     l1_reg = 1e-8
     l1_cost = l1_reg * torch.abs(kspace_output).sum()
 
     #print(f'size of output in LOSS = {np.shape(kspace_gt)}')
     if mask is None:
-        return {'img_loss': ((img_output - img_gt) ** 2).sum() + l1_cost}
+        return {'img_loss': (dc_mask * (img_output - img_gt) ** 2).sum() + l1_cost}
     else:
-        return {'img_loss': ( mask * (img_output - img_gt) ** 2).sum() + l1_cost}
+        return {'img_loss': ( dc_mask * (img_output - img_gt) ** 2).sum() + l1_cost}
 
 def image_l1(mask, model_output, gt):
     if mask is None:
