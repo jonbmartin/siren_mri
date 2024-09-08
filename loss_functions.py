@@ -18,6 +18,7 @@ def ift_image_mse(mask, model_output, gt):
     # TODO: Needs to be implemented still
     dc_mask = gt['dc_mask']
     print(np.shape(gt['dc_mask']))
+    print(np.shape(gt['dc_mask']))
     learned_data_mask = 1-dc_mask
     kspace_output = dataio.lin2img(model_output['model_out'])
     kspace_output = kspace_output[:,0,:,:] + 1j * kspace_output[:,1,:,:]
@@ -27,6 +28,9 @@ def ift_image_mse(mask, model_output, gt):
     img_gt = torch.abs(torch.fft.ifft2(kspace_gt))
 
     # TODO: data consistency
+    print(np.shape(gt['dc_mask']))
+    print(np.shape(img_output))
+    print(np.shape(img_gt))
 
     # add l1 reg in kspace dim to encourage sparsity
     l1_reg = 1e-8
