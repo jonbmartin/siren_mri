@@ -21,7 +21,7 @@ def ift_image_mse(mask, model_output, gt):
     dc_mask = gt['dc_mask']
     dc_mask = torch.squeeze(dc_mask[:,1,:,:])
     learned_data_mask = 1-dc_mask
-    learned_data_mask = torch.squeeze(learned_data_mask[:,0,:,:])
+
 
 
     kspace_output = dataio.lin2img(model_output['model_out'])
