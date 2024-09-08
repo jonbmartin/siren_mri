@@ -16,8 +16,8 @@ def image_mse(mask, model_output, gt):
 
 def ift_image_mse(mask, model_output, gt):
     # TODO: Needs to be implemented still
-    #print(np.shape(model_output['model_out']))
     dc_mask = gt['dc_mask']
+    print(np.shape(gt['dc_mask']))
     learned_data_mask = 1-dc_mask
     kspace_output = dataio.lin2img(model_output['model_out'])
     kspace_output = kspace_output[:,0,:,:] + 1j * kspace_output[:,1,:,:]
