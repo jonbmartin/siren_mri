@@ -870,9 +870,12 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
         if self.generalization_mode == 'conv_cnp' or self.generalization_mode == 'conv_cnp_test':
             if self.test_sparsity == 'full':
                 img_sparse = spatial_img
+                mask = torch.ones_like(img_sparse)
             elif self.test_sparsity == 'half':
                 img_sparse = spatial_img
                 img_sparse[:, 64:, :] = 0.
+                mask = torch.ones_like(img_sparse)
+                mask[:,64:,:] = 0
             elif self.test_sparsity == 'CS_cartesian':
                 #print('Using a CS Cartesian mask!')
                 row_inds = [int(number) for number in range(spatial_img.size(1))]
