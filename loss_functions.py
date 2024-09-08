@@ -19,15 +19,22 @@ def ift_image_mse(mask, model_output, gt):
     # DC implementation: just set loss from those locations to 0. So apply mask to both
     # dc mask is sampled points, so want points OUTSIDE that set
     dc_mask = gt['dc_mask']
+    dc_mask = torch.squeeze(dc_mask[:,1,:,:])
     learned_data_mask = 1-dc_mask
     learned_data_mask = torch.squeeze(learned_data_mask[:,0,:,:])
 
 
     kspace_output = dataio.lin2img(model_output['model_out'])
     kspace_output = kspace_output[:,0,:,:] + 1j * kspace_output[:,1,:,:]
-    img_output = torch.abs(torch.fft.ifft2(kspace_output))
+    kspace_output = kspace_output * learned_data_mask
+
     kspace_gt = dataio.lin2img(gt['img'])
     kspace_gt = kspace_gt[:,0,:,:] + 1j * kspace_gt[:,1,:,:]
+
+    # combine DC data and learned data
+    kspace_output = kspace_output + kspace_gt*dc_mask
+
+    img_output = torch.abs(torch.fft.ifft2(kspace_output))
     img_gt = torch.abs(torch.fft.ifft2(kspace_gt))
     
     # add l1 reg in kspace dim to encourage sparsity
@@ -36,9 +43,9 @@ def ift_image_mse(mask, model_output, gt):
 
     #print(f'size of output in LOSS = {np.shape(kspace_gt)}')
     if mask is None:
-        return {'img_loss': (learned_data_mask * (img_output - img_gt) ** 2).sum() + l1_cost}
+        return {'img_loss': ((img_output - img_gt) ** 2).sum() + l1_cost}
     else:
-        return {'img_loss': ( learned_data_mask * (img_output - img_gt) ** 2).sum() + l1_cost}
+        return {'img_loss': ( mask * (img_output - img_gt) ** 2).sum() + l1_cost}
 
 def image_l1(mask, model_output, gt):
     if mask is None:
