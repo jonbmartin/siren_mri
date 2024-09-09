@@ -910,6 +910,8 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 mask[row_inds[0:20],:] = 1
                 mask[32-3:32+3,:] = 1
                 img = img*mask
+                print(np.shape(self.mgrid))
+                print(np.shape(mask))
                 outgrid = self.mgrid * mask
 
                 in_dict = {'idx': idx, 'coords': self.mgrid, 'img_sub': img, 'coords_sub': outgrid}
