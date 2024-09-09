@@ -26,12 +26,12 @@ def ift_image_mse(mask, model_output, gt):
     #                                  'learned_data_mask':learned_data_mask.cpu().detach().numpy()})
 
 
-    kspace_output = dataio.lin2img(model_output['model_out'])
-    kspace_output = kspace_output[:,0,:,:] + 1j * kspace_output[:,1,:,:]
+    kspace_output_real = dataio.lin2img(model_output['model_out'])
+    kspace_output = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
     #kspace_output = kspace_output * learned_data_mask
 
-    kspace_gt = dataio.lin2img(gt['img'])
-    kspace_gt = kspace_gt[:,0,:,:] + 1j * kspace_gt[:,1,:,:]
+    kspace_gt_real = dataio.lin2img(gt['img'])
+    kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
 
     # combine DC data and learned data
     #kspace_output = kspace_output + kspace_gt*dc_mask
@@ -44,8 +44,8 @@ def ift_image_mse(mask, model_output, gt):
     l1_cost = l1_reg * torch.abs(kspace_output).sum()
 
     # add a kspace domain loss:
-    kspace_weight = 0.5
-    kspace_loss = kspace_weight * ((kspace_output-kspace_gt)**2).sum()
+    kspace_weight = 0.05
+    kspace_loss = kspace_weight * ((kspace_output_real-kspace_gt_real)**2).sum()
 
     #print(f'size of output in LOSS = {np.shape(kspace_gt)}')
     if mask is None:
