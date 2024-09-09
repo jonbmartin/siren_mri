@@ -5,6 +5,7 @@ import diff_operators
 import modules
 import numpy as np
 import dataio
+import scipy.io as sio
 
 
 def image_mse(mask, model_output, gt):
@@ -21,7 +22,7 @@ def ift_image_mse(mask, model_output, gt):
     dc_mask = gt['dc_mask']
     dc_mask = torch.squeeze(dc_mask[:,1,:,:])
     learned_data_mask = 1-dc_mask
-
+    sio.savemat('testing_masks.mat',{'dc_mask':dc_mask, 'learned_data_mask':learned_data_mask})
 
 
     kspace_output = dataio.lin2img(model_output['model_out'])
