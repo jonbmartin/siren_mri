@@ -105,7 +105,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
                                              in_features=2)
         
         # JBM changed number of hyper hidden layers to 2. originally 1
-        self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=2, hyper_hidden_features=256,
+        self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=256,
                                       hypo_module=self.hypo_net)
         print(self)
 
