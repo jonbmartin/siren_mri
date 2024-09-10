@@ -82,7 +82,7 @@ if opt.conv_encoder:
                                                                         image_resolution=image_resolution)
 else:
     if use_fourier_features:
-        model = meta_modules.NeuralProcessImplicit2DHypernetFourierFeatures(in_features=img_dataset.img_channels + 2,
+        model = meta_modules.NeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
                                                     out_features=img_dataset.img_channels,
                                                     image_resolution=image_resolution)
     else:
