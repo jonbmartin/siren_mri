@@ -75,7 +75,6 @@ if opt.conv_encoder:
                                                                 out_features=img_dataset.img_channels,
                                                                 image_resolution=image_resolution,
                                                                 fourier_features_size=2*num_fourier_features)
-        #print('fourier features not implemented with convolutional')
     else:
         model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
                                                                         out_features=img_dataset.img_channels,
