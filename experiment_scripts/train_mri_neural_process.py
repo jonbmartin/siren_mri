@@ -58,14 +58,14 @@ else: gmode = 'cnp'
 
 image_resolution = (64, 64)
 num_fourier_features = 32
-use_fourier_features = False
+use_fourier_features = True
 img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.MRIImageDomain(split='train',downsample=True)
 coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False)
 
 # TODO: right now, test_sparsity= ... overwrites train sparsity for training. using this to get CS
-device = torch.device('cuda:0')  # or whatever device/cpu you like
+device = torch.device('cuda:4')  # or whatever device/cpu you like
 generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
                                                            test_sparsity= 'CS_cartesian',
