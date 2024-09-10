@@ -131,7 +131,7 @@ class NeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
 
 
 class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
-    def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, fourier_features_size=512):
+    def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False):
         super().__init__()
         latent_dim = 256
 
