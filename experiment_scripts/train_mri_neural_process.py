@@ -73,7 +73,7 @@ generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            device=device)
 
 dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size,
-                         pin_memory=False, num_workers=0,)
+                         pin_memory=True, num_workers=0,)
 
 if opt.conv_encoder:
     if use_fourier_features:
