@@ -177,11 +177,12 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         latent_dim = 256
 
         if partial_conv:
-            self.encoder = modules.PartialConvImgEncoder(channel=in_features, image_resolution=image_resolution)
+            self.encoder = modules.PartialConvImgEncoder(channel=2, image_resolution=image_resolution)
         else:
+            # NOTE: our SIREN will use Fourier feat as input, BUT our encoder will use x,y image! 
             self.encoder = modules.ConvImgEncoder(channel=2, image_resolution=image_resolution)
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
-                                             in_features=fourier_features_size) # JBM USED TO BE 2 input
+                                             in_features=2*fourier_features_size) # JBM USED TO BE 2 input
         self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=256,
                                       hypo_module=self.hypo_net)
         print(self)
