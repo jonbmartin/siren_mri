@@ -17,7 +17,7 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
     spatial information. So let's use a smaller number of distinct fourier features for that axis    
     """
 
-    def __init__(self, num_input_channels, mapping_size_spatial=256, scale=10 ):
+    def __init__(self, num_input_channels, mapping_size_spatial=256, scale=10):
         super().__init__()
 
         self._num_input_channels = num_input_channels

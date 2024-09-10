@@ -54,7 +54,7 @@ if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
 
 image_resolution = (64, 64)
-num_fourier_features = 128
+num_fourier_features = 50
 use_fourier_features = True
 img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
@@ -82,6 +82,7 @@ if opt.conv_encoder:
                                                                         image_resolution=image_resolution)
 else:
     if use_fourier_features:
+        # TODO: this does not work yet
         model = meta_modules.NeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
                                                     out_features=img_dataset.img_channels,
                                                     image_resolution=image_resolution)
