@@ -1,6 +1,7 @@
 import torch
 
 import numpy as np
+import scipy
 
 class GaussianFourierFeatureTransform(torch.nn.Module):
     """
@@ -17,13 +18,14 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
     spatial information. So let's use a smaller number of distinct fourier features for that axis    
     """
 
-    def __init__(self, num_input_channels, mapping_size_spatial=256, scale=10):
+    def __init__(self, num_input_channels, mapping_size_spatial=256, scale=10, loaded_B = None):
         super().__init__()
 
         self._num_input_channels = num_input_channels
         self._mapping_size = mapping_size_spatial
         self._spatial_dims = [0,1]
         self._B_spatial = torch.randn((num_input_channels, mapping_size_spatial)) * scale
+
 
     def forward(self, x):
         #print('size of input to fourier feature transform: ')
@@ -36,6 +38,16 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
         #print('size of fourier feature before concatenation: ')
         #print(np.shape(x))
         return torch.cat([torch.sin(x), torch.cos(x)], dim=2)
+    
+    def save_B(self, filename):
+        torch.save(self._B_spatial, filename)
+
+    def load_B(self, filename):
+        self._B_spatial = torch.load(filename)
+
+
+        
+
     
 
 class InverseFourierFeatureTransform(torch.nn.Module):

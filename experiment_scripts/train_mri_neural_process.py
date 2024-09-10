@@ -107,6 +107,9 @@ root_path = os.path.join(opt.logging_root, opt.experiment_name)
 fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
                                                       mapping_size_spatial=num_fourier_features, scale=15)
 
+# Record the fourier feature transform matrix
+fourier_transformer.save_B('current_B.pt')
+
 
 training.train(model=model, train_dataloader=dataloader, epochs=opt.num_epochs, lr=opt.lr,
                steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
