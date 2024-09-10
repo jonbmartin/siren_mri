@@ -108,8 +108,8 @@ summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
 root_path = os.path.join(opt.logging_root, opt.experiment_name)
 
-fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
-                                                      mapping_size_spatial=num_fourier_features, scale=24)
+fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
+                                                      scale=24, device=device)
 
 # Record the fourier feature transform matrix
 fourier_transformer.save_B('current_B.pt')
