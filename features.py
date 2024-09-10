@@ -18,13 +18,14 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
     spatial information. So let's use a smaller number of distinct fourier features for that axis    
     """
 
-    def __init__(self, num_input_channels, mapping_size_spatial=256, scale=10, loaded_B = None):
+    def __init__(self, num_input_channels, mapping_size_spatial=256, scale=10, loaded_B = None, device= 'cuda:0'):
         super().__init__()
 
         self._num_input_channels = num_input_channels
         self._mapping_size = mapping_size_spatial
         self._spatial_dims = [0,1]
         self._B_spatial = torch.randn((num_input_channels, mapping_size_spatial)) * scale
+        self._B_spatial.to(device=device)
 
 
     def forward(self, x):
