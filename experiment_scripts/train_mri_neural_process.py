@@ -57,7 +57,7 @@ if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
 
 image_resolution = (64, 64)
-num_fourier_features = 64
+num_fourier_features = 32
 use_fourier_features = True
 img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
@@ -73,7 +73,7 @@ generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            device=device)
 
 dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size,
-                         pin_memory=True, num_workers=0,)
+                         pin_memory=False, num_workers=0,)
 
 if opt.conv_encoder:
     if use_fourier_features:
