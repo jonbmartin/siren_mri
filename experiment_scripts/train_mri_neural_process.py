@@ -72,8 +72,8 @@ generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            generalization_mode=gmode,
                                                            device=device)
 
-dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size, pin_memory=True, num_workers=0,
-                        collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x)))
+dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size,
+                         pin_memory=True, num_workers=0,)
 
 if opt.conv_encoder:
     if use_fourier_features:
