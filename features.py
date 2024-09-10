@@ -28,7 +28,7 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
     def forward(self, x):
         #print(f'size of input to feature transform: {np.shape(x)}')
         # TODO needs to operate on an element in the dictionary 
-        x = x @ self._B_spatial#.to(x.device)
+        x = x @ self._B_spatial.to(x.device)
         #print(f'Size after transform: {np.shape(x)}')
         x = 2 * np.pi * x
         return torch.cat([torch.sin(x), torch.cos(x)], dim=1)
