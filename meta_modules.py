@@ -189,7 +189,6 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         
 
         print(self)
-        print(self.encoder.get_device())
 
     def forward(self, model_input):
         if model_input.get('embedding', None) is None:
