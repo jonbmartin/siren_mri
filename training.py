@@ -64,7 +64,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                 else:
                     model_input['coords'] = fourier_feat_transformer(model_input['coords'])
                     #model_input['img_sub'] = fourier_feat_transformer(model_input['img_sub'])
-                    model_input = fourier_feat_transformer(model_input)
+                    #model_input = fourier_feat_transformer(model_input)
                 if use_lbfgs:
                     def closure():
                         optim.zero_grad()
