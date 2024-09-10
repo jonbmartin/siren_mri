@@ -95,8 +95,8 @@ device = 0
 model.cuda(device)
 
 # Define the loss
-kl_weight = opt.kl_weight/40
-fw_weight = opt.fw_weight/40
+kl_weight = opt.kl_weight/400
+fw_weight = opt.fw_weight/400
 
 loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
 #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, kl_weight, fw_weight)
