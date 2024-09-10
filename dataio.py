@@ -941,12 +941,10 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
         gt_dict['dc_mask'] = in_dict['dc_mask']
         #  convert to device: 
         for key, value in gt_dict.items():
-            print(key)
             if key not in {'idx'}:
                 gt_dict[key] = gt_dict[key].to(self.device)
         for key, value in in_dict.items():
-            print(key)
-            if key not in {'idk'}:
+            if key not in {'idx'}:
                 in_dict[key] = in_dict[key].to(self.device)
 
         return in_dict, gt_dict
