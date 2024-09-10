@@ -114,8 +114,8 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapp
 # Record the fourier feature transform matrix
 fourier_transformer.save_B('current_B.pt')
 
-with device:
-    training.train(model=model, train_dataloader=dataloader, epochs=opt.num_epochs, lr=opt.lr,
-                steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
-                model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-                fourier_feat_transformer=fourier_transformer)
+
+training.train(model=model, train_dataloader=dataloader, epochs=opt.num_epochs, lr=opt.lr,
+            steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
+            model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
+            fourier_feat_transformer=fourier_transformer)
