@@ -320,6 +320,9 @@ class SetEncoder(nn.Module):
         self.net.apply(weight_init)
 
     def forward(self, context_x, context_y, ctxt_mask=None, **kwargs):
+        print('X and Y context shapes input to set encoder')
+        print(np.shape(context_x))
+        print(np.shape(context_y))
         input = torch.cat((context_x, context_y), dim=-1)
         embeddings = self.net(input)
 
