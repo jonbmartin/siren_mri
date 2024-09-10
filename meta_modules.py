@@ -172,7 +172,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
 
 
 class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
-    def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, fourier_features_size=512):
+    def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, fourier_features_size=512, device='cuda:0'):
         super().__init__()
         latent_dim = 256
 
@@ -186,6 +186,11 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
                                              in_features=fourier_features_size, hidden_features=256,num_hidden_layers=3) # JBM USED TO BE 2 input
         self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=256,
                                       hypo_module=self.hypo_net)
+        
+        self.encoder.to(device)
+        self.hypo_net.to(device)
+        self.hyper_net.to(device)
+
         print(self)
 
     def forward(self, model_input):
