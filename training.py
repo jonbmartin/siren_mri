@@ -63,7 +63,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                     pass
                 else:
                     model_input['coords'] = fourier_feat_transformer(model_input['coords'])
-                    #model_input['img_sub'] = fourier_feat_transformer(model_input['img_sub'])
+                    model_input['img_sparse'] = fourier_feat_transformer(model_input['img_sparse'])
                     #model_input = fourier_feat_transformer(model_input)
                 if use_lbfgs:
                     def closure():
