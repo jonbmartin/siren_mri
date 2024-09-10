@@ -103,7 +103,8 @@ summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
 root_path = os.path.join(opt.logging_root, opt.experiment_name)
 
-fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,mapping_size_spatial=256, scale=15)
+fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
+                                                      mapping_size_spatial=num_fourier_features, scale=15)
 
 
 training.train(model=model, train_dataloader=dataloader, epochs=opt.num_epochs, lr=opt.lr,
