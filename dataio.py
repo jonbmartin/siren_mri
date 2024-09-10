@@ -908,7 +908,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 print(np.shape(mask))
                 outgrid = self.mgrid * mask
 
-                in_dict = {'idx': idx, 'coords': self.mgrid, 'img_sub': img, 'coords_sub': outgrid}
+                in_dict = {'idx': idx, 'coords': self.mgrid, 'img_sub': img, 'coords_sub': outgrid, 'dc_mask':mask}
 
             else:
                 if self.generalization_mode == 'cnp_test':
