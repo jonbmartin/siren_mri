@@ -26,6 +26,8 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
         self._B_spatial = torch.randn((num_input_channels, mapping_size_spatial)) * scale
 
     def forward(self, x):
+        print('size of input to fourier feature transform: ')
+        print(np.shape(x))
         #print(f'size of input to feature transform: {np.shape(x)}')
         # TODO needs to operate on an element in the dictionary 
         x = x @ self._B_spatial.to(x.device)
