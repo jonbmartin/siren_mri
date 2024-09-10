@@ -68,9 +68,6 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                 if use_lbfgs:
                     def closure():
                         optim.zero_grad()
-                        print(f'model device = {model.device()}')
-                        print(f'input device = {model_input['coords'].device()}')
-
                         model_output = model(model_input)
                         losses = loss_fn(model_output, gt)
                         train_loss = 0.
@@ -79,6 +76,10 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                         train_loss.backward()
                         return train_loss
                     optim.step(closure)
+                
+                print(f'model device = {model.device()}')
+                testvar = model_input['coords']
+                print(f'input device = {testvar.device()}')
 
                 model_output = model(model_input)
                 losses = loss_fn(model_output, gt)
