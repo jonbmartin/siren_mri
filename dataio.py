@@ -18,7 +18,6 @@ import random
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize
-from features import GaussianFourierFeatureTransform
 
 
 
@@ -735,7 +734,7 @@ class AudioFile(Dataset):
 
 
 class Implicit2DWrapper(torch.utils.data.Dataset):
-    def __init__(self, dataset, sidelength=None, compute_diff=None, image=True, kspace=False, use_fourier_features=False):
+    def __init__(self, dataset, sidelength=None, compute_diff=None, image=True, kspace=False):
 
         if isinstance(sidelength, int):
             sidelength = (sidelength, sidelength)
@@ -759,11 +758,7 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
         self.compute_diff = compute_diff
         self.dataset = dataset
         self.mgrid = get_mgrid(sidelength)
-        self.use_fourier_features = use_fourier_features
         
-        if self.use_fourier_features:
-            self.fourier_feature_transform = GaussianFourierFeatureTransform(num_input_channels=2,mapping_size_spatial=256, scale=15)
-
     def __len__(self):
         return len(self.dataset)
 
@@ -809,8 +804,6 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
         img = self.transform(self.dataset[idx])
         spatial_img = img.clone()
         img = img.permute(1, 2, 0).view(-1, self.dataset.img_channels)
-        if self.use_fourier_features:
-            img = self.fourier_feature_transform(img)
 
         gt_dict = {'img': img}
 
