@@ -48,7 +48,7 @@ p.add_argument('--conv_encoder', action='store_true', default=False, help='Use c
 opt = p.parse_args()
 
 # JBM OVERRIDE TO A CONV_CNP
-opt.conv_encoder = False
+opt.conv_encoder = True
 assert opt.dataset == 'mri_image'
 if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
@@ -71,11 +71,11 @@ dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.bat
 
 if opt.conv_encoder:
     if use_fourier_features:
-        #model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
-        #                                                        out_features=img_dataset.img_channels,
-        #                                                        image_resolution=image_resolution,
-        #                                                        fourier_features_size=2*num_fourier_features)
-        print('fourier features not implemented with convolutional')
+        model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
+                                                                out_features=img_dataset.img_channels,
+                                                                image_resolution=image_resolution,
+                                                                fourier_features_size=2*num_fourier_features)
+        #print('fourier features not implemented with convolutional')
     else:
         model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
                                                                         out_features=img_dataset.img_channels,
