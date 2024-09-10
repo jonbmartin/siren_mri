@@ -842,13 +842,14 @@ class Implicit3DWrapper(torch.utils.data.Dataset):
 
 
 class ImageGeneralizationWrapper(torch.utils.data.Dataset):
-    def __init__(self, dataset, test_sparsity=None, train_sparsity_range=(10, 200), generalization_mode=None):
+    def __init__(self, dataset, test_sparsity=None, train_sparsity_range=(10, 200), generalization_mode=None, device='cuda:0'):
         self.dataset = dataset
         self.sidelength = dataset.sidelength
         self.mgrid = dataset.mgrid
         self.test_sparsity = test_sparsity
         self.train_sparsity_range = train_sparsity_range
         self.generalization_mode = generalization_mode
+        self.device = device
 
     def __len__(self):
         return len(self.dataset)
@@ -938,6 +939,12 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
         spatial_img, img, gt_dict = self.dataset.get_item_small(idx)
         in_dict = self.get_generalization_in_dict(spatial_img, img, idx)
         gt_dict['dc_mask'] = in_dict['dc_mask']
+        #  convert to device: 
+        for key, value in gt_dict.items():
+            gt_dict[key] = gt_dict[key].to(self.device)
+        for key, value in in_dict.items():
+            in_dict[key] = in_dict[key].to(self.device)
+
         return in_dict, gt_dict
 
 
