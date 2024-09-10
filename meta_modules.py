@@ -190,8 +190,8 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
 
     def forward(self, model_input):
         if model_input.get('embedding', None) is None:
-            #embedding = self.encoder(model_input['img_sparse'])
-            embedding = self.encoder(model_input['ift_zfilled'])
+            embedding = self.encoder(model_input['img_sparse'])
+            #embedding = self.encoder(model_input['ift_zfilled'])
         else:
             embedding = model_input['embedding']
         hypo_params = self.hyper_net(embedding)
