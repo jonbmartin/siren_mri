@@ -60,15 +60,16 @@ generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_t
                                                                 generalization_mode='conv_cnp_test')
 
 # Define the model.
-model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset_test.img_channels,
-                                                                  out_features=img_dataset_test.img_channels,
-                                                                  image_resolution=image_resolution,
-                                                                  partial_conv=opt.partial_conv)
+num_fourier_features = 16
+out_channels = 2
+model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
+                                                        out_features=out_channels,
+                                                        image_resolution=image_resolution,
+                                                        fourier_features_size=2*num_fourier_features)
 model.cuda()
 model.eval()
 
 # define the fourier feature tranformer 
-num_fourier_features = 16
 fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
                                                       mapping_size_spatial=num_fourier_features, scale=15)
 
@@ -158,7 +159,7 @@ def getTestMSE(dataloader, subdir):
             model_input = {key: value.cuda() for key, value in model_input.items()}
             gt = {key: value.cuda() for key, value in gt.items()}
             model_input['coords'] = fourier_transformer(model_input['coords'])
-            
+
             with torch.no_grad():
                 model_output = model(model_input)
 
