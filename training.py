@@ -77,9 +77,9 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                         return train_loss
                     optim.step(closure)
                 
-                print(f'model device = {model.device()}')
+                print(f'model device = {model.get_device()}')
                 testvar = model_input['coords']
-                print(f'input device = {testvar.device()}')
+                print(f'input device = {testvar.get_device()}')
 
                 model_output = model(model_input)
                 losses = loss_fn(model_output, gt)
