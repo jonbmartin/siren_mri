@@ -11,6 +11,9 @@ import configargparse
 from functools import partial
 from features import GaussianFourierFeatureTransform
 
+from torch.utils.data.dataloader import default_collate
+
+
 
 p = configargparse.ArgumentParser()
 p.add('-c', '--config_filepath', required=False, is_config_file=True, help='Path to config file.')
@@ -66,8 +69,10 @@ generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
                                                            test_sparsity= 'CS_cartesian',
                                                            generalization_mode=gmode)
+device = torch.device('cuda:4')  # or whatever device/cpu you like
 
-dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size, pin_memory=True, num_workers=0)
+dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size, pin_memory=True, num_workers=0,
+                        collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x)))
 
 if opt.conv_encoder:
     if use_fourier_features:
@@ -89,8 +94,7 @@ else:
         model = meta_modules.NeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels + 2,
                                                             out_features=img_dataset.img_channels,
                                                             image_resolution=image_resolution)
-    
-device = 0
+
 model.cuda(device)
 
 # Define the loss
