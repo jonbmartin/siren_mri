@@ -119,4 +119,4 @@ fourier_transformer.save_B('current_B.pt')
 training.train(model=model, train_dataloader=dataloader, epochs=opt.num_epochs, lr=opt.lr,
             steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
             model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-            fourier_feat_transformer=fourier_transformer)
+            fourier_feat_transformer=fourier_transformer, device=device)
