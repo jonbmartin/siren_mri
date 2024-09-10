@@ -187,9 +187,6 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=256,
                                       hypo_module=self.hypo_net)
         
-        self.encoder.to(device)
-        self.hypo_net.to(device)
-        self.hyper_net.to(device)
 
         print(self)
 
