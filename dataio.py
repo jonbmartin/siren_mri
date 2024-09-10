@@ -889,7 +889,8 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 # mask[:,59:69,:] = 1
                 img_sparse = mask * spatial_img
             #print(f'kspace sparse shape = {np.shape(img_sparse)}')
-            ift_zfilled = torch.abs(torch.fft.ifft2(torch.squeeze(img_sparse[0,:,:]+1j*img_sparse[1,:,:])))
+            ift_zfilled = torch.fft.ifft2(torch.squeeze(img_sparse[0,:,:]+1j*img_sparse[1,:,:]))
+            ift_zfilled = torch.stack((torch.abs(ift_zfilled), torch.angle(ift_zfilled)))
             in_dict = {'idx': idx, 'coords': self.mgrid, 'img_sparse': img_sparse, 'ift_zfilled':ift_zfilled,'dc_mask':mask}
         # case where we use the set encoder for generalization, either testing or training
         elif self.generalization_mode == 'cnp' or self.generalization_mode == 'cnp_test':
