@@ -939,8 +939,8 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
         spatial_img, img, gt_dict = self.dataset.get_item_small(idx)
         in_dict = self.get_generalization_in_dict(spatial_img, img, idx)
         gt_dict['dc_mask'] = in_dict['dc_mask']
+        
         #  convert to device: 
-
         in_dict = {key: value.to(self.device) for key, value in in_dict.items()}
         gt_dict = {key: value.to(self.device) for key, value in gt_dict.items()}
 

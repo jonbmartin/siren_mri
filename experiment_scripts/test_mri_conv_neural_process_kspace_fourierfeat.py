@@ -189,7 +189,7 @@ def getTestMSE(dataloader, subdir):
 sparsities = [10, 100, 1000, 3000, 'full', 'half', 'CS_cartesian']
 for sparsity in sparsities:
     generalization_dataset_test.update_test_sparsity(sparsity)
-    dataloader = DataLoader(generalization_dataset_test, shuffle=False, batch_size=1, pin_memory=True, num_workers=0)
+    dataloader = DataLoader(generalization_dataset_test, shuffle=False, batch_size=1, pin_memory=False, num_workers=0)
     MSE = getTestMSE(dataloader, 'test_' + str(sparsity) + '_pixels')
     np.save(os.path.join(root_path, 'MSE_' + str(sparsity) + '_context.npy'), MSE)
     print(np.mean(MSE))
