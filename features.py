@@ -31,6 +31,8 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
         x = x @ self._B_spatial.to(x.device)
         #print(f'Size after transform: {np.shape(x)}')
         x = 2 * np.pi * x
+        print('size of fourier feature before concatenation: ')
+        print(np.shape(x))
         return torch.cat([torch.sin(x), torch.cos(x)], dim=1)
     
 
