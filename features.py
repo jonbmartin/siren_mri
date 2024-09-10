@@ -26,16 +26,16 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
         self._B_spatial = torch.randn((num_input_channels, mapping_size_spatial)) * scale
 
     def forward(self, x):
-        print('size of input to fourier feature transform: ')
-        print(np.shape(x))
+        #print('size of input to fourier feature transform: ')
+        #print(np.shape(x))
         #print(f'size of input to feature transform: {np.shape(x)}')
         # TODO needs to operate on an element in the dictionary 
         x = x @ self._B_spatial.to(x.device)
         #print(f'Size after transform: {np.shape(x)}')
         x = 2 * np.pi * x
-        print('size of fourier feature before concatenation: ')
-        print(np.shape(x))
-        return torch.cat([torch.sin(x), torch.cos(x)], dim=1)
+        #print('size of fourier feature before concatenation: ')
+        #print(np.shape(x))
+        return torch.cat([torch.sin(x), torch.cos(x)], dim=2)
     
 
 class InverseFourierFeatureTransform(torch.nn.Module):
