@@ -62,7 +62,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                 if fourier_feat_transformer is None:
                     pass
                 else:
-                    pass
+                    model_input = fourier_feat_transformer(model_input)
 
                 if use_lbfgs:
                     def closure():
