@@ -945,6 +945,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
             if key not in {'idx'}:
                 gt_dict[key] = gt_dict[key].to(self.device)
         for key, value in in_dict.items():
+            print(key)
             if key not in {'idk'}:
                 in_dict[key] = in_dict[key].to(self.device)
 
