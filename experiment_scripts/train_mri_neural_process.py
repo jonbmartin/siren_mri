@@ -11,8 +11,6 @@ import configargparse
 from functools import partial
 from features import GaussianFourierFeatureTransform
 
-from torch.utils.data.dataloader import default_collate
-
 
 
 p = configargparse.ArgumentParser()
