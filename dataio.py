@@ -876,7 +876,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 random.shuffle(row_inds)
                 mask = torch.zeros_like(spatial_img)
                 mask[:,row_inds[0:17],:] = 1
-                mask[:,32-4:32+4,:] = 1
+                mask[:,33-4:33+4,:] = 1
                 img_sparse = mask * spatial_img
             else:
                 if self.generalization_mode == 'conv_cnp_test':
@@ -905,7 +905,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 random.shuffle(row_inds)
                 mask = torch.zeros_like(img)
                 mask[row_inds[0:17],:] = 1
-                mask[32-4:32+4,:] = 1
+                mask[33-4:33+4,:] = 1
                 img = img*mask
                 outgrid = self.mgrid * mask
 
