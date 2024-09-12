@@ -40,7 +40,7 @@ def ift_image_mse(mask, model_output, gt):
     img_gt = torch.abs(torch.fft.ifft2(kspace_gt))
     
     # add l1 reg in kspace dim to encourage sparsity
-    l1_reg = 1e-10
+    l1_reg = 1e-7
     l1_cost = l1_reg * torch.abs(kspace_output).sum()
 
     # add a kspace domain loss:
