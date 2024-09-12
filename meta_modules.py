@@ -184,7 +184,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
             self.encoder = modules.ConvImgEncoder(channel=2, image_resolution=image_resolution)
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
                                              in_features=fourier_features_size, hidden_features=128,num_hidden_layers=3) # JBM USED TO BE 2 input
-        self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=4, hyper_hidden_features=128,
+        self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=256,
                                       hypo_module=self.hypo_net)
             # JBM hyper was 1 layer, 256
 
