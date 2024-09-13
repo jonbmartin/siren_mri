@@ -63,8 +63,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                     pass
                 else:
                     model_input['coords'] = fourier_feat_transformer(model_input['coords'])
-                    #model_input['img_sparse'] = fourier_feat_transformer(model_input['img_sparse'])
-                    #model_input = fourier_feat_transformer(model_input)
+
                 if use_lbfgs:
                     def closure():
                         optim.zero_grad()
@@ -122,6 +121,12 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                         with torch.no_grad():
                             val_losses = []
                             for (model_input, gt) in val_dataloader:
+                                
+                                if fourier_feat_transformer is None:
+                                    pass
+                                else:
+                                    model_input['coords'] = fourier_feat_transformer(model_input['coords'])
+
                                 model_output = model(model_input)
                                 val_loss = loss_fn(model_output, gt)
                                 val_losses.append(val_loss)
