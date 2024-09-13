@@ -616,7 +616,12 @@ class FastMRIBrainKspace(Dataset):
         slices, width, height = np.shape(data)
         
         # get slice indices from mod of index
-        data = np.squeeze(data[idx%self._nframes,:,:])
+        # TODO: THIS IS BAD AND IS GOING TO BIAS RESULTS
+        if idx%self._nframes > np.shape(data)[0]:
+            slice_idx = 0
+        else:
+            slice_idx = idx%self._nframes
+        data = np.squeeze(data[slice_idx,:,:])
 
         # crop down size to square
         s = min(width, height)
