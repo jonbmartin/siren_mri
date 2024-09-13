@@ -617,7 +617,7 @@ class FastMRIBrainKspace(Dataset):
         
         # get slice indices from mod of index
         # TODO: THIS IS BAD AND IS GOING TO BIAS RESULTS
-        if idx%self._nframes > np.shape(data)[0]:
+        if idx%self._nframes >= np.shape(data)[0]:
             slice_idx = 0
         else:
             slice_idx = idx%self._nframes
