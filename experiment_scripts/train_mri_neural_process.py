@@ -73,6 +73,17 @@ generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
 dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size,
                          pin_memory=False, num_workers=0,)
 
+# VAL DATASET
+img_dataset_val = dataio.FastMRIBrainKspace(split='val', downsampled=True, image_resolution=image_resolution)
+coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
+generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
+                                                           train_sparsity_range=opt.train_sparsity_range,
+                                                           test_sparsity= 'CS_cartesian',
+                                                           generalization_mode=gmode,
+                                                           device=device)
+dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=opt.batch_size,
+                         pin_memory=False, num_workers=0,)
+
 if opt.conv_encoder:
     if use_fourier_features:
         model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
@@ -115,7 +126,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapp
 fourier_transformer.save_B('current_B.pt')
 
 
-training.train(model=model, train_dataloader=dataloader, epochs=opt.num_epochs, lr=lr,
-            steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
+training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
+            lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
             model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
             fourier_feat_transformer=fourier_transformer, device=device)
