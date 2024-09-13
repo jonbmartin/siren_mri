@@ -100,6 +100,7 @@ model.cuda(device)
 # Define the loss
 kl_weight = 0 # Not assuming anything about the weights of the latent 
 fw_weight = 2.7e-8
+lr = 1e-5 # reduced from default of 5e-5
 
 loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
 #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, kl_weight, fw_weight)
@@ -114,7 +115,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapp
 fourier_transformer.save_B('current_B.pt')
 
 
-training.train(model=model, train_dataloader=dataloader, epochs=opt.num_epochs, lr=opt.lr,
+training.train(model=model, train_dataloader=dataloader, epochs=opt.num_epochs, lr=lr,
             steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
             model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
             fourier_feat_transformer=fourier_transformer, device=device)
