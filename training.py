@@ -121,7 +121,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                         with torch.no_grad():
                             val_losses = []
                             for (model_input, gt) in val_dataloader:
-                                
+
                                 if fourier_feat_transformer is None:
                                     pass
                                 else:
@@ -129,7 +129,9 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
 
                                 model_output = model(model_input)
                                 val_loss = loss_fn(model_output, gt)
-                                val_losses.append(val_loss)
+                                for loss_name, loss in losses.items():
+                                    single_loss = loss.mean()
+                                val_losses.append(single_loss)
 
                             writer.add_scalar("val_loss", np.mean(val_losses), total_steps)
                         model.train()
