@@ -74,7 +74,7 @@ dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.bat
                          pin_memory=False, num_workers=0,)
 
 # VAL DATASET
-img_dataset_val = dataio.FastMRIBrainKspace(split='val', downsampled=True, image_resolution=image_resolution)
+img_dataset_val = dataio.FastMRIBrainKspace(split='test', downsampled=True, image_resolution=image_resolution)
 coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
 generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
                                                            train_sparsity_range=opt.train_sparsity_range,
