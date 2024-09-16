@@ -158,7 +158,16 @@ sparsities = ['CS_cartesian']
 #num_img_in_sparsity = 5
 for sparsity in sparsities:
     generalization_dataset_test.update_test_sparsity(sparsity)
-    dataloader = DataLoader(generalization_dataset_test, shuffle=False, batch_size=5, pin_memory=False, num_workers=0)
+    dataloader = DataLoader(generalization_dataset_test, shuffle=False, batch_size=1, pin_memory=False, num_workers=0)
     MSE = getTestMSE(dataloader, 'test_' + str(sparsity) + '_pixels')
     np.save(os.path.join(root_path, 'MSE_' + str(sparsity) + '_context.npy'), MSE)
     print(np.mean(MSE))
+
+additional_trials = 4
+for sparsity in sparsities:
+    for ii in range(additional_trials):
+        generalization_dataset_test.update_test_sparsity(sparsity)
+        dataloader = DataLoader(generalization_dataset_test, shuffle=True, batch_size=1, pin_memory=False, num_workers=0)
+        MSE = getTestMSE(dataloader, 'test_' + str(sparsity) + '_pixels_'+str(ii+1))
+        #np.save(os.path.join(root_path, 'MSE_' + str(sparsity) + '_context.npy'), MSE)
+        print(np.mean(MSE))
