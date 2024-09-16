@@ -201,7 +201,6 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
 
         model_output = self.hypo_net(model_input, params=hypo_params)
 
-        # TODO: input data consistency here!!! 
         model_output['model_out'] = self.dc(model_output['model_out'], 
                                             model_input['img_sparse'], 
                                             model_input['dc_mask'])
