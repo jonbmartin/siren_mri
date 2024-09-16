@@ -5,6 +5,7 @@ import torch
 from torch import nn
 from collections import OrderedDict
 import modules
+import numpy as np
 
 
 class HyperNetwork(nn.Module):
@@ -197,6 +198,12 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         hypo_params = self.hyper_net(embedding)
 
         model_output = self.hypo_net(model_input, params=hypo_params)
+
+        # TODO: input data consistency here!!! 
+                # TODO: Add data consistency here 
+        print('Model input = ')
+        for key, value in model_input.items() :
+            print (key, value)
 
         return {'model_in': model_output['model_in'], 'model_out': model_output['model_out'], 'latent_vec': embedding,
                 'hypo_params': hypo_params}
