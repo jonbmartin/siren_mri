@@ -38,6 +38,8 @@ class DataConsistencyInKspace(nn.Module):
         batchsize = np.shape(k0)[0]
 
         # reshape to size (batchsize, nspatial, dim), match prediction
+        k0 = torch.permute(k0, (0, 2, 3, 1))
+        mask = torch.permute(mask, (0, 2, 3, 1))
         k0 = k0.view(batchsize,-1, 2)
         mask = mask.view(batchsize,-1, 2)
 
