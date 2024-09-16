@@ -58,7 +58,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                     model_input = {key: value.double() for key, value in model_input.items()}
                     gt = {key: value.double() for key, value in gt.items()}
 
-                # TODO: Apply fourier feature transformation here 
+                # TODO: should also apply encoding to GT coords????? Not sure.
                 if fourier_feat_transformer is None:
                     pass
                 else:
@@ -77,6 +77,8 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                     optim.step(closure)
 
                 model_output = model(model_input)
+                print('Model output shape = ')
+                print(np.shape(model_output))
                 losses = loss_fn(model_output, gt)
 
                 train_loss = 0.

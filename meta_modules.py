@@ -179,8 +179,6 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         if partial_conv:
             self.encoder = modules.PartialConvImgEncoder(channel=2, image_resolution=image_resolution)
         else:
-            # NOTE: our SIREN will use Fourier feat as input, BUT our encoder will use x,y image! 
-            # This may not be optimal! But simple for now...
             self.encoder = modules.ConvImgEncoder(channel=2, image_resolution=image_resolution)
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
                                              in_features=fourier_features_size, hidden_features=256,num_hidden_layers=5) # JBM USED TO BE 3 layer, 128 input

@@ -157,6 +157,10 @@ class SingleBVPNet(MetaModule):
             coords = self.positional_encoding(coords)
 
         output = self.net(coords, get_subdict(params, 'net'))
+
+        # TODO: Add data consistency here 
+
+        
         return {'model_in': coords_org, 'model_out': output}
 
     def forward_with_activations(self, model_input):
