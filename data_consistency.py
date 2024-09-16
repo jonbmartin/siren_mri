@@ -29,7 +29,7 @@ class DataConsistencyInKspace(nn.Module):
         super(DataConsistencyInKspace, self).__init__()
         self.noise_lvl = noise_lvl
 
-    def perform(self, prediction, k0, mask):
+    def forward(self, prediction, k0, mask):
         """
         prediction - input in kspace domain, of shape (batchsize, nspatial, dim)
         k0   - initially sampled elements in k-space (batchsize, dim, nx, ny)
