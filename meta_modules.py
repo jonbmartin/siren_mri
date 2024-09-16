@@ -204,6 +204,10 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         print('Model input = ')
         for key, value in model_input.items() :
             print (key, np.shape(value))
+        
+        print('Test flattening size of img_sparse:')
+        batchsize = np.shape(model_input['img_sparse'])[0]
+        print(np.shape(model_input['img_sparse'].view(batchsize,-1, -1, 2)))
 
         print('Model output = ')
         for key, value in model_output.items() :
