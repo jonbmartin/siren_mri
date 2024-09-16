@@ -203,7 +203,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
                 # TODO: Add data consistency here 
         print('Model input = ')
         for key, value in model_input.items() :
-            print (key)
+            print (key, np.shape(value))
 
         return {'model_in': model_output['model_in'], 'model_out': model_output['model_out'], 'latent_vec': embedding,
                 'hypo_params': hypo_params}
