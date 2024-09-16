@@ -78,7 +78,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
 
                 model_output = model(model_input)
                 print('Model output shape = ')
-                print(np.shape(model_output))
+                print(np.shape(model_output['model_out']))
                 losses = loss_fn(model_output, gt)
 
                 train_loss = 0.
