@@ -41,6 +41,11 @@ class DataConsistencyInKspace(nn.Module):
         k0 = k0.view(batchsize,-1, 2)
         mask = mask.view(batchsize,-1, 2)
 
+        print('DC input sizes')
+        print(np.shape(prediction))
+        print(np.shape(k0))
+        print(np.shape(mask))
+
         out = data_consistency(prediction, k0, mask, self.noise_lvl)
 
         return out
