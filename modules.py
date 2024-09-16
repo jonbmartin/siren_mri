@@ -159,8 +159,10 @@ class SingleBVPNet(MetaModule):
         output = self.net(coords, get_subdict(params, 'net'))
 
         # TODO: Add data consistency here 
+        print('Model output shape = ')
+        print(np.shape(output))
 
-        
+
         return {'model_in': coords_org, 'model_out': output}
 
     def forward_with_activations(self, model_input):
