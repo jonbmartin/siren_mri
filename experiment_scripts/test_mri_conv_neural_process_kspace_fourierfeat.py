@@ -112,7 +112,7 @@ model.load_state_dict(torch.load(opt.checkpoint_path))
 
 # Fourth experiment: Fit test images
 
-def getTestMSE(dataloader, subdir):
+def getTestMSE(dataloader, subdir, trial_num=0):
     MSEs = []
     total_steps = 0
     utils.cond_mkdir(os.path.join(root_path, subdir))
@@ -139,7 +139,7 @@ def getTestMSE(dataloader, subdir):
             mask = np.sum((sparse_img == 0), axis=2) == 3
             sparse_img[mask, ...] = 1.
 
-            sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
+            sio.savemat(os.path.join(root_path, f'ground_truth_img_{sparsity}_{trial_num}.mat'),{'gt_img':gt_img, 'pred_img':out_img, 'sparse_img':sparse_img})
 
             MSE = np.mean((out_img - gt_img) ** 2)
             MSEs.append(MSE)
@@ -159,7 +159,7 @@ sparsities = ['CS_cartesian']
 for sparsity in sparsities:
     generalization_dataset_test.update_test_sparsity(sparsity)
     dataloader = DataLoader(generalization_dataset_test, shuffle=False, batch_size=1, pin_memory=False, num_workers=0)
-    MSE = getTestMSE(dataloader, 'test_' + str(sparsity) + '_pixels')
+    MSE = getTestMSE(dataloader, 'test_' + str(sparsity) + '_pixels', trial_num=0)
     np.save(os.path.join(root_path, 'MSE_' + str(sparsity) + '_context.npy'), MSE)
     print(np.mean(MSE))
 
@@ -168,6 +168,6 @@ for sparsity in sparsities:
     for ii in range(additional_trials):
         generalization_dataset_test.update_test_sparsity(sparsity)
         dataloader = DataLoader(generalization_dataset_test, shuffle=True, batch_size=1, pin_memory=False, num_workers=0)
-        MSE = getTestMSE(dataloader, 'test_' + str(sparsity) + '_pixels_'+str(ii+1))
+        MSE = getTestMSE(dataloader, 'test_' + str(sparsity) + '_pixels', trial_num=ii)
         #np.save(os.path.join(root_path, 'MSE_' + str(sparsity) + '_context.npy'), MSE)
         print(np.mean(MSE))
