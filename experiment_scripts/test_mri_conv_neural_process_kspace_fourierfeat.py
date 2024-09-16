@@ -124,6 +124,9 @@ def getTestMSE(dataloader, subdir):
             model_input = {key: value.cuda() for key, value in model_input.items()}
             gt = {key: value.cuda() for key, value in gt.items()}
             model_input['coords'] = fourier_transformer(model_input['coords'])
+            print('Size of INPUT to model')
+            print(np.shape(model_input['dc_mask']))
+            print(np.shape(model_input['img_sparse']))
 
             with torch.no_grad():
                 model_output = model(model_input)
@@ -132,7 +135,6 @@ def getTestMSE(dataloader, subdir):
             gt_img = dataio.lin2img(gt['img'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
 
 
-            # TODO: Throwing a bug so I commented out
             sparse_img = model_input['img_sparse'].squeeze().detach().cpu().permute(1,2,0).numpy()
             mask = np.sum((sparse_img == 0), axis=2) == 3
             sparse_img[mask, ...] = 1.
