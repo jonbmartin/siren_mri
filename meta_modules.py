@@ -6,7 +6,7 @@ from torch import nn
 from collections import OrderedDict
 import modules
 import numpy as np
-
+import data_consistency
 
 class HyperNetwork(nn.Module):
     def __init__(self, hyper_in_features, hyper_hidden_layers, hyper_hidden_features, hypo_module):
@@ -177,6 +177,8 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         super().__init__()
         latent_dim = 256
 
+        self.dc = data_consistency.DataConsistencyInKspace(noise_lvl=None)
+
         if partial_conv:
             self.encoder = modules.PartialConvImgEncoder(channel=2, image_resolution=image_resolution)
         else:
@@ -200,18 +202,10 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         model_output = self.hypo_net(model_input, params=hypo_params)
 
         # TODO: input data consistency here!!! 
-                # TODO: Add data consistency here 
-        print('Model input = ')
-        for key, value in model_input.items() :
-            print (key, np.shape(value))
-        
-        print('Test flattening size of img_sparse:')
-        batchsize = np.shape(model_input['img_sparse'])[0]
-        print(np.shape(model_input['img_sparse'].view(batchsize,-1, 2)))
+        model_output['model_out'] = self.dc(model_output['model_out'], 
+                                            model_input['img_sparse'], 
+                                            model_input['dc_mask'])
 
-        print('Model output = ')
-        for key, value in model_output.items() :
-            print (key, np.shape(value))
 
         return {'model_in': model_output['model_in'], 'model_out': model_output['model_out'], 'latent_vec': embedding,
                 'hypo_params': hypo_params}
