@@ -157,6 +157,7 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
 
     # DDP setup
     print(f"Running DDP training on rank {rank}")
+    setup(rank=rank, world_size=1)
     model = model.to(rank)
     model = DDP(model, device_ids=[rank])
 
