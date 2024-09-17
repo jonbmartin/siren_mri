@@ -307,8 +307,8 @@ class LinearDecaySchedule():
 
 def setup(rank, world_size):
     # to set up DDP communication
-    os.environ['MASTER_ADDR'] = 'localhost'
-    os.environ['MASTER_PORT'] = '12355'
+    os.environ['MASTER_ADDR'] = 'iis-cn1-aa57.vuiis.org'
+    os.environ['MASTER_PORT'] = '22'
 
     # initialize the process group
     dist.init_process_group("gloo", rank=rank, world_size=world_size)
