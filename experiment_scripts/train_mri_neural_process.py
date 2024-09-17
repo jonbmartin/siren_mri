@@ -126,7 +126,12 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapp
 fourier_transformer.save_B('current_B.pt')
 
 dataloader_val = None
-training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
-            lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
-            model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-            fourier_feat_transformer=fourier_transformer, device=device)
+# training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
+#             lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
+#             model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
+#             fourier_feat_transformer=fourier_transformer, device=device)
+
+training.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
+             lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
+             model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
+             fourier_feat_transformer=fourier_transformer, rank=1)
