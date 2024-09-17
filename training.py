@@ -160,6 +160,7 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
     setup(rank=rank, world_size=1)
     model = model.to(rank)
     model = DDP(model, device_ids=[rank])
+    print(f"DDP setup. Beginning training")
 
     optim = torch.optim.Adam(lr=lr, params=model.parameters())
 
