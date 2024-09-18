@@ -503,7 +503,7 @@ class ImageFile(Dataset):
 class MRIImageDomain(Dataset):
     def __init__(self, split, downsampled=False):
         # SIZE (128 x 128)
-        assert split in ['train', 'test', 'val'], "Unknown split"
+        assert split in ['train', 'test', 'val', 'val_small'], "Unknown split"
 
         self.img_channels = 1
         self.fnames = []
@@ -523,7 +523,7 @@ class MRIImageDomain(Dataset):
 class FastMRIBrain(Dataset):
     def __init__(self, split, downsampled=False, image_resolution=(64, 64)):
         # SIZE (128 x 128)
-        assert split in ['train', 'test', 'val'], "Unknown split"
+        assert split in ['train', 'test', 'val', 'val_small'], "Unknown split"
 
         self.root = '../../fastMRIdata/'
         self.img_channels = 1
@@ -536,6 +536,8 @@ class FastMRIBrain(Dataset):
             self.dir = 'multicoil_test_recon/'
         elif split =='val':
             self.dir = 'multicoil_val_recon/'
+        elif split =='val_small':
+            self.dir = 'multicoil_val_recon_small/'
 
         self.root = self.root + self.dir
         self.fnames = os.listdir(self.root)
