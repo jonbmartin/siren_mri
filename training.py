@@ -140,7 +140,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                                     single_loss = loss.mean()
                                 val_losses.append(single_loss)
 
-                            writer.add_scalar("val_loss", torch.mean(val_losses), total_steps)
+                            writer.add_scalar("val_loss", torch.mean(torch.stack(val_losses)), total_steps)
                         model.train()
 
                 total_steps += 1
