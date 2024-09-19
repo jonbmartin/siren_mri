@@ -71,7 +71,7 @@ def objective(trial):
                                                             fourier_features_size=2*num_fourier_features,
                                                             latent_dim=latent_dim,
                                                             hidden_features=hidden_features,
-                                                            hidden_features_hyper=hidden_features_hyper,
+                                                            hyper_hidden_features=hidden_features_hyper,
                                                             hyper_hidden_layers=hidden_layers_hyper,
                                                             num_hidden_layers=hidden_layers,
                                                             device=device)
