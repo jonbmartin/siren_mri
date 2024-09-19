@@ -137,13 +137,12 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                                 model_output = model(model_input)
                                 val_loss = loss_fn(model_output, gt)
                                 for loss_name, loss in losses.items():
-                                    print(loss_name)
-                                    single_loss = loss.mean()
+                                    single_loss = val_loss['img_loss']
                                 val_losses.append(single_loss)
 
                             mean_val_loss = torch.mean(torch.stack(val_losses))
                             writer.add_scalar("val_loss", mean_val_loss, total_steps)
-                        tqdm.write(f"val loss: {mean_val_loss}")
+                        tqdm.write(f"val loss (img_loss_only): {mean_val_loss}")
 
                         model.train()
 
