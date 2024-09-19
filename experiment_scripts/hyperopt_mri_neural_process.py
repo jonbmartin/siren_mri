@@ -18,14 +18,14 @@ import optuna
 def objective(trial):
 
     # fixed parameters
-    n_trials = 3
-    batch_size = 32
+    n_trials = 2
+    batch_size = 64
     device = torch.device('cuda:4')  # or whatever device/cpu you like
     image_resolution = (64, 64)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
     experiment_name = 'hyperopt'
-    num_epochs = 20
+    num_epochs = 3
     steps_til_summary = 100
     gmode = 'conv_cnp'
 
@@ -112,7 +112,7 @@ def objective(trial):
 if __name__ == "__main__":
     study = optuna.create_study(
         storage = "sqlite:///db.sqlite3",
-        study_name = 'hyperopt_siren',
+        study_name = 'hyperopt_siren_short',
         direction='minimize')
     
     study.optimize(objective, n_trials=300)
