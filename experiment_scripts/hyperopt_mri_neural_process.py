@@ -23,7 +23,7 @@ p.add_argument('--experiment_name', type=str, required=True,
 # General training options
 p.add_argument('--batch_size', type=int, default=32)
 p.add_argument('--lr', type=float, default=5e-5, help='learning rate. default=5e-5')
-p.add_argument('--num_epochs', type=int, default=25,
+p.add_argument('--num_epochs', type=int, default=401,
                help='Number of epochs to train for.')
 p.add_argument('--kl_weight', type=float, default=1e-1,
                help='Weight for l2 loss term on code vectors z (lambda_latent in paper).')
@@ -89,7 +89,6 @@ model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures
                                                         image_resolution=image_resolution,
                                                         fourier_features_size=2*num_fourier_features,
                                                         device=device)
-
 model.cuda(device)
 
 # Define the loss
@@ -109,10 +108,15 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapp
 # Record the fourier feature transform matrix
 fourier_transformer.save_B('current_B.pt')
 
-trial_val = training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
-            lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
-            model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-            fourier_feat_transformer=fourier_transformer, device=device)
+try:
+
+    trial_val = training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
+                lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
+                model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
+                fourier_feat_transformer=fourier_transformer, device=device)
+except:
+    print('Exception raised. Error in training with these parameters')
+    trial_val = 1e6
 
 print(f'OUTPUT TRIAL_VAL = {trial_val}')
 
