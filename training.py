@@ -280,6 +280,7 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
                                 model_output = model(model_input)
                                 val_loss = loss_fn(model_output, gt)
                                 for loss_name, loss in losses.items():
+                                    print(loss_name)
                                     single_loss = loss.mean()
                                 val_losses.append(single_loss)
 
