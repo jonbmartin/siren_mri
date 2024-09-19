@@ -153,6 +153,9 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
         np.savetxt(os.path.join(checkpoints_dir, 'train_losses_final.txt'),
                    np.array(train_losses))
         
+        final_val = mean_val_loss
+        return final_val
+        
 
 def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_checkpoint, model_dir, loss_fn,
           summary_fn, val_dataloader=None, double_precision=False, clip_grad=False, use_lbfgs=False, loss_schedules=None,

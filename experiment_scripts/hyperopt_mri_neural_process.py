@@ -74,37 +74,21 @@ dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.bat
                          pin_memory=False, num_workers=0,)
 
 # VAL DATASET
-#img_dataset_val = dataio.FastMRIBrainKspace(split='test', downsampled=True, image_resolution=image_resolution)
-#coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
-#generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
-#                                                           train_sparsity_range=opt.train_sparsity_range,
-#                                                           test_sparsity= 'CS_cartesian',
-#                                                           generalization_mode=gmode,
-#                                                           device=device)
-#dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=opt.batch_size,
-#                         pin_memory=False, num_workers=0,)
+img_dataset_val = dataio.FastMRIBrainKspace(split='val_small', downsampled=True, image_resolution=image_resolution)
+coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
+generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
+                                                           train_sparsity_range=opt.train_sparsity_range,
+                                                           test_sparsity= 'CS_cartesian',
+                                                           generalization_mode=gmode,
+                                                           device=device)
+dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=opt.batch_size,
+                         pin_memory=False, num_workers=0,)
 
-if opt.conv_encoder:
-    if use_fourier_features:
-        model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
-                                                                out_features=img_dataset.img_channels,
-                                                                image_resolution=image_resolution,
-                                                                fourier_features_size=2*num_fourier_features,
-                                                                device=device)
-    else:
-        model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
-                                                                        out_features=img_dataset.img_channels,
-                                                                        image_resolution=image_resolution)
-else:
-    if use_fourier_features:
-        # TODO: this does not work yet
-        model = meta_modules.NeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
-                                                    out_features=img_dataset.img_channels,
-                                                    image_resolution=image_resolution)
-    else:
-        model = meta_modules.NeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels + 2,
-                                                            out_features=img_dataset.img_channels,
-                                                            image_resolution=image_resolution)
+model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
+                                                        out_features=img_dataset.img_channels,
+                                                        image_resolution=image_resolution,
+                                                        fourier_features_size=2*num_fourier_features,
+                                                        device=device)
 
 model.cuda(device)
 
@@ -125,11 +109,12 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapp
 # Record the fourier feature transform matrix
 fourier_transformer.save_B('current_B.pt')
 
-dataloader_val = None
-training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
+trial_val = training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
             lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
             model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
             fourier_feat_transformer=fourier_transformer, device=device)
+
+print(f'OUTPUT TRIAL_VAL = {trial_val}')
 
 # training.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
 #              lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
