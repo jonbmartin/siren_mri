@@ -142,7 +142,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
 
                             mean_val_loss = torch.mean(torch.stack(val_losses))
                             writer.add_scalar("val_loss", mean_val_loss, total_steps)
-                        tqdm.write("val loss: %0.6f" % (mean_val_loss))
+                        tqdm.write(f"val loss: {mean_val_loss}")
 
                         model.train()
 
