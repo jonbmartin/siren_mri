@@ -20,7 +20,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 
 def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_checkpoint, model_dir, loss_fn,
           summary_fn, val_dataloader=None, double_precision=False, clip_grad=False, use_lbfgs=False, loss_schedules=None,
-          fourier_feat_transformer=None, device='cuda:0'):
+          fourier_feat_transformer=None, device='cuda:0', hyperopt_run=False):
 
     optim = torch.optim.Adam(lr=lr, params=model.parameters())
 
@@ -31,7 +31,10 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                                   history_size=50, line_search_fn='strong_wolfe')
 
     if os.path.exists(model_dir):
-        val = input("The model directory %s exists. Overwrite? (y/n)"%model_dir)
+        if hyperopt_run:
+            val = 'y' # automatically overwrite, don't want to save
+        else:
+            val = input("The model directory %s exists. Overwrite? (y/n)"%model_dir)
         if val == 'y':
             shutil.rmtree(model_dir)
 
