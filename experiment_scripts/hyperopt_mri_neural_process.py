@@ -96,7 +96,7 @@ def objective(trial):
             trial_val = training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
                         lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=num_epochs-1,
                         model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-                        fourier_feat_transformer=fourier_transformer, device=device)
+                        fourier_feat_transformer=fourier_transformer, device=device, hyperopt_run=True)
             trial_val_all += trial_val
         trial_val_all /= n_trials
     except:
