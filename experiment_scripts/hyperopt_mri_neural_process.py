@@ -112,7 +112,7 @@ def objective(trial):
 if __name__ == "__main__":
     study = optuna.create_study(
         storage = "sqlite:///db.sqlite3",
-        study_name = 'hyperopt_test_siren_network_new2',
+        study_name = 'hyperopt_siren',
         direction='minimize')
     
     study.optimize(objective, n_trials=300)
