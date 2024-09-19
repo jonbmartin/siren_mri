@@ -173,9 +173,10 @@ class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
 
 
 class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
-    def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, fourier_features_size=512, device='cuda:0'):
+    def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, 
+                 fourier_features_size=512, latent_dim=256, hidden_features=256, 
+                 num_hidden_layers=5, hyper_hidden_features=512, hyper_hidden_layers=1, device='cuda:0'):
         super().__init__()
-        latent_dim = 256
 
         self.dc = data_consistency.DataConsistencyInKspace(noise_lvl=None)
 
@@ -184,8 +185,8 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         else:
             self.encoder = modules.ConvImgEncoder(channel=2, image_resolution=image_resolution)
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
-                                             in_features=fourier_features_size, hidden_features=256,num_hidden_layers=2) # JBM USED TO BE 3 layer, 128 input. good perf with 5
-        self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=1, hyper_hidden_features=512, # JBM used to be 256 hyperhidden
+                                             in_features=fourier_features_size, hidden_features=hidden_features,num_hidden_layers=num_hidden_layers) # JBM USED TO BE 3 layer, 128 input. good perf with 5
+        self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=hyper_hidden_layers, hyper_hidden_features=hyper_hidden_features, # JBM used to be 256 hyperhidden
                                       hypo_module=self.hypo_net)
             # JBM hyper was 1 layer, 256
 

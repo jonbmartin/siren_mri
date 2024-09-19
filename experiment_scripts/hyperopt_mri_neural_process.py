@@ -11,116 +11,108 @@ import configargparse
 from functools import partial
 from features import GaussianFourierFeatureTransform
 
+import optuna
 
 
-p = configargparse.ArgumentParser()
-p.add('-c', '--config_filepath', required=False, is_config_file=True, help='Path to config file.')
 
-p.add_argument('--logging_root', type=str, default='./logs', help='root for logging')
-p.add_argument('--experiment_name', type=str, required=True,
-               help='Name of subdirectory in logging_root where summaries and checkpoints will be saved.')
+def objective(trial):
 
-# General training options
-p.add_argument('--batch_size', type=int, default=32)
-p.add_argument('--lr', type=float, default=5e-5, help='learning rate. default=5e-5')
-p.add_argument('--num_epochs', type=int, default=401,
-               help='Number of epochs to train for.')
-p.add_argument('--kl_weight', type=float, default=1e-1,
-               help='Weight for l2 loss term on code vectors z (lambda_latent in paper).')
-p.add_argument('--fw_weight', type=float, default=1e2,
-               help='Weight for the l2 loss term on the weights of the sine network')
-p.add_argument('--train_sparsity_range', type=int, nargs='+', default=[2000, 4000],
-               help='Two integers: lowest number of sparse pixels sampled followed by highest number of sparse'
-                    'pixels sampled when training the conditional neural process')
+    # fixed parameters
+    n_trials = 3
+    batch_size = 32
+    device = torch.device('cuda:4')  # or whatever device/cpu you like
+    image_resolution = (64, 64)
+    train_sparsity_range = [2000, 4000] # this gets overwritten
+    logging_root = './logs'
+    experiment_name = 'hyperopt'
+    num_epochs = 20
+    steps_til_summary = 100
+    gmode = 'conv_cnp'
 
-p.add_argument('--epochs_til_ckpt', type=int, default=10,
-               help='Time interval in seconds until checkpoint is saved.')
-p.add_argument('--steps_til_summary', type=int, default=50,
-               help='Time interval in seconds until tensorboard summary is saved.')
+    # hyperopt parameters
+    num_fourier_features = trial.suggest_categorical('num_fourier_features', [16, 32, 64, 128, 256])
+    latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024])
+    hidden_features = trial.suggest_categorical('hidden_features', [32, 64, 128, 256, 512])
+    hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512])
+    hidden_layers = trial.suggest_int('hidden_layers', 1,8)
+    hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,5)
+    lr = trial.suggest_float('lr', 1e-7, 1e-2, log=True)
+    kl_weight = trial.suggest_float('kl_weight', 1e-12, 1e-4, log=True)
+    fw_weight = trial.suggest_float('fw_weight', 1e-12, 1e-4, log=True)
+    fourier_feat_scale = trial.suggest_float('fw_weight', 2, 40, log=False)
 
-p.add_argument('--dataset', type=str, default='mri_image',
-               help='Time interval in seconds until tensorboard summary is saved.')
-p.add_argument('--model_type', type=str, default='sine',
-               help='Nonlinearity for the hypo-network module')
+    
+    img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
+    coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False)
 
-p.add_argument('--checkpoint_path', default=None, help='Checkpoint to trained model.')
+    generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
+                                                            train_sparsity_range=train_sparsity_range,
+                                                            test_sparsity= 'CS_cartesian',
+                                                            generalization_mode=gmode,
+                                                            device=device)
 
-p.add_argument('--conv_encoder', action='store_true', default=False, help='Use convolutional encoder process')
-opt = p.parse_args()
+    dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=batch_size,
+                            pin_memory=False, num_workers=0,)
 
-# JBM OVERRIDE TO A CONV_CNP
-opt.conv_encoder = True
-assert opt.dataset == 'mri_image'
-if opt.conv_encoder: gmode = 'conv_cnp'
-else: gmode = 'cnp'
+    # VAL DATASET
+    img_dataset_val = dataio.FastMRIBrainKspace(split='val_small', downsampled=True, image_resolution=image_resolution)
+    coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
+    generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
+                                                            train_sparsity_range=train_sparsity_range,
+                                                            test_sparsity= 'CS_cartesian',
+                                                            generalization_mode=gmode,
+                                                            device=device)
+    dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=batch_size,
+                            pin_memory=False, num_workers=0,)
 
-image_resolution = (64, 64)
-num_fourier_features = 30
-use_fourier_features = True
-img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
-#img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
-#img_dataset = dataio.MRIImageDomain(split='train',downsample=True)
-coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False)
+    model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
+                                                            out_features=img_dataset.img_channels,
+                                                            image_resolution=image_resolution,
+                                                            fourier_features_size=2*num_fourier_features,
+                                                            latent_dim=latent_dim,
+                                                            hidden_features=hidden_features,
+                                                            hidden_features_hyper=hidden_features_hyper,
+                                                            hyper_hidden_layers=hidden_layers_hyper,
+                                                            num_hidden_layers=hidden_layers,
+                                                            device=device)
+    model.cuda(device)
 
-# TODO: right now, test_sparsity= ... overwrites train sparsity for training. using this to get CS
-device = torch.device('cuda:4')  # or whatever device/cpu you like
-generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
-                                                           train_sparsity_range=opt.train_sparsity_range,
-                                                           test_sparsity= 'CS_cartesian',
-                                                           generalization_mode=gmode,
-                                                           device=device)
+    loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
+    #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, kl_weight, fw_weight)
+    summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
-dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=opt.batch_size,
-                         pin_memory=False, num_workers=0,)
+    root_path = os.path.join(logging_root, experiment_name)
 
-# VAL DATASET
-img_dataset_val = dataio.FastMRIBrainKspace(split='val_small', downsampled=True, image_resolution=image_resolution)
-coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
-generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
-                                                           train_sparsity_range=opt.train_sparsity_range,
-                                                           test_sparsity= 'CS_cartesian',
-                                                           generalization_mode=gmode,
-                                                           device=device)
-dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=opt.batch_size,
-                         pin_memory=False, num_workers=0,)
+    fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
+                                                        scale=fourier_feat_scale, device=device)
 
-model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
-                                                        out_features=img_dataset.img_channels,
-                                                        image_resolution=image_resolution,
-                                                        fourier_features_size=2*num_fourier_features,
-                                                        device=device)
-model.cuda(device)
+    # Record the fourier feature transform matrix
+    fourier_transformer.save_B('current_B.pt')
 
-# Define the loss
-kl_weight = 0 # Not assuming anything about the weights of the latent 
-fw_weight = 2.7e-8
-lr = 1e-5 # reduced from default of 5e-5
+    trial_val_all = 0
+    try:
+        for ii in range(n_trials):
+            trial_val = training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
+                        lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=num_epochs-1,
+                        model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
+                        fourier_feat_transformer=fourier_transformer, device=device)
+            trial_val_all += trial_val
+        trial_val_all /= n_trials
+    except:
+        print('Exception raised. Error in training with these parameters')
+        trial_val_all = 1e6
 
-loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
-#loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, kl_weight, fw_weight)
-summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
+    print(f'OUTPUT TRIAL_VAL = {trial_val_all}')
 
-root_path = os.path.join(opt.logging_root, opt.experiment_name)
+    return trial_val_all
 
-fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
-                                                      scale=24, device=device)
 
-# Record the fourier feature transform matrix
-fourier_transformer.save_B('current_B.pt')
 
-try:
-
-    trial_val = training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
-                lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
-                model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-                fourier_feat_transformer=fourier_transformer, device=device)
-except:
-    print('Exception raised. Error in training with these parameters')
-    trial_val = 1e6
-
-print(f'OUTPUT TRIAL_VAL = {trial_val}')
-
-# training.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
-#              lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
-#              model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-#              fourier_feat_transformer=fourier_transformer, rank=3)
+if __name__ == "__main__":
+    study = optuna.create_study(
+        storage = "sqlite:///db.sqlite3",
+        study_name = 'hyperopt_test_siren_network',
+        direction='minimize')
+    
+    study.optimize(objective, n_trials=300)
+    print(f"Best value: {study.best_value} (params: {study.best_params})")
