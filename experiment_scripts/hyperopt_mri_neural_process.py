@@ -39,7 +39,7 @@ def objective(trial):
     lr = trial.suggest_float('lr', 1e-7, 1e-2, log=True)
     kl_weight = trial.suggest_float('kl_weight', 1e-12, 1e-4, log=True)
     fw_weight = trial.suggest_float('fw_weight', 1e-12, 1e-4, log=True)
-    fourier_feat_scale = trial.suggest_float('fw_weight', 2, 40, log=False)
+    fourier_feat_scale = trial.suggest_float('fourier_scale', 2, 40, log=False)
 
     
     img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
