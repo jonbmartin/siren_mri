@@ -92,6 +92,7 @@ def objective(trial):
     trial_val_all = 0
     try:
         for ii in range(n_trials):
+            print(f'Parameter Hyperopt trial #: {ii}')
             trial_val = training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
                         lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=num_epochs-1,
                         model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
@@ -111,7 +112,7 @@ def objective(trial):
 if __name__ == "__main__":
     study = optuna.create_study(
         storage = "sqlite:///db.sqlite3",
-        study_name = 'hyperopt_test_siren_network_new',
+        study_name = 'hyperopt_test_siren_network_new2',
         direction='minimize')
     
     study.optimize(objective, n_trials=300)
