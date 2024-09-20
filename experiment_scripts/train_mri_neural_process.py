@@ -55,7 +55,7 @@ if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
 
 # CONFIG. TODO: transition to config.yml
-config = 'hand_tuned_manual'
+config = 'hyperopt'
 if config=='default_manual':
     num_fourier_features = 30
     kl_weight = 0 # Not assuming anything about the weights of the latent 
