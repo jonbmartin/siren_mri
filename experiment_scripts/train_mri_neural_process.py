@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 import configargparse
 from functools import partial
 from features import GaussianFourierFeatureTransform
-
+import torch.nn as nn
 
 
 p = configargparse.ArgumentParser()
@@ -135,7 +135,10 @@ else:
                                                             out_features=img_dataset.img_channels,
                                                             image_resolution=image_resolution)
 
-model.cuda(device)
+#model.cuda(device)
+# trying data parallel
+model = nn.DataParallel(model, device_ids=[1, 3, 4,5])
+model.to(device)
 
 # Define the loss
 loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
