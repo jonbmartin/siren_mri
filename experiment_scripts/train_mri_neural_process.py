@@ -35,7 +35,7 @@ p.add_argument('--train_sparsity_range', type=int, nargs='+', default=[2000, 400
 
 p.add_argument('--epochs_til_ckpt', type=int, default=10,
                help='Time interval in seconds until checkpoint is saved.')
-p.add_argument('--steps_til_summary', type=int, default=1000,
+p.add_argument('--steps_til_summary', type=int, default=100,
                help='Time interval in seconds until tensorboard summary is saved.')
 
 p.add_argument('--dataset', type=str, default='mri_image',
