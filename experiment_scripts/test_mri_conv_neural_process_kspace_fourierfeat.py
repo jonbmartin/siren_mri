@@ -47,6 +47,31 @@ else:
 assert opt.dataset == 'mri_image'
 image_resolution = (64, 64)
 
+# CONFIG. TODO: transition to config.yml
+config = 'hyperopt'
+if config=='default_manual':
+    num_fourier_features = 30
+    kl_weight = 0 # Not assuming anything about the weights of the latent 
+    fw_weight = 2.7e-8
+    lr = 1e-5 # reduced from default of 5e-5
+    fourier_features_scale = 24
+    latent_dim = 256
+    hidden_features_hyper = 512
+    hidden_layers_hyper = 1
+    hidden_layers = 5
+    hidden_features = 256
+elif config =='hyperopt':
+    num_fourier_features = 128
+    kl_weight = 0 
+    fw_weight = 1.85e-7
+    lr = 1.9e-4 
+    fourier_features_scale = 19
+    latent_dim = 256
+    hidden_features_hyper = 512
+    hidden_layers_hyper = 1
+    hidden_layers = 2
+    hidden_features = 64
+
 #img_dataset_test = dataio.CelebA(split='test', downsampled=True)
 img_dataset_test = dataio.FastMRIBrainKspace(split='val', downsampled=True, image_resolution=image_resolution)
 coord_dataset_test = dataio.Implicit2DWrapper(img_dataset_test, sidelength=image_resolution, image=False)
@@ -60,18 +85,22 @@ generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_t
                                                                 generalization_mode='conv_cnp_test')
 
 # Define the model.
-num_fourier_features = 30
 out_channels = 2
 model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
                                                         out_features=out_channels,
                                                         image_resolution=image_resolution,
-                                                        fourier_features_size=2*num_fourier_features)
+                                                        fourier_features_size=2*num_fourier_features,
+                                                        latent_dim=latent_dim,
+                                                        hidden_features=hidden_features,
+                                                        hyper_hidden_features=hidden_features_hyper,
+                                                        hyper_hidden_layers=hidden_layers_hyper,
+                                                        num_hidden_layers=hidden_layers,)
 model.cuda()
 model.eval()
 
 # define the fourier feature tranformer 
 fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
-                                                      mapping_size_spatial=num_fourier_features, scale=15)
+                                                      mapping_size_spatial=num_fourier_features, scale=fourier_features_scale)
 
 # Record the fourier feature transform matrix
 fourier_transformer.load_B('current_B.pt')
