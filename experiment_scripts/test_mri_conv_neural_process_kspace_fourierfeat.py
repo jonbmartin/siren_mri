@@ -72,7 +72,7 @@ elif config =='hyperopt':
     hidden_layers = 2
     hidden_features = 64
 
-device = 'cuda:7'
+device = 'cuda:3'
 
 #img_dataset_test = dataio.CelebA(split='test', downsampled=True)
 img_dataset_test = dataio.FastMRIBrainKspace(split='val', downsampled=True, image_resolution=image_resolution)
