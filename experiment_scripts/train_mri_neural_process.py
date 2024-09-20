@@ -54,8 +54,33 @@ assert opt.dataset == 'mri_image'
 if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
 
+# CONFIG. TODO: transition to config.yml
+config = 'hyperopt'
+
+if config=='default_manual':
+    num_fourier_features = 30
+    kl_weight = 0 # Not assuming anything about the weights of the latent 
+    fw_weight = 2.7e-8
+    lr = 1e-5 # reduced from default of 5e-5
+    fourier_features_scale = 24
+    latent_dim = 256
+    hidden_features_hyper = 512
+    hidden_layers_hyper = 1
+    hidden_layers = 5
+    hidden_features = 256
+elif config =='hyperopt':
+    num_fourier_features = 128
+    kl_weight = 0 
+    fw_weight = 1.85e-7
+    lr = 1.9e-4 
+    fourier_features_scale = 19
+    latent_dim = 256
+    hidden_features_hyper = 512
+    hidden_layers_hyper = 1
+    hidden_layers = 2
+    hidden_features = 64
+
 image_resolution = (64, 64)
-num_fourier_features = 30
 use_fourier_features = True
 img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
@@ -63,7 +88,7 @@ img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_r
 coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False)
 
 # TODO: right now, test_sparsity= ... overwrites train sparsity for training. using this to get CS
-device = torch.device('cuda:4')  # or whatever device/cpu you like
+device = torch.device('cuda:2')  # or whatever device/cpu you like
 generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
                                                            test_sparsity= 'CS_cartesian',
@@ -90,6 +115,11 @@ if opt.conv_encoder:
                                                                 out_features=img_dataset.img_channels,
                                                                 image_resolution=image_resolution,
                                                                 fourier_features_size=2*num_fourier_features,
+                                                                latent_dim=latent_dim,
+                                                                hidden_features=hidden_features,
+                                                                hyper_hidden_features=hidden_features_hyper,
+                                                                hyper_hidden_layers=hidden_layers_hyper,
+                                                                num_hidden_layers=hidden_layers,
                                                                 device=device)
     else:
         model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
@@ -109,10 +139,6 @@ else:
 model.cuda(device)
 
 # Define the loss
-kl_weight = 0 # Not assuming anything about the weights of the latent 
-fw_weight = 2.7e-8
-lr = 1e-5 # reduced from default of 5e-5
-
 loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
 #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, kl_weight, fw_weight)
 summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
@@ -120,7 +146,7 @@ summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 root_path = os.path.join(opt.logging_root, opt.experiment_name)
 
 fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
-                                                      scale=24, device=device)
+                                                      scale=fourier_features_scale, device=device)
 
 # Record the fourier feature transform matrix
 fourier_transformer.save_B('current_B.pt')
