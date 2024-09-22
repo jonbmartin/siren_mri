@@ -141,7 +141,8 @@ if opt.conv_encoder:
                                                                 hyper_hidden_features=hidden_features_hyper,
                                                                 hyper_hidden_layers=hidden_layers_hyper,
                                                                 num_hidden_layers=hidden_layers,
-                                                                device=device)
+                                                                device=device,
+                                                                partial_conv=True)
     else:
         model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
                                                                         out_features=img_dataset.img_channels,
