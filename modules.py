@@ -14,7 +14,10 @@ class BatchLinear(nn.Linear, MetaModule):
     __doc__ = nn.Linear.__doc__
 
     def forward(self, input, params=None):
-        print(params)
+        
+        for key, value in params.items():
+            print(key)
+        
         if params is None:
             params = OrderedDict(self.named_parameters())
 
