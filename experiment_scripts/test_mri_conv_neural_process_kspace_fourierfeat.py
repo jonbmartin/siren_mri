@@ -101,7 +101,7 @@ generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_t
 
 # Define the model.
 out_channels = 2
-model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
+model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=num_fourier_features,
                                                         out_features=out_channels,
                                                         image_resolution=image_resolution,
                                                         fourier_features_size=2*num_fourier_features,
