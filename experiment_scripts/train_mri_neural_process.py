@@ -87,7 +87,7 @@ if config=='hyperoptII':
     latent_dim = 256
     hidden_features_hyper = 512
     hidden_layers_hyper = 2
-    hidden_layers = 1
+    hidden_layers = 3
     hidden_features = 512
 elif config =='hyperopt':
     num_fourier_features = 128
