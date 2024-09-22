@@ -74,7 +74,8 @@ def objective(trial):
                                                             hyper_hidden_features=hidden_features_hyper,
                                                             hyper_hidden_layers=hidden_layers_hyper,
                                                             num_hidden_layers=hidden_layers,
-                                                            device=device)
+                                                            device=device,
+                                                            partial_conv=True)
     model.cuda(device)
 
     loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
@@ -87,7 +88,7 @@ def objective(trial):
                                                         scale=fourier_feat_scale, device=device)
 
     # Record the fourier feature transform matrix
-    fourier_transformer.save_B('current_B.pt')
+    #fourier_transformer.save_B('current_B.pt')
 
     trial_val_all = 0
     try:
@@ -111,8 +112,8 @@ def objective(trial):
 
 if __name__ == "__main__":
     study = optuna.create_study(
-        storage = "sqlite:///db.sqlite3",
-        study_name = 'hyperopt_siren_short',
+        storage = "sqlite:///db.sqlite3_partial_conv",
+        study_name = 'hyperopt_partial_conv',
         direction='minimize')
     
     study.optimize(objective, n_trials=300)
