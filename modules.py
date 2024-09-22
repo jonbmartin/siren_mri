@@ -387,7 +387,7 @@ class PartialConvImgEncoder(nn.Module):
         self.channel = channel
 
         self.relu_2 = nn.ReLU(inplace=True)
-        self.fc = nn.Linear(1024, 1)
+        self.fc = nn.Linear(image_resolution[0]*image_resolution[1], 1)
 
         for m in self.modules():
             if isinstance(m, PartialConv2d):
