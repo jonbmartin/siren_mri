@@ -630,7 +630,7 @@ class FastMRIBrainKspace(Dataset):
         # crop down size to square
         s = min(width, height) 
 
-        s = s + 10 # JBM adding a little padding. Was clipping structure without
+        #s = s + 10 # JBM adding a little padding. Was clipping structure without
 
         left = (width - s) // 2
         top = (height - s) // 2
