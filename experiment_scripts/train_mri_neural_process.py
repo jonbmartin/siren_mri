@@ -159,7 +159,6 @@ else:
 
 #model.cuda(device)
 # trying data parallel
-model = nn.DataParallel(model)
 model.to(device)
 
 # Define the loss
