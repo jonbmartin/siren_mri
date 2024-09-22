@@ -122,7 +122,7 @@ model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures
                                                         hyper_hidden_layers=hidden_layers_hyper,
                                                         num_hidden_layers=hidden_layers,
                                                         device=device,
-                                                        partial_conv=True)
+                                                        partial_conv=False)
 model.cuda()
 model.eval()
 
