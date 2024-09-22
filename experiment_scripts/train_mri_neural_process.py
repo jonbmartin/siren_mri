@@ -87,7 +87,7 @@ if config=='hyperoptII':
     latent_dim = 256
     hidden_features_hyper = 512
     hidden_layers_hyper = 2
-    hidden_layers = 3
+    hidden_layers = 1
     hidden_features = 512
 elif config =='hyperopt':
     num_fourier_features = 128
@@ -142,7 +142,7 @@ if opt.conv_encoder:
                                                                 hyper_hidden_layers=hidden_layers_hyper,
                                                                 num_hidden_layers=hidden_layers,
                                                                 device=device,
-                                                                partial_conv=False)
+                                                                partial_conv=True)
     else:
         model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
                                                                         out_features=img_dataset.img_channels,
