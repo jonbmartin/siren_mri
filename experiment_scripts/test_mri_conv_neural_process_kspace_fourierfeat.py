@@ -48,7 +48,7 @@ assert opt.dataset == 'mri_image'
 image_resolution = (64, 64)
 
 # CONFIG. TODO: transition to config.yml
-config = 'hyperopt'
+config = 'hyperoptII'
 if config=='default_manual':
     num_fourier_features = 30
     kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -71,6 +71,17 @@ if config=='hand_tuned_manual':
     hidden_layers_hyper = 1
     hidden_layers = 5
     hidden_features = 256
+if config=='hyperoptII':
+    num_fourier_features = 128
+    kl_weight = 1.07e-9 # Not assuming anything about the weights of the latent 
+    fw_weight = 1.11e-7
+    lr = 6e-5 # reduced from default of 5e-5
+    fourier_features_scale = 16
+    latent_dim = 256
+    hidden_features_hyper = 512
+    hidden_layers_hyper = 2
+    hidden_layers = 2 # Minor modification from hyper (just 1)
+    hidden_features = 512
 elif config =='hyperopt':
     num_fourier_features = 128
     kl_weight = 0 
