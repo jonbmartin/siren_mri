@@ -160,7 +160,7 @@ else:
 #model.cuda(device)
 # trying data parallel
 model = nn.DataParallel(model, device_ids=[1, 3, 4,5])
-model.to(device)
+#model.to(device)
 
 # Define the loss
 loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
