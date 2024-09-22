@@ -628,7 +628,9 @@ class FastMRIBrainKspace(Dataset):
         data = np.squeeze(data[slice_idx,:,:])
 
         # crop down size to square
-        s = min(width, height)
+        s = min(width, height) 
+
+        s = s + 10 # JBM adding a little padding
 
         left = (width - s) // 2
         top = (height - s) // 2
