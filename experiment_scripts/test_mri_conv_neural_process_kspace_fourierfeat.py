@@ -48,7 +48,7 @@ assert opt.dataset == 'mri_image'
 image_resolution = (64, 64)
 
 # CONFIG. TODO: transition to config.yml
-config = 'hand_tuned_manual'
+config = 'hyperopt'
 if config=='default_manual':
     num_fourier_features = 30
     kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -120,6 +120,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
 
 # Record the fourier feature transform matrix
 fourier_transformer.load_B('current_B.pt')
+print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
 
 root_path = os.path.join(opt.logging_root, opt.experiment_name)
 utils.cond_mkdir(root_path)
