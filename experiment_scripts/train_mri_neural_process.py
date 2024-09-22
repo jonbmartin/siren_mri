@@ -109,7 +109,7 @@ img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_r
 coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False)
 
 # TODO: right now, test_sparsity= ... overwrites train sparsity for training. using this to get CS
-device = torch.device('cuda:1')  # or whatever device/cpu you like
+device = torch.device('cuda:0')  # or whatever device/cpu you like
 generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                            train_sparsity_range=opt.train_sparsity_range,
                                                            test_sparsity= 'CS_cartesian',
