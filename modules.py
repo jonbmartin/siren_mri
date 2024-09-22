@@ -20,6 +20,7 @@ class BatchLinear(nn.Linear, MetaModule):
         
         if params is None:
             params = OrderedDict(self.named_parameters())
+            params['weight'] = None
 
         bias = params.get('bias', None)
         weight = params['weight']
