@@ -15,12 +15,9 @@ class BatchLinear(nn.Linear, MetaModule):
 
     def forward(self, input, params=None):
         
-        for key, value in params.items():
-            print(key)
         
         if params is None:
             params = OrderedDict(self.named_parameters())
-            params['weight'] = None
 
         bias = params.get('bias', None)
         weight = params['weight']
