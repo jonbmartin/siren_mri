@@ -87,7 +87,7 @@ def objective(trial):
                                                         scale=fourier_feat_scale, device=device)
 
     # Record the fourier feature transform matrix
-    #fourier_transformer.save_B('current_B.pt')
+    fourier_transformer.save_B('current_B.pt')
 
     trial_val_all = 0
     try:
