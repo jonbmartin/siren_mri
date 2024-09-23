@@ -102,7 +102,7 @@ elif config =='hyperopt':
     hidden_layers = 2
     hidden_features = 64
 
-image_resolution = (64, 64)
+image_resolution = (128, 128)
 use_fourier_features = True
 img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
 #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
