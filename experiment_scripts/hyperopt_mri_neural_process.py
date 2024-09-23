@@ -120,5 +120,5 @@ if __name__ == "__main__":
         study_name = 'hyperopt_smallbatch',
         direction='minimize')
     
-    study.optimize(objective, n_trials=300)
+    study.optimize(objective, n_trials=300, gc_after_trial=True)
     print(f"Best value: {study.best_value} (params: {study.best_params})")
