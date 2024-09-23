@@ -17,7 +17,7 @@ def image_mse(mask, model_output, gt):
     kspace_gt_real = dataio.lin2img(gt['img'])
 
     # add l1 reg in kspace dim to encourage sparsity
-    l1_reg = 1e-8
+    l1_reg = 0
     l1_cost = l1_reg * torch.abs(kspace_output).sum()
 
     # add a kspace domain loss:
