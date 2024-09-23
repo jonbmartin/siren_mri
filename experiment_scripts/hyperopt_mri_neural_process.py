@@ -27,7 +27,7 @@ def objective(trial):
     logging_root = './logs'
     experiment_name = 'hyperopt'
     num_epochs = 4
-    steps_til_summary = 500
+    steps_til_summary = 1000
     gmode = 'conv_cnp'
 
     # hyperopt parameters
