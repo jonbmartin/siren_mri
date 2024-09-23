@@ -36,7 +36,7 @@ def objective(trial):
     hidden_features = trial.suggest_categorical('hidden_features', [32, 64, 128, 256, 512])
     hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512])
     hidden_layers = trial.suggest_int('hidden_layers', 1,5)
-    hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,5)
+    hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,3)
     lr = trial.suggest_float('lr', 1e-7, 1e-2, log=True)
     kl_weight = trial.suggest_float('kl_weight', 1e-12, 1e-4, log=True)
     fw_weight = trial.suggest_float('fw_weight', 1e-12, 1e-4, log=True)
