@@ -138,7 +138,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                                 model_output = model(model_input)
                                 val_loss = loss_fn(model_output, gt)
 
-                                for loss_name, loss in losses.items():
+                                for loss_name, loss in val_loss.items():
                                     single_loss = val_loss['img_loss']
                                 val_losses.append(single_loss)
                             
