@@ -19,18 +19,18 @@ def objective(trial):
 
     # fixed parameters
     n_trials = 2
-    batch_size = 64
+    batch_size = 8
     device = torch.device('cuda:4')  # or whatever device/cpu you like
     image_resolution = (64, 64)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
     experiment_name = 'hyperopt'
-    num_epochs = 3
+    num_epochs = 4
     steps_til_summary = 100
     gmode = 'conv_cnp'
 
     # hyperopt parameters
-    num_fourier_features = trial.suggest_categorical('num_fourier_features', [16, 32, 64, 128, 256])
+    num_fourier_features = trial.suggest_categorical('num_fourier_features', [8, 16, 32, 64, 128, 256])
     latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024])
     hidden_features = trial.suggest_categorical('hidden_features', [32, 64, 128, 256, 512])
     hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512])
@@ -40,6 +40,7 @@ def objective(trial):
     kl_weight = trial.suggest_float('kl_weight', 1e-12, 1e-4, log=True)
     fw_weight = trial.suggest_float('fw_weight', 1e-12, 1e-4, log=True)
     fourier_feat_scale = trial.suggest_float('fourier_scale', 2, 40, log=False)
+    partial_conv = trial.suggest_categorical('partial_conv', [True, False])
 
     
     img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
@@ -75,7 +76,7 @@ def objective(trial):
                                                             hyper_hidden_layers=hidden_layers_hyper,
                                                             num_hidden_layers=hidden_layers,
                                                             device=device,
-                                                            partial_conv=True)
+                                                            partial_conv=partial_conv)
     model.cuda(device)
 
     loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
