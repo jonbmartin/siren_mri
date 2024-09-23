@@ -78,6 +78,7 @@ if config=='hand_tuned_manual':
     hidden_layers_hyper = 1
     hidden_layers = 3
     hidden_features = 256
+    partial_conv = False
 if config=='hyperoptII':
     num_fourier_features = 128
     kl_weight = 1.07e-9 # Not assuming anything about the weights of the latent 
