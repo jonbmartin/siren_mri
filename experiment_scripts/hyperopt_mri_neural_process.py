@@ -114,8 +114,8 @@ def objective(trial):
 
 if __name__ == "__main__":
     study = optuna.create_study(
-        storage = "sqlite:///db.sqlite3_partial_conv",
-        study_name = 'hyperopt_partial_conv',
+        storage = "sqlite:///db.sqlite3_smallbatch",
+        study_name = 'hyperopt_smallbatch',
         direction='minimize')
     
     study.optimize(objective, n_trials=300)
