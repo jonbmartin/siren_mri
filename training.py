@@ -14,7 +14,7 @@ import shutil
 
 import tempfile
 
-from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.cuda.amp import GradScaler, autocast
 
 # TODO: NEED TO MAKE SURE THAT EVERYTHING IS SINGLE PRECISION
 
@@ -23,6 +23,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
           fourier_feat_transformer=None, device='cuda:0', hyperopt_run=False):
 
     optim = torch.optim.Adam(lr=lr, params=model.parameters())
+    scaler = GradScaler()
 
     # copy settings from Raissi et al. (2019) and here 
     # https://github.com/maziarraissi/PINNs
@@ -82,9 +83,9 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                         train_loss.backward()
                         return train_loss
                     optim.step(closure)
-
-                model_output = model(model_input)
-                losses = loss_fn(model_output, gt)
+                with autocast(device_type='cuda',dtype=torch.float16):
+                    model_output = model(model_input)
+                    losses = loss_fn(model_output, gt)
 
                 train_loss = 0.
                 for loss_name, loss in losses.items():
@@ -108,7 +109,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
 
                 if not use_lbfgs:
                     optim.zero_grad()
-                    train_loss.backward()
+                    scaler.scale(train_loss).backward()
 
                     if clip_grad:
                         if isinstance(clip_grad, bool):
@@ -116,9 +117,12 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                         else:
                             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=clip_grad)
 
-                    optim.step()
+                    scaler.step(optim)
 
                 pbar.update(1)
+
+                # update scaler for next iteration
+                scaler.update()
 
                 if not total_steps % steps_til_summary:
                     tqdm.write("Epoch %d, Total loss %0.6f, iteration time %0.6f" % (epoch, train_loss, time.time() - start_time))
@@ -134,7 +138,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                                     pass
                                 else:
                                     model_input['coords'] = fourier_feat_transformer(model_input['coords'])
-
+                                
                                 model_output = model(model_input)
                                 val_loss = loss_fn(model_output, gt)
 
