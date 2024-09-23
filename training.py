@@ -22,12 +22,6 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
 
     optim = torch.optim.Adam(lr=lr, params=model.parameters())
 
-    # copy settings from Raissi et al. (2019) and here 
-    # https://github.com/maziarraissi/PINNs
-    if use_lbfgs:
-        optim = torch.optim.LBFGS(lr=lr, params=model.parameters(), max_iter=50000, max_eval=50000,
-                                  history_size=50, line_search_fn='strong_wolfe')
-
     if os.path.exists(model_dir):
         if hyperopt_run:
             val = 'y' # automatically overwrite, don't want to save
@@ -56,6 +50,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                 np.savetxt(os.path.join(checkpoints_dir, 'train_losses_epoch_%04d.txt' % epoch),
                            np.array(train_losses))
 
+            train_loss = 0.
             for step, (model_input, gt) in enumerate(train_dataloader):
                 start_time = time.time()
             
@@ -69,22 +64,9 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                 else:
                     model_input['coords'] = fourier_feat_transformer(model_input['coords'])
 
-                if use_lbfgs:
-                    def closure():
-                        optim.zero_grad()
-                        model_output = model(model_input)
-                        losses = loss_fn(model_output, gt)
-                        train_loss = 0.
-                        for loss_name, loss in losses.items():
-                            train_loss += loss.mean() 
-                        train_loss.backward()
-                        return train_loss
-                    optim.step(closure)
-
                 model_output = model(model_input)
                 losses = loss_fn(model_output, gt)
 
-                train_loss = 0.
                 for loss_name, loss in losses.items():
                     single_loss = loss.mean()
 
@@ -104,19 +86,19 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                     summary_fn(model, model_input, gt, model_output, writer, total_steps)
                 del model_output, losses
 
-                if not use_lbfgs:
-                    train_loss.backward()
+                train_loss.backward()
 
-                    if clip_grad:
-                        if isinstance(clip_grad, bool):
-                            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.)
-                        else:
-                            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=clip_grad)
+                if clip_grad:
+                    if isinstance(clip_grad, bool):
+                        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.)
+                    else:
+                        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=clip_grad)
 
-                    # accumulation steps for gradient accumulation
-                    if (step+1) % accumulation_steps == 0:
-                        optim.step()
-                        optim.zero_grad()
+                # accumulation steps for gradient accumulation
+                if (step+1) % accumulation_steps == 0:
+                    optim.step()
+                    optim.zero_grad()
+                    train_loss = 0
 
 
                 pbar.update(1)
