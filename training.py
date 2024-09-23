@@ -18,7 +18,7 @@ import tempfile
 
 def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_checkpoint, model_dir, loss_fn,
           summary_fn, val_dataloader=None, double_precision=False, clip_grad=False, use_lbfgs=False, loss_schedules=None,
-          fourier_feat_transformer=None, device='cuda:0', hyperopt_run=False):
+          fourier_feat_transformer=None, device='cuda:0', hyperopt_run=False, accumulation_steps=1):
 
     optim = torch.optim.Adam(lr=lr, params=model.parameters())
 
@@ -102,10 +102,9 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                     torch.save(model.state_dict(),
                                os.path.join(checkpoints_dir, 'model_current.pth'))
                     summary_fn(model, model_input, gt, model_output, writer, total_steps)
-                del model_output, losses, gt
+                del model_output, losses
 
                 if not use_lbfgs:
-                    optim.zero_grad()
                     train_loss.backward()
 
                     if clip_grad:
@@ -114,7 +113,11 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                         else:
                             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=clip_grad)
 
-                    optim.step()
+                    # accumulation steps for gradient accumulation
+                    if (step+1) % accumulation_steps == 0:
+                        optim.step()
+                        optim.zero_grad()
+
 
                 pbar.update(1)
 
