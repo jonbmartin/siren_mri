@@ -19,7 +19,8 @@ def objective(trial):
 
     # fixed parameters
     n_trials = 2
-    batch_size = 8
+    batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
+    accumulation_steps = 16
     device = torch.device('cuda:4')  # or whatever device/cpu you like
     image_resolution = (64, 64)
     train_sparsity_range = [2000, 4000] # this gets overwritten
@@ -98,12 +99,12 @@ def objective(trial):
             trial_val = training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
                         lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=num_epochs-1,
                         model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-                        fourier_feat_transformer=fourier_transformer, device=device, hyperopt_run=True)
+                        fourier_feat_transformer=fourier_transformer, device=device, hyperopt_run=True, accumulation_steps=accumulation_steps)
             trial_val_all += trial_val
         trial_val_all /= n_trials
     except:
         print('Exception raised. Error in training with these parameters')
-        trial_val_all = 1e6
+        trial_val_all = 1e5
 
     print(f'OUTPUT TRIAL_VAL = {trial_val_all}')
 
