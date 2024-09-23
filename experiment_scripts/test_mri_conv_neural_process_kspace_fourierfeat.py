@@ -80,8 +80,9 @@ if config=='hyperoptII':
     latent_dim = 256
     hidden_features_hyper = 512
     hidden_layers_hyper = 2
-    hidden_layers = 1 # modified from default (1)
+    hidden_layers = 3 # modified from default (1)
     hidden_features = 512
+    partial_conv = False
 elif config =='hyperopt':
     num_fourier_features = 128
     kl_weight = 0 
@@ -122,7 +123,7 @@ model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures
                                                         hyper_hidden_layers=hidden_layers_hyper,
                                                         num_hidden_layers=hidden_layers,
                                                         device=device,
-                                                        partial_conv=True)
+                                                        partial_conv=partial_conv)
 model.cuda()
 model.eval()
 
