@@ -22,7 +22,7 @@ def objective(trial):
     batch_size = 2 # with accumulation steps =16, this is an effective batch size of 64
     accumulation_steps = 32
     device = torch.device('cuda:4')  # or whatever device/cpu you like
-    image_resolution = (64, 64)
+    image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
     experiment_name = 'hyperopt'
