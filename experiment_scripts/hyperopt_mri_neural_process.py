@@ -67,18 +67,7 @@ def objective(trial):
     dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=batch_size,
                             pin_memory=False, num_workers=0,)
 
-    model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
-                                                            out_features=img_dataset.img_channels,
-                                                            image_resolution=image_resolution,
-                                                            fourier_features_size=2*num_fourier_features,
-                                                            latent_dim=latent_dim,
-                                                            hidden_features=hidden_features,
-                                                            hyper_hidden_features=hidden_features_hyper,
-                                                            hyper_hidden_layers=hidden_layers_hyper,
-                                                            num_hidden_layers=hidden_layers,
-                                                            device=device,
-                                                            partial_conv=partial_conv)
-    model.cuda(device)
+
 
     loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, kl_weight, fw_weight)
@@ -95,6 +84,19 @@ def objective(trial):
     trial_val_all = 0
     try:
         for ii in range(n_trials):
+            model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
+                                                        out_features=img_dataset.img_channels,
+                                                        image_resolution=image_resolution,
+                                                        fourier_features_size=2*num_fourier_features,
+                                                        latent_dim=latent_dim,
+                                                        hidden_features=hidden_features,
+                                                        hyper_hidden_features=hidden_features_hyper,
+                                                        hyper_hidden_layers=hidden_layers_hyper,
+                                                        num_hidden_layers=hidden_layers,
+                                                        device=device,
+                                                        partial_conv=partial_conv)
+            model.cuda(device)
+
             print(f'Parameter Hyperopt trial #: {ii}')
             trial_val = training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
                         lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=num_epochs-1,
