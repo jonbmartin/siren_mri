@@ -886,7 +886,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 row_inds = [int(number) for number in range(spatial_img.size(1))]
                 random.shuffle(row_inds)
                 mask = torch.zeros_like(spatial_img)
-                ny = torch.shape[1]
+                ny = mask.shape[1]
                 mask[:,row_inds[0:int(0.2*ny)],:] = 1
                 mask[:,int(ny/2-4):int(ny/2+4),:] = 1
                 img_sparse = mask * spatial_img
