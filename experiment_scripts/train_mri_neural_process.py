@@ -164,7 +164,8 @@ else:
 model.to(device)
 
 # Define the loss
-loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
+loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
+#loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
 summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
 root_path = os.path.join(opt.logging_root, opt.experiment_name)
