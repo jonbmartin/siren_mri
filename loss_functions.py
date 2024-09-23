@@ -9,11 +9,27 @@ import scipy.io as sio
 
 
 def image_mse(mask, model_output, gt):
-    print(np.shape(model_output['model_out']))
+    # SAME as below, but no image domain loss/ fourier transforms 
+
+    kspace_output_real = dataio.lin2img(model_output['model_out'])
+    kspace_output = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
+
+    kspace_gt_real = dataio.lin2img(gt['img'])
+
+    # add l1 reg in kspace dim to encourage sparsity
+    l1_reg = 1e-8
+    l1_cost = l1_reg * torch.abs(kspace_output).sum()
+
+    # add a kspace domain loss:
+    kspace_weight = 0.0025
+    img_weight = 1
+    kspace_loss = kspace_weight * ((kspace_output_real-kspace_gt_real)**2).sum()
+
+
     if mask is None:
-        return {'img_loss': ((model_output['model_out'] - gt['img']) ** 2).mean()}
+        return {'img_loss': (l1_cost + kspace_loss)}
     else:
-        return {'img_loss': (mask * (model_output['model_out'] - gt['img']) ** 2).mean()}
+        return {'img_loss': (l1_cost + kspace_loss)}
 
 def ift_image_mse(mask, model_output, gt):
     
@@ -45,7 +61,7 @@ def ift_image_mse(mask, model_output, gt):
 
     # add a kspace domain loss:
     kspace_weight = 0.0025
-    img_weight = 0
+    img_weight = 1
     kspace_loss = kspace_weight * ((kspace_output_real-kspace_gt_real)**2).sum()
 
     #print(f'size of output in LOSS = {np.shape(kspace_gt)}')
