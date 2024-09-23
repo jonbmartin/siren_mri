@@ -104,7 +104,7 @@ def objective(trial):
         trial_val_all /= n_trials
     except:
         print('Exception raised. Error in training with these parameters')
-        trial_val_all = 1e5
+        trial_val_all = 1e2
 
     print(f'OUTPUT TRIAL_VAL = {trial_val_all}')
 
