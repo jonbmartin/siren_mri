@@ -83,7 +83,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                         train_loss.backward()
                         return train_loss
                     optim.step(closure)
-                with autocast(device_type='cuda',dtype=torch.float16):
+                with autocast(dtype=torch.float16):
                     model_output = model(model_input)
                     losses = loss_fn(model_output, gt)
 
@@ -138,7 +138,7 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                                     pass
                                 else:
                                     model_input['coords'] = fourier_feat_transformer(model_input['coords'])
-                                
+
                                 model_output = model(model_input)
                                 val_loss = loss_fn(model_output, gt)
 
