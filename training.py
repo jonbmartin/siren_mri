@@ -50,7 +50,6 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                 np.savetxt(os.path.join(checkpoints_dir, 'train_losses_epoch_%04d.txt' % epoch),
                            np.array(train_losses))
 
-            train_loss = 0.
             for step, (model_input, gt) in enumerate(train_dataloader):
                 start_time = time.time()
             
@@ -66,7 +65,8 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
 
                 model_output = model(model_input)
                 losses = loss_fn(model_output, gt)
-
+                
+                train_loss = 0.
                 for loss_name, loss in losses.items():
                     single_loss = loss.mean()
 
@@ -85,7 +85,9 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                                os.path.join(checkpoints_dir, 'model_current.pth'))
                     summary_fn(model, model_input, gt, model_output, writer, total_steps)
                 del model_output, losses
-
+                
+                # Backward pass
+                train_loss = train_loss/accumulation_steps
                 train_loss.backward()
 
                 if clip_grad:
@@ -94,11 +96,11 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
                     else:
                         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=clip_grad)
 
+                # weight update
                 # accumulation steps for gradient accumulation
-                if (step+1) % accumulation_steps == 0:
+                if (step+1) % accumulation_steps == 0 or (step+1 ==len(train_dataloader)):
                     optim.step()
                     optim.zero_grad()
-                    train_loss = 0
 
 
                 pbar.update(1)
