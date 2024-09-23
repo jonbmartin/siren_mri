@@ -55,7 +55,7 @@ if opt.conv_encoder: gmode = 'conv_cnp'
 else: gmode = 'cnp'
 
 # CONFIG. TODO: transition to config.yml
-config = 'hyperoptII'
+config = 'hand_tuned_manual'
 if config=='default_manual':
     num_fourier_features = 30
     kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -68,15 +68,15 @@ if config=='default_manual':
     hidden_layers = 5
     hidden_features = 256
 if config=='hand_tuned_manual':
-    num_fourier_features = 128
-    kl_weight = 0 # Not assuming anything about the weights of the latent 
-    fw_weight = 1.85e-7
-    lr = 1e-5 # reduced from default of 5e-5
+    num_fourier_features = 30
+    kl_weight = 1.07e-9 # Not assuming anything about the weights of the latent 
+    fw_weight = 1.11e-7
+    lr = 6e-5 # reduced from default of 5e-5
     fourier_features_scale = 19
     latent_dim = 256
     hidden_features_hyper = 512
     hidden_layers_hyper = 1
-    hidden_layers = 5
+    hidden_layers = 3
     hidden_features = 256
 if config=='hyperoptII':
     num_fourier_features = 128
