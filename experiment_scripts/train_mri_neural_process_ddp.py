@@ -200,6 +200,7 @@ if __name__ == "__main__":
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
+        print(f'Resuming training from checkpoint found at: {load_from_checkpoint_path}')
     else:
         load_from_checkpoint_path = None
         fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
