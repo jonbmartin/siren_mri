@@ -31,8 +31,6 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
             val = 'y' # automatically overwrite, don't want to save
         else:
             val = input("The model directory %s exists. Overwrite? (y/n)"%model_dir)
-        if val == 'y':
-            shutil.rmtree(model_dir)
 
     os.makedirs(model_dir)
 
