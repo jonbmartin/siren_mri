@@ -7,6 +7,31 @@ import numpy as np
 import dataio
 import scipy.io as sio
 
+def image_mse_log(mask, model_output, gt):
+    # SAME as below, but no image domain loss/ fourier transforms 
+
+    kspace_output_real = dataio.lin2img(model_output['model_out'])
+    kspace_output = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
+
+    kspace_gt_real = dataio.lin2img(gt['img'])
+    kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
+
+    kspace_mag_log_pred = torch.log(torch.abs(kspace_output)+1e-12)
+    kspace_mag_log_gt = torch.log(torch.abs(kspace_gt)+1e-12)
+    kspace_ang_pred = torch.angle(kspace_output)
+    kspace_ang_gt = torch.angle(kspace_gt)
+    
+
+    # add a kspace domain loss:
+    kspace_weight = 0.0025
+    img_weight = 1
+    kspace_loss = kspace_weight * (((kspace_mag_log_pred-kspace_mag_log_gt) + (kspace_ang_pred-kspace_ang_gt))**2).sum()
+
+
+    if mask is None:
+        return {'img_loss': (kspace_loss)}
+    else:
+        return {'img_loss': (kspace_loss)}
 
 def image_mse(mask, model_output, gt):
     # SAME as below, but no image domain loss/ fourier transforms 
