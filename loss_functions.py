@@ -21,11 +21,16 @@ def image_mse_log(mask, model_output, gt):
     kspace_ang_pred = torch.angle(kspace_output)
     kspace_ang_gt = torch.angle(kspace_gt)
     
+    # recombine
+    kspace_pred_recombo = kspace_mag_log_pred *torch.exp(1j*kspace_ang_pred)
+    kspace_gt_recombo = kspace_mag_log_gt *torch.exp(1j*kspace_ang_gt)
+
 
     # add a kspace domain loss:
     kspace_weight = 0.000001
     img_weight = 1
-    kspace_loss = kspace_weight * (((kspace_mag_log_pred-kspace_mag_log_gt) + (kspace_ang_pred-kspace_ang_gt))**2).sum()
+    kspace_loss = kspace_weight * (((torch.real(kspace_pred_recombo)-torch.real(kspace_gt_recombo)) + 
+                                    (torch.imag(kspace_pred_recombo)-torch.imag(kspace_gt_recombo)))**2).sum()
 
 
     if mask is None:
