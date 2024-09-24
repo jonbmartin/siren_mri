@@ -28,7 +28,7 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
 
     if device==0:
         if os.path.exists(model_dir):
-            shutil.rmtree(model_dir)
+            shutil.rmtree(model_dir, ignore_errors=True)
         else:
             os.makedirs(model_dir)
 
