@@ -1,4 +1,4 @@
-'''Implements a generic training loop.
+'''Implements a generic training loop. With DDP functionality
 '''
 
 import torch
@@ -13,10 +13,14 @@ import os
 import shutil
 
 import tempfile
+import os
 
-# TODO: NEED TO MAKE SURE THAT EVERYTHING IS SINGLE PRECISION
+import torch
+from torch.distributed import init_process_group, destroy_process_group
 
-def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_checkpoint, model_dir, loss_fn,
+
+
+def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_checkpoint, model_dir, loss_fn,
           summary_fn, val_dataloader=None, double_precision=False, clip_grad=False, use_lbfgs=False, loss_schedules=None,
           fourier_feat_transformer=None, device='cuda:0', hyperopt_run=False, accumulation_steps=1,):
 
@@ -44,8 +48,13 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
     with tqdm(total=len(train_dataloader) * epochs) as pbar:
         train_losses = []
         for epoch in range(epochs):
+
+            # DDP: need to set epoch to make shuffling work properly
+            train_dataloader.sampler.set_epoch(epoch)
+
+            # TODO: currently model is saved across ALL ddp processes
             if not epoch % epochs_til_checkpoint and epoch:
-                torch.save(model.state_dict(),
+                torch.save(model.module.state_dict(),
                            os.path.join(checkpoints_dir, 'model_epoch_%04d.pth' % epoch))
                 np.savetxt(os.path.join(checkpoints_dir, 'train_losses_epoch_%04d.txt' % epoch),
                            np.array(train_losses))
@@ -145,3 +154,14 @@ def train(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_che
         final_val = mean_val_loss
         return final_val
         
+
+def ddp_setup(rank: int, world_size: int):
+  """
+  Args:
+      rank: Unique identifier of each process
+     world_size: Total number of processes
+  """
+  os.environ["MASTER_ADDR"] = "iis-cn1-aa57"
+  os.environ["MASTER_PORT"] = "12355"
+  torch.cuda.set_device(rank)
+  init_process_group(backend="nccl", rank=rank, world_size=world_size)
