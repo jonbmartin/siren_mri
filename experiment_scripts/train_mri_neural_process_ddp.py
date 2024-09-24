@@ -152,7 +152,7 @@ def main(rank, world_size, total_epochs, save_every):
     #model.cuda(device)
     # trying data parallel
     model.to(rank)
-    model = DDP(model, device_ids =[rank])
+    model = DDP(model, device_ids =[rank],find_unused_parameters=True)
 
     # Define the loss
     #loss_fn = partial(loss_functions.image_hypernetwork_log_loss, None, kl_weight, fw_weight)
