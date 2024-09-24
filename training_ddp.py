@@ -26,13 +26,11 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
 
     optim = torch.optim.Adam(lr=lr, params=model.parameters())
 
-    if os.path.exists(model_dir):
-        if ddp_run:
-            val = 'y' # automatically overwrite, don't want to save
+    if device==0:
+        if os.path.exists(model_dir):
+            shutil.rmtree(model_dir)
         else:
-            val = input("The model directory %s exists. Overwrite? (y/n)"%model_dir)
-
-    os.makedirs(model_dir)
+            os.makedirs(model_dir)
 
     summaries_dir = os.path.join(model_dir, 'summaries')
     utils.cond_mkdir(summaries_dir)
