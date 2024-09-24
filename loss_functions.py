@@ -23,7 +23,7 @@ def image_mse_log(mask, model_output, gt):
     
 
     # add a kspace domain loss:
-    kspace_weight = 0.0025
+    kspace_weight = 0.000001
     img_weight = 1
     kspace_loss = kspace_weight * (((kspace_mag_log_pred-kspace_mag_log_gt) + (kspace_ang_pred-kspace_ang_gt))**2).sum()
 
