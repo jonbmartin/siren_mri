@@ -21,7 +21,13 @@ from torch.distributed import init_process_group, destroy_process_group
 import os
 
 
-def main(rank, world_size, total_epochs, save_every):
+def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
+    # Inputs: 
+    #   rank: (int) the identifier of the gpu on which the particular process is being run
+    #   world_size: (int) number of processes to run in parallel
+    #   total_epochs: (int) number of epochs to train for
+    #   save_every: (int) how often to save the model (every 'save_every' epochs)
+    #   load_from_checkpoint_path: (None or string) path from which to load model checkpoint to resume training
 
     # fixed parameters
     batch_size = 32 # with accumulation steps =16, this is an effective batch size of 64
@@ -32,7 +38,6 @@ def main(rank, world_size, total_epochs, save_every):
     experiment_name = 'DDP'
     num_epochs = total_epochs
     steps_til_summary = 100
-    save_every = 10 # epochs
     gmode = 'conv_cnp'
 
 
@@ -151,6 +156,9 @@ def main(rank, world_size, total_epochs, save_every):
 
     #model.cuda(device)
     # trying data parallel
+    if load_from_checkpoint_path is not None:
+        model.load_state_dict(torch.load(load_from_checkpoint_path))
+
     model.to(rank)
     model = DDP(model, device_ids =[rank],find_unused_parameters=True)
 
@@ -181,16 +189,22 @@ if __name__ == "__main__":
     import sys
     total_epochs = 400
     save_every = 5
-    world_size = torch.cuda.device_count()
+    world_size = 4 #torch.cuda.device_count()
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
     num_fourier_features = 60
     fourier_features_scale = 19
     device = 1
-    fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
-                                                    scale=fourier_features_scale, device=device)
-    # Record the fourier feature transform matrix
-    fourier_transformer.save_B('current_B_DDP.pt')
+    resume_from_save = True
 
-    mp.spawn(main, args=(world_size, total_epochs,save_every,), nprocs=world_size)
+    if resume_from_save:
+        load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
+    else:
+        load_from_checkpoint_path = None
+        fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
+                                                        scale=fourier_features_scale, device=device)
+        # Record the fourier feature transform matrix
+        fourier_transformer.save_B('current_B_DDP.pt')
+
+    mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path), nprocs=world_size)
