@@ -31,7 +31,7 @@ def main(rank, world_size, total_epochs, save_every):
     logging_root = './logs'
     experiment_name = 'DDP'
     num_epochs = total_epochs
-    steps_til_summary = 1000
+    steps_til_summary = 100
     save_every = 10 # epochs
     gmode = 'conv_cnp'
 
