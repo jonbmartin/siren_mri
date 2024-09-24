@@ -14,7 +14,7 @@ import cmapy
 
 def cond_mkdir(path):
     if not os.path.exists(path):
-        os.makedirs(path)
+        os.makedirs(path,exist_ok=True)
 
 
 def write_result_img(experiment_name, filename, img):

@@ -33,7 +33,7 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
             os.makedirs(model_dir, exist_ok=True)
 
     summaries_dir = os.path.join(model_dir, 'summaries')
-    utils.cond_mkdir(summaries_dir)
+    utils.cond_mkdir(summaries_dir, exist)
 
     checkpoints_dir = os.path.join(model_dir, 'checkpoints')
     utils.cond_mkdir(checkpoints_dir)
