@@ -22,12 +22,12 @@ from torch.distributed import init_process_group, destroy_process_group
 
 def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_checkpoint, model_dir, loss_fn,
           summary_fn, val_dataloader=None, double_precision=False, clip_grad=False, use_lbfgs=False, loss_schedules=None,
-          fourier_feat_transformer=None, device=0, hyperopt_run=False, accumulation_steps=1,):
+          fourier_feat_transformer=None, device=0, ddp_run=False, accumulation_steps=1,):
 
     optim = torch.optim.Adam(lr=lr, params=model.parameters())
 
     if os.path.exists(model_dir):
-        if hyperopt_run:
+        if ddp_run:
             val = 'y' # automatically overwrite, don't want to save
         else:
             val = input("The model directory %s exists. Overwrite? (y/n)"%model_dir)
