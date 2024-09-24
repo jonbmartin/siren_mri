@@ -35,7 +35,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
-    experiment_name = 'DDP_hyperopt'
+    experiment_name = 'DDP_logloss'
     num_epochs = total_epochs
     steps_til_summary = 100
     gmode = 'conv_cnp'
@@ -50,7 +50,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     ddp_setup(rank, world_size)
 
     # CONFIG. TODO: transition to config.yml
-    config = 'hyperoptII'
+    config = 'hand_tuned_manual'
     if config=='default_manual':
         num_fourier_features = 30
         kl_weight = 0 # Not assuming anything about the weights of the latent 
