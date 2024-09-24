@@ -88,7 +88,8 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
                 if not total_steps % steps_til_summary:
                     torch.save(model.state_dict(),
                                os.path.join(checkpoints_dir, 'model_current.pth'))
-                    summary_fn(model, model_input, gt, model_output, writer, total_steps)
+                    # TODO: just disabling to see if DDP runs
+                    #summary_fn(model, model_input, gt, model_output, writer, total_steps)
                 del model_output, losses
                 
                 # Backward pass
