@@ -30,9 +30,11 @@ def main(rank, world_size, total_epochs, save_every):
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
     experiment_name = 'DDP'
-    num_epochs = 4
+    num_epochs = total_epochs
     steps_til_summary = 1000
+    save_every = 10 # epochs
     gmode = 'conv_cnp'
+
 
     # JBM OVERRIDE TO A CONV_CNP
     conv_encoder = True
@@ -167,7 +169,7 @@ def main(rank, world_size, total_epochs, save_every):
 
 
     training_ddp.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
-                lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=epochs_til_ckpt,
+                lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=save_every,
                 model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
                 fourier_feat_transformer=fourier_transformer, device=rank, accumulation_steps=accumulation_steps, use_ddp=True)
 
@@ -180,6 +182,7 @@ if __name__ == "__main__":
     save_every = 5
     world_size = torch.cuda.device_count()
 
+    # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
     num_fourier_features = 60
     fourier_features_scale = 19
