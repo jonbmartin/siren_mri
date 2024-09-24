@@ -3,7 +3,7 @@ import sys
 import os
 sys.path.append( os.path.dirname( os.path.dirname( os.path.abspath(__file__) ) ) )
 
-import dataio, meta_modules, utils, training, loss_functions
+import dataio, meta_modules, utils, training_ddp, loss_functions
 
 import torch
 from torch.utils.data import DataLoader
@@ -11,7 +11,7 @@ import configargparse
 from functools import partial
 from features import GaussianFourierFeatureTransform
 import torch.nn as nn
-from training_ddp import train_ddp, ddp_setup
+from training_ddp import ddp_setup
 
 
 import torch.multiprocessing as mp
@@ -20,46 +20,23 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
 import os
 
-p = configargparse.ArgumentParser()
-p.add('-c', '--config_filepath', required=False, is_config_file=True, help='Path to config file.')
-
-p.add_argument('--logging_root', type=str, default='./logs', help='root for logging')
-p.add_argument('--experiment_name', type=str, required=True,
-               help='Name of subdirectory in logging_root where summaries and checkpoints will be saved.')
-
-# General training options
-p.add_argument('--batch_size', type=int, default=100)
-p.add_argument('--lr', type=float, default=5e-5, help='learning rate. default=5e-5')
-p.add_argument('--num_epochs', type=int, default=401,
-               help='Number of epochs to train for.')
-p.add_argument('--kl_weight', type=float, default=1e-1,
-               help='Weight for l2 loss term on code vectors z (lambda_latent in paper).')
-p.add_argument('--fw_weight', type=float, default=1e2,
-               help='Weight for the l2 loss term on the weights of the sine network')
-p.add_argument('--train_sparsity_range', type=int, nargs='+', default=[2000, 4000],
-               help='Two integers: lowest number of sparse pixels sampled followed by highest number of sparse'
-                    'pixels sampled when training the conditional neural process')
-
-p.add_argument('--epochs_til_ckpt', type=int, default=10,
-               help='Time interval in seconds until checkpoint is saved.')
-p.add_argument('--steps_til_summary', type=int, default=100,
-               help='Time interval in seconds until tensorboard summary is saved.')
-
-p.add_argument('--dataset', type=str, default='mri_image',
-               help='Time interval in seconds until tensorboard summary is saved.')
-p.add_argument('--model_type', type=str, default='sine',
-               help='Nonlinearity for the hypo-network module')
-
-p.add_argument('--checkpoint_path', default=None, help='Checkpoint to trained model.')
-
-p.add_argument('--conv_encoder', action='store_true', default=False, help='Use convolutional encoder process')
-opt = p.parse_args()
 
 def main(rank, world_size, total_epochs, save_every):
+
+    # fixed parameters
+    batch_size = 32 # with accumulation steps =16, this is an effective batch size of 64
+    accumulation_steps = 1
+    image_resolution = (128, 128)
+    train_sparsity_range = [2000, 4000] # this gets overwritten
+    logging_root = './logs'
+    experiment_name = 'DDP'
+    num_epochs = 4
+    steps_til_summary = 1000
+    gmode = 'conv_cnp'
+
     # JBM OVERRIDE TO A CONV_CNP
-    opt.conv_encoder = True
-    assert opt.dataset == 'mri_image'
-    if opt.conv_encoder: gmode = 'conv_cnp'
+    conv_encoder = True
+    if conv_encoder: gmode = 'conv_cnp'
     else: gmode = 'cnp'
 
     # DDP setup
@@ -122,28 +99,27 @@ def main(rank, world_size, total_epochs, save_every):
     coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False)
 
     # TODO: right now, test_sparsity= ... overwrites train sparsity for training. using this to get CS
-    device = torch.device('cuda:0')  # or whatever device/cpu you like
     generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
-                                                            train_sparsity_range=opt.train_sparsity_range,
+                                                            train_sparsity_range=train_sparsity_range,
                                                             test_sparsity= 'CS_cartesian',
                                                             generalization_mode=gmode,
-                                                            device=device)
+                                                            device=rank)
 
-    dataloader = DataLoader(generalization_dataset, shuffle=False, batch_size=opt.batch_size,
+    dataloader = DataLoader(generalization_dataset, shuffle=False, batch_size=batch_size,
                             pin_memory=False, num_workers=0, sampler=DistributedSampler(generalization_dataset))
 
     # VAL DATASET
     img_dataset_val = dataio.FastMRIBrainKspace(split='val_small', downsampled=True, image_resolution=image_resolution)
     coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
     generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
-                                                            train_sparsity_range=opt.train_sparsity_range,
+                                                            train_sparsity_range=train_sparsity_range,
                                                             test_sparsity= 'CS_cartesian',
                                                             generalization_mode=gmode,
-                                                            device=device)
-    dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=opt.batch_size,
+                                                            device=rank)
+    dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=batch_size,
                             pin_memory=False, num_workers=0,)
 
-    if opt.conv_encoder:
+    if conv_encoder:
         if use_fourier_features:
             model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
                                                                     out_features=img_dataset.img_channels,
@@ -154,7 +130,7 @@ def main(rank, world_size, total_epochs, save_every):
                                                                     hyper_hidden_features=hidden_features_hyper,
                                                                     hyper_hidden_layers=hidden_layers_hyper,
                                                                     num_hidden_layers=hidden_layers,
-                                                                    device=device,
+                                                                    device=rank,
                                                                     partial_conv=partial_conv)
         else:
             model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
@@ -173,8 +149,8 @@ def main(rank, world_size, total_epochs, save_every):
 
     #model.cuda(device)
     # trying data parallel
-    #model.to(device)
-    model = DDP(model, device_ids =[0, 1, 2, 3])
+    model.to(rank)
+    model = DDP(model, device_ids =[rank])
 
     # Define the loss
     #loss_fn = partial(loss_functions.image_hypernetwork_log_loss, None, kl_weight, fw_weight)
@@ -182,24 +158,20 @@ def main(rank, world_size, total_epochs, save_every):
     #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
-    root_path = os.path.join(opt.logging_root, opt.experiment_name)
+    root_path = os.path.join(logging_root, experiment_name)
 
     fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
-                                                        scale=fourier_features_scale, device=device)
+                                                        scale=fourier_features_scale, device=rank)
+    # load the transformation to be used by ALL DDP processes 
+    fourier_transformer.load_B('current_B_DDP.pt')
 
-    # Record the fourier feature transform matrix
-    fourier_transformer.save_B('current_B.pt')
 
-    training.train(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
-                lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
+    training_ddp.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
+                lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=epochs_til_ckpt,
                 model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-                fourier_feat_transformer=fourier_transformer, device=device, accumulation_steps=4, use_ddp=True)
+                fourier_feat_transformer=fourier_transformer, device=rank, accumulation_steps=accumulation_steps, use_ddp=True)
 
     destroy_process_group()
-    # training.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=opt.num_epochs,
-    #              lr=lr, steps_til_summary=opt.steps_til_summary, epochs_til_checkpoint=opt.epochs_til_ckpt,
-    #              model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-    #              fourier_feat_transformer=fourier_transformer, rank=3)
 
 
 if __name__ == "__main__":
@@ -207,4 +179,14 @@ if __name__ == "__main__":
     total_epochs = 400
     save_every = 5
     world_size = torch.cuda.device_count()
+
+    # create the fourier feature transform to be used by ALL DDP processes 
+    num_fourier_features = 60
+    fourier_features_scale = 19
+    device = 1
+    fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
+                                                    scale=fourier_features_scale, device=device)
+    # Record the fourier feature transform matrix
+    fourier_transformer.save_B('current_B_DDP.pt')
+
     mp.spawn(main, args=(world_size, total_epochs,save_every,), nprocs=world_size)

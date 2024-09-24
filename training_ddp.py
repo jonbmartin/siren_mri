@@ -22,7 +22,7 @@ from torch.distributed import init_process_group, destroy_process_group
 
 def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til_checkpoint, model_dir, loss_fn,
           summary_fn, val_dataloader=None, double_precision=False, clip_grad=False, use_lbfgs=False, loss_schedules=None,
-          fourier_feat_transformer=None, device='cuda:0', hyperopt_run=False, accumulation_steps=1,):
+          fourier_feat_transformer=None, device=0, hyperopt_run=False, accumulation_steps=1,):
 
     optim = torch.optim.Adam(lr=lr, params=model.parameters())
 
@@ -53,7 +53,7 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
             train_dataloader.sampler.set_epoch(epoch)
 
             # TODO: currently model is saved across ALL ddp processes
-            if not epoch % epochs_til_checkpoint and epoch:
+            if not epoch % epochs_til_checkpoint and epoch and device==0:
                 torch.save(model.module.state_dict(),
                            os.path.join(checkpoints_dir, 'model_epoch_%04d.pth' % epoch))
                 np.savetxt(os.path.join(checkpoints_dir, 'train_losses_epoch_%04d.txt' % epoch),
