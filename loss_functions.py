@@ -11,26 +11,19 @@ def image_mse_log(mask, model_output, gt):
     # SAME as below, but no image domain loss/ fourier transforms 
 
     kspace_output_real = dataio.lin2img(model_output['model_out'])
-    kspace_output = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
 
     kspace_gt_real = dataio.lin2img(gt['img'])
-    kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
 
-    kspace_mag_log_pred = torch.log(torch.abs(kspace_output)+1e-12)
-    kspace_mag_log_gt = torch.log(torch.abs(kspace_gt)+1e-12)
-    kspace_ang_pred = torch.angle(kspace_output)
-    kspace_ang_gt = torch.angle(kspace_gt)
-    
-    # recombine
-    kspace_pred_recombo = kspace_mag_log_pred *torch.exp(1j*kspace_ang_pred)
-    kspace_gt_recombo = kspace_mag_log_gt *torch.exp(1j*kspace_ang_gt)
+    eps = 1e-3
+
+    kspace_pred_log = torch.log(torch.abs(kspace_output_real)+eps)
+    kspace_gt_log = torch.log(torch.abs(kspace_gt_real)+eps)
 
 
     # add a kspace domain loss:
     kspace_weight = 0.000001
     img_weight = 1
-    kspace_loss = kspace_weight * (((torch.real(kspace_pred_recombo)-torch.real(kspace_gt_recombo)) + 
-                                    (torch.imag(kspace_pred_recombo)-torch.imag(kspace_gt_recombo)))**2).sum()
+    kspace_loss = kspace_weight * ((kspace_pred_log-kspace_gt_log)**2).sum()
 
 
     if mask is None:
