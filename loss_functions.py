@@ -159,6 +159,11 @@ def image_hypernetwork_loss(mask, kl, fw, model_output, gt):
             'latent_loss': kl * latent_loss(model_output),
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
+def image_hypernetwork_log_loss(mask, kl, fw, model_output, gt):
+    return {'img_loss': image_mse_log(mask, model_output, gt)['img_loss'],
+            'latent_loss': kl * latent_loss(model_output),
+            'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
+
 def image_hypernetwork_ift_loss(mask, kl, fw, model_output, gt):
     return {'img_loss': ift_image_mse(mask, model_output, gt)['img_loss'],
             'latent_loss': kl * latent_loss(model_output),
