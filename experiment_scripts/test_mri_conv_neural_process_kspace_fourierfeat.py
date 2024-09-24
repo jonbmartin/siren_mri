@@ -61,7 +61,7 @@ if config=='default_manual':
     hidden_layers = 5
     hidden_features = 256
 if config=='hand_tuned_manual':
-    num_fourier_features = 30
+    num_fourier_features = 60
     kl_weight = 1.07e-9 # Not assuming anything about the weights of the latent 
     fw_weight = 1.11e-7
     lr = 6e-5 # reduced from default of 5e-5
