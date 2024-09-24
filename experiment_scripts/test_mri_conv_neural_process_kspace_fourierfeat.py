@@ -135,7 +135,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
                                                       mapping_size_spatial=num_fourier_features, scale=fourier_features_scale)
 
 # Record the fourier feature transform matrix
-if using_ddp:
+if opt.using_ddp:
     fourier_transformer.load_B('current_B_DDP.pt')
 else:
     fourier_transformer.load_B('current_B.pt')
