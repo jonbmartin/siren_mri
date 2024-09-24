@@ -171,7 +171,7 @@ def main(rank, world_size, total_epochs, save_every):
     training_ddp.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
                 lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=save_every,
                 model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
-                fourier_feat_transformer=fourier_transformer, device=rank, accumulation_steps=accumulation_steps, use_ddp=True)
+                fourier_feat_transformer=fourier_transformer, device=rank, accumulation_steps=accumulation_steps)
 
     destroy_process_group()
 
