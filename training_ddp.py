@@ -30,7 +30,7 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
         if os.path.exists(model_dir):
             shutil.rmtree(model_dir, ignore_errors=True)
         else:
-            os.makedirs(model_dir)
+            os.makedirs(model_dir, exist_ok=True)
 
     summaries_dir = os.path.join(model_dir, 'summaries')
     utils.cond_mkdir(summaries_dir)
