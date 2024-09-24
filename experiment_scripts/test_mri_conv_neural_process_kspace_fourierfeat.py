@@ -26,7 +26,7 @@ p.add('-c', '--config_filepath', required=False, is_config_file=True, help='Path
 p.add_argument('--logging_root', type=str, default='./logs', help='root for logging')
 p.add_argument('--experiment_name', type=str, required=True,
                help='Name of subdirectory in logging_root where summaries and checkpoints will be saved.')
-p.add_argument('--using_ddp', type=bool, required=True,
+p.add_argument('--trained_with_ddp', type=bool, required=True,
                help='Name of subdirectory in logging_root where summaries and checkpoints will be saved.')
 
 # General training options
@@ -135,7 +135,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
                                                       mapping_size_spatial=num_fourier_features, scale=fourier_features_scale)
 
 # Record the fourier feature transform matrix
-if opt.using_ddp:
+if opt.trained_with_ddp:
     fourier_transformer.load_B('current_B_DDP.pt')
 else:
     fourier_transformer.load_B('current_B.pt')
