@@ -17,8 +17,8 @@ def image_mse_log(mask, model_output, gt):
 
     eps = 1e-3
 
-    kspace_pred_log = torch.log(torch.abs(kspace_output_real)+eps)
-    kspace_gt_log = torch.log(torch.abs(kspace_gt_real)+eps)
+    kspace_pred_log = torch.sign(kspace_output_real)*torch.log(torch.abs(kspace_output_real)+eps)
+    kspace_gt_log = torch.sign(kspace_output_real)*torch.log(torch.abs(kspace_gt_real)+eps)
 
 
     # add a kspace domain loss:
