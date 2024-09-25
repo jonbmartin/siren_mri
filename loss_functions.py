@@ -12,19 +12,26 @@ def image_mse_log(mask, model_output, gt):
     # SAME as below, but no image domain loss/ fourier transforms 
 
     kspace_output_real = dataio.lin2img(model_output['model_out'])
+    kspace_output = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
+    kspace_output_mag = torch.abs(kspace_output)
+    kspace_output_phase = torch.angle(kspace_output)
 
     kspace_gt_real = dataio.lin2img(gt['img'])
+    kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
+    kspace_gt_mag = torch.abs(kspace_gt)
+    kspace_gt_phase = torch.angle(kspace_gt)
 
     eps = 1e-3
 
-    kspace_pred_log = torch.log(torch.abs(kspace_output_real)+eps)
-    kspace_gt_log = torch.log(torch.abs(kspace_gt_real)+eps)
+    kspace_pred_log = torch.log(torch.abs(kspace_output_mag)+eps)
+    kspace_gt_log = torch.log(torch.abs(kspace_gt_mag)+eps)
 
 
     # add a kspace domain loss:
-    kspace_weight = 0.000001
-    kspace_loss = kspace_weight * ((kspace_pred_log-kspace_gt_log)**2).sum()
-
+    mag_weight = 0.000001
+    phase_weight = 0.000001
+    kspace_loss =  (mag_weight *(kspace_pred_log-kspace_gt_log)**2 + 
+                    phase_weight * (2-torch.cos(kspace_output_phase-kspace_output_mag))).sum()
 
     if mask is None:
         return {'img_loss': (kspace_loss)}
