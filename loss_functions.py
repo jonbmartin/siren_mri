@@ -39,8 +39,10 @@ def image_mse_cubic(mask, model_output, gt):
 
     kspace_gt_real = dataio.lin2img(gt['img'])
 
-    kspace_pred_tx = utils.safe_sign(kspace_output_real)*torch.pow(torch.abs(kspace_output_real),1/3)
-    kspace_gt_tx = utils.safe_sign(kspace_gt_real)*torch.pow(torch.abs(kspace_gt_real),1/3)
+    kspace_pred_tx = torch.sign(kspace_output_real)*torch.pow(torch.abs(kspace_output_real),1/3)
+    kspace_gt_tx = torch.sign(kspace_gt_real)*torch.pow(torch.abs(kspace_gt_real),1/3)
+    kspace_pred_tx = torch.nan_to_num(kspace_pred_tx)
+    kspace_gt_tx = torch.nan_to_num(kspace_gt_tx)
 
     # add a kspace domain loss:
     kspace_weight = 0.000001
