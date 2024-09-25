@@ -30,6 +30,30 @@ def image_mse_log(mask, model_output, gt):
         return {'img_loss': (kspace_loss)}
     else:
         return {'img_loss': (kspace_loss)}
+    
+def image_mse_cubic(mask, model_output, gt):
+    # SAME as below, but no image domain loss/ fourier transforms 
+
+    kspace_output_real = dataio.lin2img(model_output['model_out'])
+
+    kspace_gt_real = dataio.lin2img(gt['img'])
+
+    eps = 1e-3
+
+    kspace_pred_tx = torch.sign(kspace_output_real)*torch.abs(kspace_output_real)^(1/3)
+    kspace_gt_tx = torch.sign(kspace_gt_real)*torch.abs(kspace_gt_real)^(1/3)
+
+
+    # add a kspace domain loss:
+    kspace_weight = 0.000001
+    img_weight = 1
+    kspace_loss = kspace_weight * ((kspace_pred_tx-kspace_gt_tx)**2).sum()
+
+
+    if mask is None:
+        return {'img_loss': (kspace_loss)}
+    else:
+        return {'img_loss': (kspace_loss)}
 
 def image_mse(mask, model_output, gt):
     # SAME as below, but no image domain loss/ fourier transforms 
