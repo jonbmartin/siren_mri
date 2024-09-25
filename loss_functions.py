@@ -6,6 +6,7 @@ import modules
 import numpy as np
 import dataio
 import scipy.io as sio
+import util
 
 def image_mse_log(mask, model_output, gt):
     # SAME as below, but no image domain loss/ fourier transforms 
@@ -38,12 +39,11 @@ def image_mse_cubic(mask, model_output, gt):
 
     kspace_gt_real = dataio.lin2img(gt['img'])
 
-    kspace_pred_tx = kspace_output_real.sign()*torch.pow(torch.abs(kspace_output_real),1/3)
-    kspace_gt_tx = kspace_gt_real.sign()*torch.pow(torch.abs(kspace_gt_real),1/3)
+    kspace_pred_tx = util.safe_sign(kspace_output_real)*torch.pow(torch.abs(kspace_output_real),1/3)
+    kspace_gt_tx = util.safe_sign(kspace_gt_real)*torch.pow(torch.abs(kspace_gt_real),1/3)
 
     # add a kspace domain loss:
     kspace_weight = 0.000001
-    img_weight = 1
     kspace_loss = kspace_weight * ((kspace_pred_tx-kspace_gt_tx)**2).sum()
 
 

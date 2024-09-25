@@ -16,9 +16,12 @@ def cond_mkdir(path):
     if not os.path.exists(path):
         os.makedirs(path,exist_ok=True)
 
-# def my_sign(x):
-#     # conventional torch.sign or torch.sgn raises an exception for my implementation.
-#     # Trying a workaround
+def safe_sign(x):
+    # conventional torch.sign or torch.sgn raises an exception for my implementation.
+    # Trying a workaround
+
+    return torch.nan_to_num(torch.sign(x))
+    
     
 
 
