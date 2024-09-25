@@ -31,7 +31,7 @@ def image_mse_log(mask, model_output, gt):
     mag_weight = 0.000001
     phase_weight = 0.000001
     kspace_loss =  (mag_weight *(kspace_pred_log-kspace_gt_log)**2 + 
-                    phase_weight * (2-torch.cos(kspace_output_phase-kspace_output_mag))).sum()
+                    phase_weight * (2-torch.cos(kspace_output_phase-kspace_gt_phase))).sum()
 
     if mask is None:
         return {'img_loss': (kspace_loss)}
