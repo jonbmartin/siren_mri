@@ -30,6 +30,10 @@ def image_mse_log(mask, model_output, gt):
     # add a kspace domain loss:
     mag_weight = 0.0001
     phase_weight = 0.0001
+    test_mag_weight = (mag_weight *(kspace_pred_log-kspace_gt_log)**2).sum()
+    test_phase_weight = (phase_weight * (2-torch.cos(kspace_output_phase-kspace_gt_phase))).sum()
+
+    print(f'Calculated loss of mag: {test_mag_weight}, of phase: {test_phase_weight}')
     kspace_loss =  (mag_weight *(kspace_pred_log-kspace_gt_log)**2 + 
                     phase_weight * (2-torch.cos(kspace_output_phase-kspace_gt_phase))).sum()
 
