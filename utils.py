@@ -16,6 +16,11 @@ def cond_mkdir(path):
     if not os.path.exists(path):
         os.makedirs(path,exist_ok=True)
 
+def my_sign(x):
+    # conventional torch.sign or torch.sgn raises an exception for my implementation.
+    # Trying a workaround
+    
+
 
 def write_result_img(experiment_name, filename, img):
     root_path = '/media/data1/sitzmann/generalization/results'
