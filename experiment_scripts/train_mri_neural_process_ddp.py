@@ -66,7 +66,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
         num_fourier_features = 60
         kl_weight = 1.07e-9 # Not assuming anything about the weights of the latent 
         fw_weight = 1.11e-7
-        lr = 6e-4 # reduced from default of 5e-5
+        lr = 6e-5 # reduced from default of 5e-5
         fourier_features_scale = 19
         latent_dim = 256
         hidden_features_hyper = 512

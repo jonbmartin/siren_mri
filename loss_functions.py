@@ -32,18 +32,14 @@ def image_mse_log(mask, model_output, gt):
         return {'img_loss': (kspace_loss)}
     
 def image_mse_cubic(mask, model_output, gt):
-    # NOTE: for whatever reason, this causes NaNs in training, despite the nan_to_num. A good idea but
-    # needs to be fixed. Probably just needs an added eps in cube root? As in log loss. 
 
     kspace_output_real = dataio.lin2img(model_output['model_out'])
 
     kspace_gt_real = dataio.lin2img(gt['img'])
 
-    eps = 1e-5
+    eps = 1e-3
     kspace_pred_tx = torch.sign(kspace_output_real)*torch.pow(torch.abs(kspace_output_real)+eps,1/3)
     kspace_gt_tx = torch.sign(kspace_gt_real)*torch.pow(torch.abs(kspace_gt_real)+eps,1/3)
-    kspace_pred_tx = torch.nan_to_num(kspace_pred_tx)
-    kspace_gt_tx = torch.nan_to_num(kspace_gt_tx)
 
     # add a kspace domain loss:
     kspace_weight = 0.00001
