@@ -42,7 +42,7 @@ def image_mse_cubic(mask, model_output, gt):
     kspace_gt_tx = torch.sign(kspace_gt_real)*torch.pow(torch.abs(kspace_gt_real)+eps,1/3)
 
     # add a kspace domain loss:
-    kspace_weight = 0.00001
+    kspace_weight = 0.000001
     kspace_loss = kspace_weight * ((kspace_pred_tx-kspace_gt_tx)**2).sum()
 
 
