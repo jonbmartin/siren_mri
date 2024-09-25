@@ -35,7 +35,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
-    experiment_name = 'DDP_cubicloss_trial2'
+    experiment_name = 'DDP_magphaseloss'
     num_epochs = total_epochs
     steps_til_summary = 100
     gmode = 'conv_cnp'
@@ -163,7 +163,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     model = DDP(model, device_ids =[rank],find_unused_parameters=True)
 
     # Define the loss
-    loss_fn = partial(loss_functions.image_hypernetwork_cubic_loss, None, kl_weight, fw_weight)
+    loss_fn = partial(loss_functions.image_hypernetwork_log_loss, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
