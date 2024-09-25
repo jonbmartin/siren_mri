@@ -17,8 +17,8 @@ def image_mse_log(mask, model_output, gt):
 
     eps = 1e-3
 
-    kspace_pred_log = torch.sign(kspace_output_real)*torch.log(torch.abs(kspace_output_real)+eps)
-    kspace_gt_log = torch.sign(kspace_gt_real)*torch.log(torch.abs(kspace_gt_real)+eps)
+    kspace_pred_log = torch.log(torch.abs(kspace_output_real)+eps)
+    kspace_gt_log = torch.log(torch.abs(kspace_gt_real)+eps)
 
 
     # add a kspace domain loss:
@@ -39,8 +39,9 @@ def image_mse_cubic(mask, model_output, gt):
 
     kspace_gt_real = dataio.lin2img(gt['img'])
 
-    kspace_pred_tx = torch.sign(kspace_output_real)*torch.pow(torch.abs(kspace_output_real),1/3)
-    kspace_gt_tx = torch.sign(kspace_gt_real)*torch.pow(torch.abs(kspace_gt_real),1/3)
+    eps = 1e-5
+    kspace_pred_tx = torch.sign(kspace_output_real)*torch.pow(torch.abs(kspace_output_real)+eps,1/3)
+    kspace_gt_tx = torch.sign(kspace_gt_real)*torch.pow(torch.abs(kspace_gt_real)+eps,1/3)
     kspace_pred_tx = torch.nan_to_num(kspace_pred_tx)
     kspace_gt_tx = torch.nan_to_num(kspace_gt_tx)
 
