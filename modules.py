@@ -339,6 +339,7 @@ class SetEncoder(nn.Module):
 class ConvImgEncoder(nn.Module):
     def __init__(self, channel, image_resolution, hidden_size=128):
         super().__init__()
+        self.hidden_size = hidden_size
 
         # conv_theta is input convolution
         self.conv_theta = nn.Conv2d(channel, hidden_size//2, 3, 1, 1) 
@@ -363,7 +364,7 @@ class ConvImgEncoder(nn.Module):
         o = self.relu(self.conv_theta(I))
         o = self.cnn(o)
 
-        o = self.fc(self.relu_2(o).view(o.shape[0], 256, -1)).squeeze(-1)
+        o = self.fc(self.relu_2(o).view(o.shape[0], self.hidden_size, -1)).squeeze(-1)
         return o
 
 
