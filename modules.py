@@ -346,7 +346,7 @@ class ConvImgEncoder(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
         self.cnn = nn.Sequential(
-            nn.Conv2d(hidden_size//2, hidden_size, 5, 1, 1), 
+            nn.Conv2d(hidden_size//2, hidden_size, 3, 1, 1), 
             nn.ReLU(),
             Conv2dResBlock(hidden_size, hidden_size),
             Conv2dResBlock(hidden_size, hidden_size),
