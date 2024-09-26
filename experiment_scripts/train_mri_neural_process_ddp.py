@@ -137,7 +137,6 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
                                                                     hyper_hidden_features=hidden_features_hyper,
                                                                     hyper_hidden_layers=hidden_layers_hyper,
                                                                     num_hidden_layers=hidden_layers,
-                                                                    device=rank,
                                                                     partial_conv=partial_conv)
         else:
             model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,

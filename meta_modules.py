@@ -175,7 +175,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernet(nn.Module):
 class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
     def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, 
                  fourier_features_size=512, latent_dim=256, hidden_features=256, 
-                 num_hidden_layers=5, hyper_hidden_features=512, hyper_hidden_layers=1, conv_kernel_size=3, device='cuda:0'):
+                 num_hidden_layers=5, hyper_hidden_features=512, hyper_hidden_layers=1, conv_kernel_size=3):
         super().__init__()
 
         self.dc = data_consistency.DataConsistencyInKspace(noise_lvl=None)
