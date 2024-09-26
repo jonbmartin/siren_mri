@@ -337,17 +337,11 @@ class SetEncoder(nn.Module):
 
 
 class ConvImgEncoder(nn.Module):
-    def __init__(self, channel, image_resolution, hidden_size=128):
+    def __init__(self, channel, image_resolution, hidden_size=256, kernel_size=3):
         super().__init__()
         self.hidden_size = hidden_size
 
-        kernel_size = 5
-        if kernel_size == 3:
-            padding = 1
-        elif kernel_size == 5:
-            padding = 2
-        elif kernel_size == 7:
-            padding = 3
+        padding = kernel_size//2
 
         # conv_theta is input convolution
         self.conv_theta = nn.Conv2d(channel, hidden_size//2, kernel_size, 1, padding) 
