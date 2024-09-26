@@ -20,7 +20,6 @@ def objective(trial):
     # fixed parameters
     n_trials = 1
     batch_size = 2 # with accumulation steps =16, this is an effective batch size of 64
-    accumulation_steps = 32
     device = torch.device('cuda:3')  # or whatever device/cpu you like
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
@@ -43,6 +42,7 @@ def objective(trial):
     fw_weight = trial.suggest_float('fw_weight', 1e-12, 1e-4, log=True)
     fourier_feat_scale = trial.suggest_float('fourier_scale', 2, 40, log=False)
     partial_conv = trial.suggest_categorical('partial_conv', [True, False])
+    accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
 
     
     img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
