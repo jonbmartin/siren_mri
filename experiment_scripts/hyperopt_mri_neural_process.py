@@ -15,12 +15,12 @@ import optuna
 
 
 
-def objective(trial):
+def objective(trial, device_id):
 
     # fixed parameters
     n_trials = 1
     batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
-    device = torch.device('cuda:3')  # or whatever device/cpu you like
+    device = torch.device(device_id)  # or whatever device/cpu you like
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
@@ -117,10 +117,15 @@ def objective(trial):
 
 
 if __name__ == "__main__":
-    study = optuna.create_study(
-        storage = "sqlite:///db.sqlite3_with_conv_trial3",
-        study_name = 'hyperopt_with_conv_trial3',
+    study = optuna.load_study(
+        storage = "sqlite:///db.sqlite3_with_conv_parallelhyp",
+        study_name = 'hyperopt_with_conv_parallelhyp',
         direction='minimize')
     
+    p = configargparse.ArgumentParser()
+    p.add('-d', '--device_id', required=True, is_config_file=True, help='CUDA device ID.')
+    opt = p.parse_args()
+
+    objective = partial(objective, device_id=opt.device_id)
     study.optimize(objective, n_trials=300, gc_after_trial=True)
     print(f"Best value: {study.best_value} (params: {study.best_params})")
