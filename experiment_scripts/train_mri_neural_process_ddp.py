@@ -80,7 +80,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
         fw_weight = 1.11e-7
         lr = 6e-5 # reduced from default of 5e-5
         fourier_features_scale = 16
-        latent_dim = 64 # MUST MATCH CONV HIDDEN SIZE!!!! 
+        latent_dim = 256 
         hidden_features_hyper = 512
         hidden_layers_hyper = 2
         hidden_layers = 3
