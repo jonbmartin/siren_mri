@@ -187,7 +187,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
 
 if __name__ == "__main__":
     import sys
-    total_epochs = 400
+    total_epochs = 200
     save_every = 5
     world_size = 6 #torch.cuda.device_count()
 
