@@ -183,7 +183,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         if partial_conv:
             self.encoder = modules.PartialConvImgEncoder(channel=2, image_resolution=image_resolution)
         else:
-            self.encoder = modules.ConvImgEncoder(channel=2, image_resolution=image_resolution)
+            self.encoder = modules.ConvImgEncoder(channel=2, image_resolution=image_resolution, hidden_size=latent_dim)
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
                                              in_features=fourier_features_size, hidden_features=hidden_features,num_hidden_layers=num_hidden_layers) # JBM USED TO BE 3 layer, 128 input. good perf with 5
         self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=hyper_hidden_layers, hyper_hidden_features=hyper_hidden_features, # JBM used to be 256 hyperhidden
