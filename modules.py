@@ -337,7 +337,7 @@ class SetEncoder(nn.Module):
 
 
 class ConvImgEncoder(nn.Module):
-    def __init__(self, channel, image_resolution, hidden_size=256):
+    def __init__(self, channel, image_resolution, hidden_size=128):
         super().__init__()
 
         # conv_theta is input convolution
