@@ -341,18 +341,21 @@ class ConvImgEncoder(nn.Module):
         super().__init__()
         self.hidden_size = hidden_size
 
+        kernel_size = 5
+        padding = kernel_size - 2
+
         # conv_theta is input convolution
-        self.conv_theta = nn.Conv2d(channel, hidden_size//2, 3, 1, 1) 
+        self.conv_theta = nn.Conv2d(channel, hidden_size//2, kernel_size, 1, padding) 
         self.relu = nn.ReLU(inplace=True)
 
         self.cnn = nn.Sequential(
-            nn.Conv2d(hidden_size//2, hidden_size, 3, 1, 1), 
+            nn.Conv2d(hidden_size//2, hidden_size, kernel_size, 1, padding), 
             nn.ReLU(),
             Conv2dResBlock(hidden_size, hidden_size),
             Conv2dResBlock(hidden_size, hidden_size),
             Conv2dResBlock(hidden_size, hidden_size),
             Conv2dResBlock(hidden_size, hidden_size),
-            nn.Conv2d(hidden_size, hidden_size, 1, 1, 0)
+            nn.Conv2d(hidden_size, hidden_size, 1, 1, 0) # kernel size, stride, padding, dilation(=1)
         )
 
         self.relu_2 = nn.ReLU(inplace=True)
