@@ -119,8 +119,7 @@ def objective(trial, device_id):
 if __name__ == "__main__":
     study = optuna.load_study(
         storage = "sqlite:///db.sqlite3_with_conv_parallelhyp",
-        study_name = 'hyperopt_with_conv_parallelhyp',
-        direction='minimize')
+        study_name = 'hyperopt_with_conv_parallelhyp')
     
     p = configargparse.ArgumentParser()
     p.add('-d', '--device_id', required=True, is_config_file=True, help='CUDA device ID.')
