@@ -78,7 +78,13 @@ def image_mse(mask, model_output, gt, weighted=False):
     kspace_weight = 0.0025
     if weighted: 
         W =  torch.exp(-2*torch.abs(kspace_output))
+        print(np.shape(W))
         W = W.repeat(1,2,1,1) # apply to real and imag
+        print(np.shape(W))
+
+    print(np.shape(kspace_output_real))
+
+    
     kspace_loss = kspace_weight * ((W*(kspace_output_real-kspace_gt_real))**2).sum()
 
 
