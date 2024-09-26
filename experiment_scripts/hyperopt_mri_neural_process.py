@@ -125,6 +125,6 @@ if __name__ == "__main__":
     p.add('-d', '--device_id', required=True, help='CUDA device ID.')
     opt = p.parse_args()
 
-    objective = partial(objective, device_id=opt.device_id)
+    objective = partial(objective, device_id=int(opt.device_id))
     study.optimize(objective, n_trials=300, gc_after_trial=True)
     print(f"Best value: {study.best_value} (params: {study.best_params})")
