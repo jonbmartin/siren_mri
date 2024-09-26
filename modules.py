@@ -337,21 +337,21 @@ class SetEncoder(nn.Module):
 
 
 class ConvImgEncoder(nn.Module):
-    def __init__(self, channel, image_resolution):
+    def __init__(self, channel, image_resolution, hidden_size=256):
         super().__init__()
 
         # conv_theta is input convolution
-        self.conv_theta = nn.Conv2d(channel, 128, 3, 1, 1) # formerly was 3. but we need something much larger!
+        self.conv_theta = nn.Conv2d(channel, hidden_size//2, 3, 1, 1) # formerly was 3. but we need something much larger!
         self.relu = nn.ReLU(inplace=True)
 
         self.cnn = nn.Sequential(
-            nn.Conv2d(128, 256, 3, 1, 1), # formerly was 3. but we need something much larger!
+            nn.Conv2d(hidden_size//2, hidden_size, 3, 1, 1), # formerly was 3. but we need something much larger!
             nn.ReLU(),
-            Conv2dResBlock(256, 256),
-            Conv2dResBlock(256, 256),
-            Conv2dResBlock(256, 256),
-            Conv2dResBlock(256, 256),
-            nn.Conv2d(256, 256, 1, 1, 0)
+            Conv2dResBlock(hidden_size, hidden_size),
+            Conv2dResBlock(hidden_size, hidden_size),
+            Conv2dResBlock(hidden_size, hidden_size),
+            Conv2dResBlock(hidden_size, hidden_size),
+            nn.Conv2d(hidden_size, hidden_size, 1, 1, 0)
         )
 
         self.relu_2 = nn.ReLU(inplace=True)
