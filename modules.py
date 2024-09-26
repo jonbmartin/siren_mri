@@ -345,9 +345,9 @@ class ConvImgEncoder(nn.Module):
         if kernel_size == 3:
             padding = 1
         elif kernel_size == 5:
-            padding = 4
+            padding = 2
         elif kernel_size == 7:
-            padding = 6
+            padding = 3
 
         # conv_theta is input convolution
         self.conv_theta = nn.Conv2d(channel, hidden_size//2, kernel_size, 1, padding) 
