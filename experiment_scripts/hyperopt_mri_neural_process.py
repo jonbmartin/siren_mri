@@ -19,7 +19,7 @@ def objective(trial):
 
     # fixed parameters
     n_trials = 1
-    batch_size = 2 # with accumulation steps =16, this is an effective batch size of 64
+    batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
     device = torch.device('cuda:3')  # or whatever device/cpu you like
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
@@ -42,7 +42,8 @@ def objective(trial):
     fw_weight = trial.suggest_float('fw_weight', 1e-12, 1e-4, log=True)
     fourier_feat_scale = trial.suggest_float('fourier_scale', 2, 40, log=False)
     partial_conv = trial.suggest_categorical('partial_conv', [True, False])
-    accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
+    #accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
+    accumulation_steps=32
 
     
     img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
@@ -117,8 +118,8 @@ def objective(trial):
 
 if __name__ == "__main__":
     study = optuna.create_study(
-        storage = "sqlite:///db.sqlite3_with_conv_trial2",
-        study_name = 'hyperopt_with_conv_trial2',
+        storage = "sqlite:///db.sqlite3_with_conv_trial3",
+        study_name = 'hyperopt_with_conv_trial3',
         direction='minimize')
     
     study.optimize(objective, n_trials=300, gc_after_trial=True)
