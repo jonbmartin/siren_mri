@@ -122,7 +122,7 @@ if __name__ == "__main__":
         study_name = 'hyperopt_with_conv_parallelhyp')
     
     p = configargparse.ArgumentParser()
-    p.add('-d', '--device_id', required=True, is_config_file=True, help='CUDA device ID.')
+    p.add('-d', '--device_id', required=True, help='CUDA device ID.')
     opt = p.parse_args()
 
     objective = partial(objective, device_id=opt.device_id)
