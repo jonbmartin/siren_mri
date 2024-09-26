@@ -21,7 +21,7 @@ def objective(trial):
     n_trials = 1
     batch_size = 2 # with accumulation steps =16, this is an effective batch size of 64
     accumulation_steps = 32
-    device = torch.device('cuda:4')  # or whatever device/cpu you like
+    device = torch.device('cuda:3')  # or whatever device/cpu you like
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
@@ -32,7 +32,8 @@ def objective(trial):
 
     # hyperopt parameters
     num_fourier_features = trial.suggest_categorical('num_fourier_features', [8, 16, 32, 64, 128, 256])
-    latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024])
+    latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512])
+    kernel_size = trial.suggest_categorical('conv_kernel_size', [3, 5, 7])
     hidden_features = trial.suggest_categorical('hidden_features', [32, 64, 128, 256, 512])
     hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512])
     hidden_layers = trial.suggest_int('hidden_layers', 1,5)
@@ -93,7 +94,8 @@ def objective(trial):
                                                         hyper_hidden_features=hidden_features_hyper,
                                                         hyper_hidden_layers=hidden_layers_hyper,
                                                         num_hidden_layers=hidden_layers,
-                                                        partial_conv=partial_conv)
+                                                        partial_conv=partial_conv,
+                                                        conv_kernel_size=kernel_size)
             model.cuda(device)
 
             print(f'Parameter Hyperopt trial #: {ii}')
