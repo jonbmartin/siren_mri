@@ -341,11 +341,11 @@ class ConvImgEncoder(nn.Module):
         super().__init__()
 
         # conv_theta is input convolution
-        self.conv_theta = nn.Conv2d(channel, hidden_size//2, 3, 1, 1) # formerly was 3. but we need something much larger!
+        self.conv_theta = nn.Conv2d(channel, hidden_size//2, 3, 1, 1) 
         self.relu = nn.ReLU(inplace=True)
 
         self.cnn = nn.Sequential(
-            nn.Conv2d(hidden_size//2, hidden_size, 3, 1, 1), # formerly was 3. but we need something much larger!
+            nn.Conv2d(hidden_size//2, hidden_size, 3, 1, 1), 
             nn.ReLU(),
             Conv2dResBlock(hidden_size, hidden_size),
             Conv2dResBlock(hidden_size, hidden_size),
