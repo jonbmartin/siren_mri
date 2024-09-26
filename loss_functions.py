@@ -62,7 +62,7 @@ def image_mse_cubic(mask, model_output, gt):
     else:
         return {'img_loss': (kspace_loss)}
 
-def image_mse(mask, model_output, gt):
+def image_mse(mask, model_output, gt, weighted=False):
     # SAME as below, but no image domain loss/ fourier transforms 
 
     kspace_output_real = dataio.lin2img(model_output['model_out'])
@@ -76,8 +76,10 @@ def image_mse(mask, model_output, gt):
 
     # add a kspace domain loss:
     kspace_weight = 0.0025
-    img_weight = 1
-    kspace_loss = kspace_weight * ((kspace_output_real-kspace_gt_real)**2).sum()
+    if weighted: 
+        W =  torch.exp(-2*torch.abs(kspace_output))
+        W = W.repeat(1,2,1,1) # apply to real and imag
+    kspace_loss = kspace_weight * ((W*(kspace_output_real-kspace_gt_real))**2).sum()
 
 
     if mask is None:
@@ -205,8 +207,8 @@ def hypo_weight_loss(model_output):
     return weight_sum * (1 / total_weights)
 
 
-def image_hypernetwork_loss(mask, kl, fw, model_output, gt):
-    return {'img_loss': image_mse(mask, model_output, gt)['img_loss'],
+def image_hypernetwork_loss(mask, kl, fw, model_output, gt, weighted=False):
+    return {'img_loss': image_mse(mask, model_output, gt, weighted=weighted)['img_loss'],
             'latent_loss': kl * latent_loss(model_output),
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
