@@ -87,7 +87,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
         hidden_features = 512
         partial_conv = False
     elif config =='hyperoptIII':
-        num_fourier_features = 16
+        num_fourier_features = 512
         kl_weight = 2.43e-7
         fw_weight = 9.68e-5 # JBM was e-5
         lr = 8e-5 
@@ -95,8 +95,8 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
         latent_dim = 512
         hidden_features_hyper = 512
         hidden_layers_hyper = 2
-        hidden_layers = 3 # was 1
-        hidden_features = 128
+        hidden_layers = 6 # was 1
+        hidden_features = 64
         partial_conv=False
 
     image_resolution = (128, 128)
@@ -193,7 +193,7 @@ if __name__ == "__main__":
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
-    num_fourier_features = 16
+    num_fourier_features = 512
     fourier_features_scale = 20.4
     device = 1
     resume_from_save = False
