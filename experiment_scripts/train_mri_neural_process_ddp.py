@@ -30,7 +30,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     #   load_from_checkpoint_path: (None or string) path from which to load model checkpoint to resume training
 
     # fixed parameters
-    batch_size = 16 # with accumulation steps =16, this is an effective batch size of 64
+    batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
     accumulation_steps = 1
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
