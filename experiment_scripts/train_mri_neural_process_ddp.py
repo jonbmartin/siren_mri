@@ -97,6 +97,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
         hidden_layers_hyper = 2
         hidden_layers = 1
         hidden_features = 512
+        partial_conv=False
 
     image_resolution = (128, 128)
     use_fourier_features = True
