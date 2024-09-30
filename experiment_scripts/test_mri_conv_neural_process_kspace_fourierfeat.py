@@ -86,17 +86,18 @@ if config=='hyperoptII':
     hidden_layers = 3 # modified from default (1)
     hidden_features = 512
     partial_conv = False
-elif config =='hyperopt':
-    num_fourier_features = 128
-    kl_weight = 0 
-    fw_weight = 1.85e-7
-    lr = 1.9e-4 
-    fourier_features_scale = 19
-    latent_dim = 256
+elif config =='hyperoptIII':
+    num_fourier_features = 16
+    kl_weight = 2.43e-7
+    fw_weight = 9.68e-5
+    lr = 8e-5 
+    fourier_features_scale = 20.4
+    latent_dim = 512
     hidden_features_hyper = 512
-    hidden_layers_hyper = 1
-    hidden_layers = 2
-    hidden_features = 64
+    hidden_layers_hyper = 2
+    hidden_layers = 1
+    hidden_features = 512
+    partial_conv=False
 
 device = 'cuda:5'
 
