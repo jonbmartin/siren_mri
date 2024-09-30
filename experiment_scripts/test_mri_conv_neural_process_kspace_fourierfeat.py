@@ -89,13 +89,13 @@ if config=='hyperoptII':
 elif config =='hyperoptIII':
     num_fourier_features = 16
     kl_weight = 2.43e-7
-    fw_weight = 9.68e-5
+    fw_weight = 9.68e-4 # JBM was e-5
     lr = 8e-5 
     fourier_features_scale = 20.4
     latent_dim = 512
     hidden_features_hyper = 512
     hidden_layers_hyper = 2
-    hidden_layers = 1
+    hidden_layers = 3 # was 1 
     hidden_features = 512
     partial_conv=False
 
