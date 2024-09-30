@@ -50,7 +50,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     ddp_setup(rank, world_size)
 
     # CONFIG. TODO: transition to config.yml
-    config = 'hyperoptII'
+    config = 'hyperoptIII'
     if config=='default_manual':
         num_fourier_features = 30
         kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -86,17 +86,17 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
         hidden_layers = 3
         hidden_features = 512
         partial_conv = False
-    elif config =='hyperopt':
-        num_fourier_features = 128
-        kl_weight = 0 
-        fw_weight = 1.85e-7
-        lr = 1.9e-4 
-        fourier_features_scale = 19
-        latent_dim = 256
+    elif config =='hyperoptIII':
+        num_fourier_features = 16
+        kl_weight = 2.43e-7
+        fw_weight = 9.68e-5
+        lr = 8e-5 
+        fourier_features_scale = 20.4
+        latent_dim = 512
         hidden_features_hyper = 512
-        hidden_layers_hyper = 1
-        hidden_layers = 2
-        hidden_features = 64
+        hidden_layers_hyper = 2
+        hidden_layers = 1
+        hidden_features = 512
 
     image_resolution = (128, 128)
     use_fourier_features = True
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     import sys
     total_epochs = 200
     save_every = 5
-    world_size = 4 #torch.cuda.device_count()
+    world_size = 6 #torch.cuda.device_count()
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
