@@ -95,7 +95,7 @@ elif config =='hyperoptIII':
     latent_dim = 512
     hidden_features_hyper = 512
     hidden_layers_hyper = 2
-    hidden_layers = 3 # was 1 
+    hidden_layers = 1 # was 1 
     hidden_features = 512
     partial_conv=False
 
