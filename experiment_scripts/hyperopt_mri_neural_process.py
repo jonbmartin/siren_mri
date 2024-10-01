@@ -128,5 +128,5 @@ if __name__ == "__main__":
     opt = p.parse_args()
 
     objective = partial(objective, device_id=int(opt.device_id))
-    study.optimize(objective, n_trials=300, gc_after_trial=True)
+    study.optimize(objective, n_trials=100, gc_after_trial=True)
     print(f"Best value: {study.best_value} (params: {study.best_params})")
