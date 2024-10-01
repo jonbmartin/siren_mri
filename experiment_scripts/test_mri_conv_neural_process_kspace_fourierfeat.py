@@ -87,7 +87,7 @@ if config=='hyperoptII':
     hidden_features = 512
     partial_conv = False
 elif config =='hyperoptIII':
-    num_fourier_features = 16
+    num_fourier_features = 512
     kl_weight = 2.43e-7
     fw_weight = 9.68e-5 # JBM was e-5
     lr = 8e-5 
@@ -95,8 +95,8 @@ elif config =='hyperoptIII':
     latent_dim = 512
     hidden_features_hyper = 512
     hidden_layers_hyper = 2
-    hidden_layers = 2 # was 1 
-    hidden_features = 512
+    hidden_layers = 6 # was 1
+    hidden_features = 64
     partial_conv=False
 
 device = 'cuda:5'
