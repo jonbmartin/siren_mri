@@ -337,7 +337,7 @@ class SetEncoder(nn.Module):
 
 
 class ConvImgEncoder(nn.Module):
-    def __init__(self, channel, image_resolution, hidden_size=256, kernel_size=3):
+    def __init__(self, channel, image_resolution, hidden_size=256, kernel_size=3, num_conv_res_blocks=4):
         super().__init__()
         self.hidden_size = hidden_size
 
@@ -347,15 +347,24 @@ class ConvImgEncoder(nn.Module):
         self.conv_theta = nn.Conv2d(channel, hidden_size//2, kernel_size, 1, padding) 
         self.relu = nn.ReLU(inplace=True)
 
-        self.cnn = nn.Sequential(
-            nn.Conv2d(hidden_size//2, hidden_size, kernel_size, 1, padding), 
-            nn.ReLU(),
-            Conv2dResBlock(hidden_size, hidden_size),
-            Conv2dResBlock(hidden_size, hidden_size),
-            Conv2dResBlock(hidden_size, hidden_size),
-            Conv2dResBlock(hidden_size, hidden_size),
-            nn.Conv2d(hidden_size, hidden_size, 1, 1, 0) # kernel size, stride, padding, dilation(=1)
-        )
+        # Create net as list of modules first to allow dynamic # of layers for hyperopt
+        modules = []
+        modules.append(nn.Conv2d(hidden_size//2, hidden_size, kernel_size, 1, padding))
+        modules.append(nn.ReLU())
+        for ii in range(num_conv_res_blocks):
+            modules.append(Conv2dResBlock(hidden_size, hidden_size))
+        modules.append(nn.Conv2d(hidden_size, hidden_size, 1, 1, 0))# kernel size, stride, padding, dilation(=1)
+
+        self.cnn = nn.Sequential(*modules)
+        # self.cnn = nn.Sequential(
+        #     nn.Conv2d(hidden_size//2, hidden_size, kernel_size, 1, padding), 
+        #     nn.ReLU(),
+        #     Conv2dResBlock(hidden_size, hidden_size),
+        #     Conv2dResBlock(hidden_size, hidden_size),
+        #     Conv2dResBlock(hidden_size, hidden_size),
+        #     Conv2dResBlock(hidden_size, hidden_size),
+        #     nn.Conv2d(hidden_size, hidden_size, 1, 1, 0) 
+        # )
 
         self.relu_2 = nn.ReLU(inplace=True)
         self.fc = nn.Linear(image_resolution[0]*image_resolution[1], 1)
