@@ -140,7 +140,9 @@ model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures
                                                         hyper_hidden_features=hidden_features_hyper,
                                                         hyper_hidden_layers=hidden_layers_hyper,
                                                         num_hidden_layers=hidden_layers,
-                                                        partial_conv=partial_conv)
+                                                        partial_conv=partial_conv,
+                                                        num_conv_res_blocks=num_conv_res_blocks,
+                                                        conv_kernel_size=conv_kernel_size)
 model.cuda()
 model.eval()
 
