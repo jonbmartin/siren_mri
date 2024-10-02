@@ -35,7 +35,6 @@ class Sine(nn.Module):
         # See paper sec. 3.2, final paragraph, and supplement Sec. 1.5 for discussion of factor 30
         return torch.sin(30 * input)
 
-
 class FCBlock(MetaModule):
     '''A fully connected neural network that also allows swapping out the weights when used with a hypernetwork.
     Can be used just as a normal neural network though, as well.
