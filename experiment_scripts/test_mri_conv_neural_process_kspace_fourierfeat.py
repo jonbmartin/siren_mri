@@ -50,7 +50,7 @@ assert opt.dataset == 'mri_image'
 image_resolution = (128, 128)
 
 # CONFIG. TODO: transition to config.yml
-config = 'hyperoptIV'
+config = 'hyperoptIV_homebrew'
 if config=='default_manual':
     num_fourier_features = 30
     kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -106,6 +106,20 @@ elif config =='hyperoptIV':
     fourier_features_scale = 21
     latent_dim = 256
     hidden_features_hyper = 128
+    hidden_layers_hyper = 3
+    hidden_layers = 3 # was 1
+    hidden_features = 256
+    partial_conv=False
+    conv_kernel_size = 7
+    num_conv_res_blocks=5
+elif config =='hyperoptIV_homebrew':
+    num_fourier_features = 60
+    kl_weight = 2.78e-8
+    fw_weight = 6.4e-6 # JBM was e-5
+    lr = 5.57e-5 
+    fourier_features_scale = 21
+    latent_dim = 512
+    hidden_features_hyper = 512
     hidden_layers_hyper = 3
     hidden_layers = 3 # was 1
     hidden_features = 256
