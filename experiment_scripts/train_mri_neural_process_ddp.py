@@ -35,7 +35,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
-    experiment_name = 'DDP_l1_weighted'
+    experiment_name = 'DDP_l1_weighted_a6'
     num_epochs = total_epochs
     steps_til_summary = 100
     gmode = 'conv_cnp'
