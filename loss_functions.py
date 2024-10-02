@@ -75,8 +75,8 @@ def image_mse(mask, model_output, gt, weighted=False):
     l1_cost = l1_reg * torch.abs(kspace_output).sum()
 
     # add a kspace domain loss:
-    kspace_weight = 0.0025
-    a = 6 # previously tested 2 and got good results
+    kspace_weight = 0.02 # if using 3, 0.0025. If using 6, 0.02
+    a = 6 # previously tested 3 and got good results
     if weighted: 
         W =  torch.exp(-a*torch.abs(kspace_output))
         W = W.unsqueeze(1).repeat(1,2,1,1) # apply to real and imag
