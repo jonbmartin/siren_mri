@@ -50,7 +50,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     ddp_setup(rank, world_size)
 
     # CONFIG. TODO: transition to config.yml
-    config = 'hyperoptIII'
+    config = 'hyperoptIV'
     if config=='default_manual':
         num_fourier_features = 30
         kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -98,6 +98,20 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
         hidden_layers = 6 # was 1
         hidden_features = 64
         partial_conv=False
+    elif config =='hyperoptIV':
+        num_fourier_features = 150
+        kl_weight = 2.78e-8
+        fw_weight = 6.4e-6 # JBM was e-5
+        lr = 5.57e-5 
+        fourier_features_scale = 21
+        latent_dim = 256
+        hidden_features_hyper = 128
+        hidden_layers_hyper = 3
+        hidden_layers = 3 # was 1
+        hidden_features = 256
+        partial_conv=False
+        conv_kernel_size = 7
+        num_conv_res_blocks=5
 
     image_resolution = (128, 128)
     use_fourier_features = True
@@ -138,7 +152,9 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
                                                                     hyper_hidden_features=hidden_features_hyper,
                                                                     hyper_hidden_layers=hidden_layers_hyper,
                                                                     num_hidden_layers=hidden_layers,
-                                                                    partial_conv=partial_conv)
+                                                                    partial_conv=partial_conv,
+                                                                    conv_kernel_size=conv_kernel_size,
+                                                                    num_conv_res_blocks=num_conv_res_blocks)
         else:
             model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
                                                                             out_features=img_dataset.img_channels,
@@ -193,8 +209,8 @@ if __name__ == "__main__":
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
-    num_fourier_features = 512
-    fourier_features_scale = 20.4
+    num_fourier_features = 150
+    fourier_features_scale = 21
     device = 1
     resume_from_save = False
 
