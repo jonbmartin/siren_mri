@@ -35,7 +35,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
-    experiment_name = 'DDP_sMAPE_loss'
+    experiment_name = 'DDP_asinh_loss'
     num_epochs = total_epochs
     steps_til_summary = 100
     gmode = 'conv_cnp'
@@ -196,7 +196,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     #loss_fn = partial(loss_functions.image_hypernetwork_l1_loss, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
     # NOTE THAT THIS IS THE SMAPE NOT THE MAPE
-    loss_fn = partial(loss_functions.image_hypernetwork_mape_loss, None, kl_weight, fw_weight)
+    loss_fn = partial(loss_functions.image_hypernetwork_asinh_loss, None, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
     root_path = os.path.join(logging_root, experiment_name)

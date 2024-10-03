@@ -106,6 +106,22 @@ def image_smape(mask, model_output, gt):
         return {'img_loss': (kspace_loss)}
     else:
         return {'img_loss': (kspace_loss)}
+
+def image_asinh(mask, model_output, gt):
+     # SAME as below, but no image domain loss/ fourier transforms 
+
+    kspace_output_real = dataio.lin2img(model_output['model_out'])
+    kspace_gt_real = dataio.lin2img(gt['img'])
+
+    # add a kspace domain loss:
+    kspace_weight = 1/(128*128)
+    k = 20
+    kspace_loss = kspace_weight * (torch.abs(torch.asinh(k*kspace_output_real)-torch.asinh(k*kspace_gt_real))).sum()
+
+    if mask is None:
+        return {'img_loss': (kspace_loss)}
+    else:
+        return {'img_loss': (kspace_loss)}
     
 def image_l1(mask, model_output, gt):
     # SAME as below, but no image domain loss/ fourier transforms 
@@ -232,8 +248,8 @@ def image_hypernetwork_loss(mask, kl, fw, model_output, gt, weighted=True):
             'latent_loss': kl * latent_loss(model_output),
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
-def image_hypernetwork_mape_loss(mask, kl, fw, model_output, gt):
-    return {'img_loss': image_smape(mask, model_output, gt)['img_loss'],
+def image_hypernetwork_asinh_loss(mask, kl, fw, model_output, gt):
+    return {'img_loss': image_asinh(mask, model_output, gt)['img_loss'],
             'latent_loss': kl * latent_loss(model_output),
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
