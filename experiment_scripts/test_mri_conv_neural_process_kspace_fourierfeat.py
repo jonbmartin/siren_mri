@@ -116,11 +116,11 @@ elif config =='hyperoptIV_homebrew':
     num_fourier_features = 60
     kl_weight = 2.78e-8
     fw_weight = 6.4e-6 # JBM was e-5
-    lr = 5.57e-5 
+    lr = 5.57e-6 # JBM was e-5 
     fourier_features_scale = 21
-    latent_dim = 512
-    hidden_features_hyper = 512
-    hidden_layers_hyper = 3
+    latent_dim = 128
+    hidden_features_hyper = 128
+    hidden_layers_hyper = 2
     hidden_layers = 3 # was 1
     hidden_features = 256
     partial_conv=False
