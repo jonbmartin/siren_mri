@@ -194,8 +194,8 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
 
     # Define the loss
     #loss_fn = partial(loss_functions.image_hypernetwork_l1_loss, None, kl_weight, fw_weight)
-    loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
-    #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
+    #loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
+    loss_fn = partial(loss_functions.image_hypernetwork_mape_loss, None, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
     root_path = os.path.join(logging_root, experiment_name)
