@@ -115,7 +115,7 @@ def image_asinh(mask, model_output, gt):
 
     # add a kspace domain loss:
     kspace_weight = 1/(128*128)
-    k = 20
+    k = 15
     kspace_loss = kspace_weight * (torch.abs(torch.asinh(k*kspace_output_real)-torch.asinh(k*kspace_gt_real))).sum()
 
     if mask is None:
