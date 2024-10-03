@@ -100,9 +100,8 @@ def image_mape(mask, model_output, gt):
     kspace_gt_real = dataio.lin2img(gt['img'])
 
     # add a kspace domain loss:
-    eps = 1e-3
-    kspace_weight = 0.0025 # if using 3, 0.0025. If using 6, 0.02
-    kspace_loss = kspace_weight * (torch.abs((kspace_output_real-kspace_gt_real))/(kspace_gt_real+eps)).sum()
+    kspace_weight = 1/(128*128)
+    kspace_loss = kspace_weight * (torch.abs((kspace_output_real-kspace_gt_real))/(torch.abs(kspace_gt_real)+torch.abs(kspace_gt_real))).sum()
 
     if mask is None:
         return {'img_loss': (kspace_loss)}
