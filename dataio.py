@@ -762,12 +762,12 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
                 Normalize(torch.Tensor([0.5]), torch.Tensor([0.5]))
             ])
         else:
-            print('JBM: Resize transform does not work on numpy format. Size is unchanged.')
+            #print('JBM: Resize transform does not work on numpy format. Size is unchanged.')
             # resize does not work on numpy files. just leave as is
             self.transform = Compose([
-                #Resize(sidelength),
                 ToTensor(),
                 Normalize(torch.Tensor([0.]), torch.Tensor([0.5]))
+                # TODO: apply transformation here 
             ])
 
         self.compute_diff = compute_diff
@@ -817,6 +817,8 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
 
     def get_item_small(self, idx):
         img = self.transform(self.dataset[idx])
+        # TODO: probably want to do transform somewhere else
+        img = torch.asinh(15*img)
         spatial_img = img.clone()
         img = img.permute(1, 2, 0).view(-1, self.dataset.img_channels)
 
