@@ -47,7 +47,7 @@ def objective(trial, device_id):
     accumulation_steps=32
 
     
-    img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
+    img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution, asinh_tx=True)
     coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False)
 
     generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
@@ -71,8 +71,7 @@ def objective(trial, device_id):
                             pin_memory=False, num_workers=0,)
 
 
-
-    loss_fn = partial(loss_functions.image_hypernetwork_asinh_loss, None, kl_weight, fw_weight)
+    loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
@@ -120,8 +119,8 @@ def objective(trial, device_id):
 
 if __name__ == "__main__":
     study = optuna.load_study(
-        storage = "sqlite:///db.sqlite3_asinhloss",
-        study_name = 'hyperopt_asinhloss')
+        storage = "sqlite:///db.sqlite3_asinhloss_TX",
+        study_name = 'hyperopt_asinhloss_TX')
     
     p = configargparse.ArgumentParser()
     p.add('-d', '--device_id', required=True, help='CUDA device ID.')

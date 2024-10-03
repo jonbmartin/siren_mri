@@ -579,13 +579,14 @@ class FastMRIBrain(Dataset):
         return data
 
 class FastMRIBrainKspace(Dataset):
-    def __init__(self, split, downsampled=False, image_resolution=(64, 64)):
+    def __init__(self, split, downsampled=False, image_resolution=(64, 64), asinh_tx=False):
         # SIZE (128 x 128)
         assert split in ['train', 'test', 'val', 'val_small'], "Unknown split"
 
         self.root = '../../fastMRIdata/'
         self.img_channels = 2
         self._nframes = 10
+        self.asinh_tx = asinh_tx
 
         self.downsampled = downsampled
 
@@ -657,6 +658,9 @@ class FastMRIBrainKspace(Dataset):
         kspace_real = np.real(kspace)
         kspace_imag = np.imag(kspace)
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
+
+        if self.asinh_tx:
+            kspace_stacked = torch.asinh(15*kspace_stacked)
 
         #kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
 
