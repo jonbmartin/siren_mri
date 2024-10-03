@@ -660,7 +660,7 @@ class FastMRIBrainKspace(Dataset):
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
 
         if self.asinh_tx:
-            kspace_stacked = np.asinh(15*kspace_stacked)
+            kspace_stacked = np.arcsinh(15*kspace_stacked)
 
         #kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
 
