@@ -99,7 +99,8 @@ def image_smape(mask, model_output, gt):
 
     # add a kspace domain loss:
     kspace_weight = 1/(128*128)
-    kspace_loss = kspace_weight * ((torch.abs(kspace_output_real-kspace_gt_real))/(torch.abs(kspace_gt_real)+torch.abs(kspace_output_real))/2).sum()
+    eps = 1e-3
+    kspace_loss = kspace_weight * ((torch.abs(kspace_output_real-kspace_gt_real))/(eps + torch.abs(kspace_gt_real)+torch.abs(kspace_output_real))).sum()
 
     if mask is None:
         return {'img_loss': (kspace_loss)}
