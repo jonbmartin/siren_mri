@@ -95,13 +95,11 @@ def image_smape(mask, model_output, gt):
      # SAME as below, but no image domain loss/ fourier transforms 
 
     kspace_output_real = dataio.lin2img(model_output['model_out'])
-    kspace_output = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
-
     kspace_gt_real = dataio.lin2img(gt['img'])
 
     # add a kspace domain loss:
     kspace_weight = 1/(128*128)
-    kspace_loss = kspace_weight * (torch.abs((kspace_output_real-kspace_gt_real))/(torch.abs(kspace_gt_real)+torch.abs(kspace_output_real))).sum()
+    kspace_loss = kspace_weight * ((torch.abs(kspace_output_real-kspace_gt_real))/(torch.abs(kspace_gt_real)+torch.abs(kspace_output_real))).sum()
 
     if mask is None:
         return {'img_loss': (kspace_loss)}
