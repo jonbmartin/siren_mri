@@ -19,7 +19,7 @@ def objective(trial, device_id):
 
     # fixed parameters
     n_trials = 1
-    batch_size = 2 # with accumulation steps =16, this is an effective batch size of 64
+    batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
     device = torch.device(device_id)  # or whatever device/cpu you like
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
@@ -72,7 +72,7 @@ def objective(trial, device_id):
 
 
 
-    loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, None, kl_weight, fw_weight)
+    loss_fn = partial(loss_functions.image_hypernetwork_asinh_loss, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
