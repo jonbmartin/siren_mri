@@ -120,7 +120,7 @@ def objective(trial, device_id):
 
 if __name__ == "__main__":
     study = optuna.load_study(
-        storage = "sqlite:///db.sqlite3_bignets",
+        storage = "sqlite:///db.sqlite3_asinhloss",
         study_name = 'hyperopt_bignets')
     
     p = configargparse.ArgumentParser()
