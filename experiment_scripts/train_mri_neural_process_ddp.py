@@ -21,7 +21,7 @@ from torch.distributed import init_process_group, destroy_process_group
 import os
 
 
-def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, experiment_name):
+def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, experiment_name, fourier_transformer):
     # Inputs: 
     #   rank: (int) the identifier of the gpu on which the particular process is being run
     #   world_size: (int) number of processes to run in parallel
@@ -200,12 +200,12 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
 
     root_path = os.path.join(logging_root, experiment_name)
 
-    fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
-                                                        scale=fourier_features_scale, device=rank)
-    # load the transformation to be used by ALL DDP processes 
-    print(f'Current working directory = {os.getcwd()}')
-    fourier_transformer.load_B('./logs/'+experiment_name+'/current_B_DDP.pt')
-    print('successfully loaded B')
+    # fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
+    #                                                     scale=fourier_features_scale, device=rank)
+    # # load the transformation to be used by ALL DDP processes 
+    # print(f'Current working directory = {os.getcwd()}')
+    # fourier_transformer.load_B('./logs/'+experiment_name+'/current_B_DDP.pt')
+    # print('successfully loaded B')
 
     training_ddp.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
                 lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=save_every,
@@ -244,4 +244,4 @@ if __name__ == "__main__":
         fourier_transformer.save_B('current_B_DDP.pt')
         os.rename('current_B_DDP.pt', savepath)
 
-    mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path, experiment_name), nprocs=world_size)
+    mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path, experiment_name, fourier_transformer), nprocs=world_size)
