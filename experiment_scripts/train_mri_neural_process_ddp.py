@@ -237,7 +237,7 @@ if __name__ == "__main__":
         fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
                                                         scale=fourier_features_scale, device=device)
         # Record the fourier feature transform matrix
-        savepath = './logs/'+experiment_name+'/current_B_DDP.pt'
+        savepath = '/logs/'+experiment_name+'/current_B_DDP.pt'
         print(f'Saving B transform mat at: {savepath}')
         fourier_transformer.save_B('current_B_DDP.pt')
         os.rename('current_B_DDP.pt', savepath)
