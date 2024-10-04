@@ -239,6 +239,6 @@ if __name__ == "__main__":
         # Record the fourier feature transform matrix
         savepath = './logs/'+experiment_name+'/current_B_DDP.pt'
         print(f'Saving B transform mat at: {savepath}')
-        fourier_transformer.save_B(savepath)
+        fourier_transformer.save_B('current_B_DDP.pt')
 
     mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path, experiment_name), nprocs=world_size)
