@@ -579,14 +579,13 @@ class FastMRIBrain(Dataset):
         return data
 
 class FastMRIBrainKspace(Dataset):
-    def __init__(self, split, downsampled=False, image_resolution=(64, 64), asinh_tx=False):
+    def __init__(self, split, downsampled=False, image_resolution=(64, 64)):
         # SIZE (128 x 128)
         assert split in ['train', 'test', 'val', 'val_small'], "Unknown split"
 
         self.root = '../../fastMRIdata/'
         self.img_channels = 2
         self._nframes = 10
-        self.asinh_tx = asinh_tx
 
         self.downsampled = downsampled
 
@@ -658,9 +657,6 @@ class FastMRIBrainKspace(Dataset):
         kspace_real = np.real(kspace)
         kspace_imag = np.imag(kspace)
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
-
-        if self.asinh_tx:
-            kspace_stacked = np.arcsinh(15*kspace_stacked)
 
         #kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
 
@@ -817,8 +813,6 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
 
     def get_item_small(self, idx):
         img = self.transform(self.dataset[idx])
-        # TODO: probably want to do transform somewhere else
-        img = torch.asinh(15*img)
         spatial_img = img.clone()
         img = img.permute(1, 2, 0).view(-1, self.dataset.img_channels)
 
@@ -896,6 +890,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 mask[:,row_inds[0:int(0.3333*ny)],:] = 1
                 mask[:,int(ny/2-4):int(ny/2+4),:] = 1
                 img_sparse = mask * spatial_img
+                img_sparse = 
             else:
                 if self.generalization_mode == 'conv_cnp_test':
                     num_context = int(self.test_sparsity)
@@ -955,6 +950,9 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         spatial_img, img, gt_dict = self.dataset.get_item_small(idx)
+        # TODO: probably want to do transform somewhere else
+        img = torch.asinh(15*img)
+
         in_dict = self.get_generalization_in_dict(spatial_img, img, idx)
         gt_dict['dc_mask'] = in_dict['dc_mask']
         
