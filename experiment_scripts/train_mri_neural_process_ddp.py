@@ -21,7 +21,7 @@ from torch.distributed import init_process_group, destroy_process_group
 import os
 
 
-def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
+def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, experiment_name):
     # Inputs: 
     #   rank: (int) the identifier of the gpu on which the particular process is being run
     #   world_size: (int) number of processes to run in parallel
@@ -35,7 +35,6 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
-    experiment_name = 'DDP_asinh_tx_12scale'
     num_epochs = total_epochs
     steps_til_summary = 100
     gmode = 'conv_cnp'
@@ -204,7 +203,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
                                                         scale=fourier_features_scale, device=rank)
     # load the transformation to be used by ALL DDP processes 
-    fourier_transformer.load_B('current_B_DDP.pt')
+    fourier_transformer.load_B('./logs/'+experiment_name+'/current_B_DDP.pt')
 
 
     training_ddp.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
@@ -228,6 +227,7 @@ if __name__ == "__main__":
     fourier_features_scale = 21
     device = 1
     resume_from_save = False
+    experiment_name = 'DDP_asinh_tx_12scale'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
@@ -237,6 +237,6 @@ if __name__ == "__main__":
         fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
                                                         scale=fourier_features_scale, device=device)
         # Record the fourier feature transform matrix
-        fourier_transformer.save_B('current_B_DDP.pt')
+        fourier_transformer.save_B('./logs/'+experiment_name+'/current_B_DDP.pt')
 
-    mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path), nprocs=world_size)
+    mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path, experiment_name), nprocs=world_size)
