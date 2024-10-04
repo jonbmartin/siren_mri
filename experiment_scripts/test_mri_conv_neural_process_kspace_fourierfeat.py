@@ -165,7 +165,8 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
                                                       mapping_size_spatial=num_fourier_features, scale=fourier_features_scale)
 
 # Record the fourier feature transform matrix
-fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
+#fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
+fourier_transformer.load_B('current_B_DDP.pt')
 print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
 
 root_path = os.path.join(opt.logging_root, opt.experiment_name)
