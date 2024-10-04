@@ -179,6 +179,7 @@ model.load_state_dict(torch.load(opt.checkpoint_path))
 
 
 # Third experiment: interpolate between latent codes
+generalization_dataset_train.update_test_sparsity('full')
 idx1, idx2 = 57, 181
 model_input_1 = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
                  'img_sparse': generalization_dataset_train[idx1][0]['img_sparse'].unsqueeze(0).cuda()}
