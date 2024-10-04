@@ -88,9 +88,9 @@ def image_mse(mask, model_output, gt, weighted=False):
         kspace_loss = kspace_weight * ((kspace_output_real-kspace_gt_real)**2).sum()
 
     if mask is None:
-        return {'img_loss': (l1_cost + kspace_loss)}
+        return {'img_loss': (kspace_loss)}
     else:
-        return {'img_loss': (l1_cost + kspace_loss)}
+        return {'img_loss': (kspace_loss)}
 
 def image_smape(mask, model_output, gt):
      # SAME as below, but no image domain loss/ fourier transforms 
