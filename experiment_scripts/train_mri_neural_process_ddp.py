@@ -205,7 +205,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     # # load the transformation to be used by ALL DDP processes 
     print(f'Current working directory = {os.getcwd()}')
     fourier_transformer.load_B('./logs/'+experiment_name+'/current_B_DDP_mp'+str(rank)+'.pt')
-    print('successfully loaded B')
+    print(f'rank {rank} successfully loaded B')
 
     training_ddp.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
                 lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=save_every,
