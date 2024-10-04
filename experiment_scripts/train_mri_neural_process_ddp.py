@@ -21,7 +21,7 @@ from torch.distributed import init_process_group, destroy_process_group
 import os
 
 
-def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, experiment_name, fourier_transformer):
+def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, experiment_name):
     # Inputs: 
     #   rank: (int) the identifier of the gpu on which the particular process is being run
     #   world_size: (int) number of processes to run in parallel
