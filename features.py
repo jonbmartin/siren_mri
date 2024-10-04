@@ -46,6 +46,12 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
     def load_B(self, filename):
         self._B_spatial = torch.load(filename)
 
+    def get_B(self):
+        return self._B_spatial
+    
+    def set_B(self, B):
+        self._B_spatial = B
+
 
         
 
