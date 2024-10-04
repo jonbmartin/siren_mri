@@ -179,29 +179,29 @@ model.load_state_dict(torch.load(opt.checkpoint_path))
 
 
 # Third experiment: interpolate between latent codes
-# idx1, idx2 = 57, 181
-# model_input_1 = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
-#                  'img_sparse': generalization_dataset_train[idx1][0]['img_sparse'].unsqueeze(0).cuda()}
-# model_input_2 = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
-#                  'img_sparse': generalization_dataset_train[idx2][0]['img_sparse'].unsqueeze(0).cuda()}
+idx1, idx2 = 57, 181
+model_input_1 = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
+                 'img_sparse': generalization_dataset_train[idx1][0]['img_sparse'].unsqueeze(0).cuda()}
+model_input_2 = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(),
+                 'img_sparse': generalization_dataset_train[idx2][0]['img_sparse'].unsqueeze(0).cuda()}
 
-# embedding_1 = model.get_hypo_net_weights(model_input_1)[1]
-# embedding_2 = model.get_hypo_net_weights(model_input_2)[1]
-# for i in np.linspace(0,1,8):
-#     embedding = i*embedding_1 + (1.-i)*embedding_2
-#     model_input = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(), 'embedding': embedding}
-#     model_input['coords'] = fourier_transformer(model_input['coords'])
+embedding_1 = model.get_hypo_net_weights(model_input_1)[1]
+embedding_2 = model.get_hypo_net_weights(model_input_2)[1]
+for i in np.linspace(0,1,8):
+    embedding = i*embedding_1 + (1.-i)*embedding_2
+    model_input = {'coords': dataio.get_mgrid(image_resolution)[None, :].cuda(), 'embedding': embedding}
+    model_input['coords'] = fourier_transformer(model_input['coords'])
 
-#     model_output = model(model_input)
+    model_output = model(model_input)
 
-#     out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
+    out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
 
-#     if i == 0.:
-#         out_img_cat = out_img
-#     else:
-#         out_img_cat = np.concatenate((out_img_cat, out_img), axis=1)
+    if i == 0.:
+        out_img_cat = out_img
+    else:
+        out_img_cat = np.concatenate((out_img_cat, out_img), axis=1)
 
-# sio.savemat(os.path.join(root_path, 'interpolated_image.mat'),{'out_img_cat':out_img_cat})
+sio.savemat(os.path.join(root_path, 'interpolated_image.mat'),{'out_img_cat':out_img_cat})
 
 
 
