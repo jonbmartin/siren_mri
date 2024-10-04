@@ -21,7 +21,7 @@ from torch.distributed import init_process_group, destroy_process_group
 import os
 
 
-def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, experiment_name):
+def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, experiment_name, B):
     # Inputs: 
     #   rank: (int) the identifier of the gpu on which the particular process is being run
     #   world_size: (int) number of processes to run in parallel
@@ -204,7 +204,8 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
                                                         scale=fourier_features_scale, device=rank)
     # # load the transformation to be used by ALL DDP processes 
     print(f'Current working directory = {os.getcwd()}')
-    fourier_transformer.load_B('./logs/'+experiment_name+'/current_B_DDP_mp'+str(rank)+'.pt')
+    #fourier_transformer.load_B('./logs/'+experiment_name+'/current_B_DDP_mp'+str(rank)+'.pt')
+    fourier_transformer.set_B(B)
     print(f'rank {rank} successfully loaded B')
 
     training_ddp.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
@@ -244,5 +245,6 @@ if __name__ == "__main__":
             savepath = './logs/'+experiment_name+'/current_B_DDP_mp'+str(ii)+'.pt'
             print(f'Saving B transform mat at: {savepath}')
             fourier_transformer.save_B(savepath)
+        B = fourier_transformer.get_B()
 
-    mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path, experiment_name), nprocs=world_size)
+    mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path, experiment_name, B), nprocs=world_size)
