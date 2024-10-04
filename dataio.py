@@ -890,7 +890,6 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 mask[:,row_inds[0:int(0.3333*ny)],:] = 1
                 mask[:,int(ny/2-4):int(ny/2+4),:] = 1
                 img_sparse = mask * spatial_img
-                img_sparse = 
             else:
                 if self.generalization_mode == 'conv_cnp_test':
                     num_context = int(self.test_sparsity)
