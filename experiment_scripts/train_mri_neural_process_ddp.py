@@ -236,10 +236,11 @@ if __name__ == "__main__":
         load_from_checkpoint_path = None
         fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
                                                         scale=fourier_features_scale, device=device)
-        # Record the fourier feature transform matrix
+        
+        # Record the fourier feature transform matrix and place in current experiment folder 
         savepath = './logs/'+experiment_name+'/current_B_DDP.pt'
         print(f'Saving B transform mat at: {savepath}')
         fourier_transformer.save_B('current_B_DDP.pt')
         os.rename('current_B_DDP.pt', savepath)
 
-   # mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path, experiment_name), nprocs=world_size)
+    mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path, experiment_name), nprocs=world_size)
