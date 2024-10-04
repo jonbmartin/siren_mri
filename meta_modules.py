@@ -197,16 +197,19 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
     def forward(self, model_input):
         if model_input.get('embedding', None) is None:
             embedding = self.encoder(model_input['img_sparse'])
-            #embedding = self.encoder(model_input['ift_zfilled'])
         else:
             embedding = model_input['embedding']
         hypo_params = self.hyper_net(embedding)
 
         model_output = self.hypo_net(model_input, params=hypo_params)
 
-        model_output['model_out'] = self.dc(model_output['model_out'], 
-                                            model_input['img_sparse'], 
-                                            model_input['dc_mask'])
+        # TODO: What if have no img_sparse because doing latent space interpolation???
+        if "img_sparse" in model_input:
+            model_output['model_out'] = self.dc(model_output['model_out'], 
+                                                model_input['img_sparse'], 
+                                                model_input['dc_mask'])
+        else:
+            print('WARNING: not using DC')
 
 
         return {'model_in': model_output['model_in'], 'model_out': model_output['model_out'], 'latent_vec': embedding,
