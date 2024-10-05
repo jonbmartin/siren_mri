@@ -31,7 +31,7 @@ class HyperNetwork(nn.Module):
 
             hn = modules.FCBlock(in_features=hyper_in_features, out_features=int(torch.prod(torch.tensor(param.size()))),
                                  num_hidden_layers=hyper_hidden_layers, hidden_features=hyper_hidden_features,
-                                 outermost_linear=True, nonlinearity='selu')
+                                 outermost_linear=True, nonlinearity='relu')
             self.nets.append(hn)
 
             if 'weight' in name:
