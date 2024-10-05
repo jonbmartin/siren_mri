@@ -202,6 +202,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
 
     fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
                                                         scale=fourier_features_scale, device=rank)
+    fourier_transformer.set_B(B)
     # # load the transformation to be used by ALL DDP processes 
     print(f'Current working directory = {os.getcwd()}')
     savepath = './logs/'+experiment_name+'/current_B_DDP_mp'+str(rank)+'.pt'
