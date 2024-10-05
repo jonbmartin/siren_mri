@@ -230,7 +230,7 @@ if __name__ == "__main__":
     fourier_features_scale = 21
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_asinh_tx_12scale'
+    experiment_name = 'DDP_asinh_tx_1scale'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
