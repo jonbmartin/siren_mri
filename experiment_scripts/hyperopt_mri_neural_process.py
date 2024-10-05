@@ -25,7 +25,7 @@ def objective(trial, device_id):
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
     experiment_name = 'hyperopt'
-    num_epochs = 3
+    num_epochs = 5
     steps_til_summary = 1000
     gmode = 'conv_cnp'
     partial_conv = False
@@ -71,7 +71,7 @@ def objective(trial, device_id):
                             pin_memory=False, num_workers=0,)
 
 
-    loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
+    loss_fn = partial(loss_functions.image_hypernetwork_l1_loss, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
@@ -119,8 +119,8 @@ def objective(trial, device_id):
 
 if __name__ == "__main__":
     study = optuna.load_study(
-        storage = "sqlite:///db.sqlite3_asinhloss_TX",
-        study_name = 'hyperopt_asinhloss_TX')
+        storage = "sqlite:///db.sqlite3_test",
+        study_name = 'test_asinh')
     
     p = configargparse.ArgumentParser()
     p.add('-d', '--device_id', required=True, help='CUDA device ID.')
