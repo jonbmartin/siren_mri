@@ -137,7 +137,7 @@ def image_l1(mask, model_output, gt):
     l1_cost = l1_reg * torch.abs(kspace_output).sum()
 
     # add a kspace domain loss:
-    kspace_weight = 0.0025
+    kspace_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
     kspace_loss = kspace_weight * (torch.abs(kspace_output_real-kspace_gt_real)).sum()
 
 
