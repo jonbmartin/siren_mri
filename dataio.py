@@ -958,7 +958,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         spatial_img, img, gt_dict = self.dataset.get_item_small(idx)
         # TODO: probably want to do transform somewhere else
-        img = torch.asinh(40*img)
+        img = torch.asinh(2000*img)
 
         in_dict = self.get_generalization_in_dict(spatial_img, img, idx)
         gt_dict['dc_mask'] = in_dict['dc_mask']

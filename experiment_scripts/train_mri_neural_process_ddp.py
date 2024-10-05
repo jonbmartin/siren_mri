@@ -49,7 +49,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     ddp_setup(rank, world_size)
 
     # CONFIG. TODO: transition to config.yml
-    config = 'hyperoptV'
+    config = 'hyperoptIV'
     if config=='default_manual':
         num_fourier_features = 30
         kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     fourier_features_scale = 8
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_asinh_tx_5scale_l1'
+    experiment_name = 'DDP_asinh_tx_1000scale'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
