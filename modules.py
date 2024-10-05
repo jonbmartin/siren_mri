@@ -344,7 +344,7 @@ class ConvImgEncoder(nn.Module):
 
         # conv_theta is input convolution
         self.conv_theta = nn.Conv2d(channel, hidden_size//2, kernel_size, 1, padding) 
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.Tanh(inplace=True)
 
         # Create net as list of modules first to allow dynamic # of layers for hyperopt
         modules = []
