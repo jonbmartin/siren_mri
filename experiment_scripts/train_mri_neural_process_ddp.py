@@ -127,7 +127,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         num_conv_res_blocks=5
     elif config =='hyperopt_asinh':
         num_fourier_features = 32
-        kl_weight = 1.3e-5
+        kl_weight = 0 #1.3e-5
         fw_weight = 5.7e-8 # JBM was e-5
         lr = 4.4e-6 # JBM was e-5 
         fourier_features_scale = 17
