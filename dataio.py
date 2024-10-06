@@ -802,7 +802,7 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
 
     def get_item_small(self, idx):
         img = self.transform(self.dataset[idx])
-        img = torch.asinh(2000*img)
+        img = torch.asinh(40*img)
         #print(np.shape(img))
         img = img/10 # crude something like a normalization
         # TODO: probably want to do transform somewhere else
