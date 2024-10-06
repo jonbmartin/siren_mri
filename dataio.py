@@ -659,6 +659,12 @@ class FastMRIBrainKspace(Dataset):
         kspace_imag = np.imag(kspace)
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
 
+        # TODO: probably want to do transform somewhere else
+        kspace_before_scale = kspace_stacked
+        kspace_stacked = torch.asinh(2000*kspace_stacked)
+        sio.savemat('kspace_dataset_test.mat',{'kspace':kspace_stacked, 'kspace_before_scale':kspace_before_scale})
+        sys.exit()
+
         #kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
 
 
@@ -958,11 +964,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         spatial_img, img, gt_dict = self.dataset.get_item_small(idx)
-        # TODO: probably want to do transform somewhere else
-        img_before_scale = img
-        img = torch.asinh(2000*img)
-        sio.savemat('img_dataset_test.mat',{'img':img, 'img_before_scale':img_before_scale})
-        sys.exit()
+
         in_dict = self.get_generalization_in_dict(spatial_img, img, idx)
         gt_dict['dc_mask'] = in_dict['dc_mask']
         
