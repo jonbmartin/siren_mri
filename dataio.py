@@ -645,28 +645,10 @@ class FastMRIBrainKspace(Dataset):
 
         # naive - just pretending a single-channel dataset
         kspace = np.fft.fftshift(np.fft.fft2(data))
-        # Log transform the magnitudes
-        #kspace_mag = np.abs(kspace)
-        #kspace_phs = np.angle(kspace)
-        #kspace_mag = np.log(kspace_mag+1e-12)
-        #kspace = kspace_mag *np.exp(1j*kspace_phs)
 
-        #kspace_mag = np.abs(kspace)
-        #kspace_mag = kspace_mag/np.max(np.abs(kspace_mag))
-        #kspace_phs = np.angle(kspace)
-        #kspace_phs = kspace_phs/np.max(np.abs(kspace_phs))
         kspace_real = np.real(kspace)
         kspace_imag = np.imag(kspace)
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
-
-        # TODO: probably want to do transform somewhere else
-        kspace_before_scale = kspace_stacked
-        kspace_stacked = torch.asinh(2000*kspace_stacked)
-        sio.savemat('kspace_dataset_test.mat',{'kspace':kspace_stacked, 'kspace_before_scale':kspace_before_scale})
-        sys.exit()
-
-        #kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
-
 
         # return is [Nchannels, Nx, Ny]
         return np.float32(kspace_stacked)
