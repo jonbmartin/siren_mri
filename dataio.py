@@ -807,8 +807,8 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
                 # TODO: probably want to do transform somewhere else
         img_before_scale = img
         img = torch.asinh(2000*img)
-        sio.savemat('img_dataset_test.mat',{'img':img.numpy(), 'img_before_scale':img_before_scale.numpy()})
-        sys.exit()
+        #sio.savemat('img_dataset_test.mat',{'img':img.numpy(), 'img_before_scale':img_before_scale.numpy()})
+        #sys.exit()
         spatial_img = img.clone()
         img = img.permute(1, 2, 0).view(-1, self.dataset.img_channels)
 
