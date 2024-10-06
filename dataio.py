@@ -802,9 +802,10 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
 
     def get_item_small(self, idx):
         img = self.transform(self.dataset[idx])
+        img = torch.asinh(2000*img)
+        img = self.transform(img)
 
         # TODO: probably want to do transform somewhere else
-        img = torch.asinh(2000*img)
         #sio.savemat('img_dataset_test.mat',{'img':img.numpy(), 'img_before_scale':img_before_scale.numpy()})
         #sys.exit()
         spatial_img = img.clone()
