@@ -802,6 +802,8 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
 
     def get_item_small(self, idx):
         img = self.transform(self.dataset[idx])
+        print('img shape: ')
+        print(np.shape(img))
         spatial_img = img.clone()
         img = img.permute(1, 2, 0).view(-1, self.dataset.img_channels)
 
