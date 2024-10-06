@@ -803,8 +803,8 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
     def get_item_small(self, idx):
         img = self.transform(self.dataset[idx])
         img = torch.asinh(2000*img)
-        print(np.shape(img))
-        img = torch.nn.functional.normalize(img, p=2.0, dim = 1)
+        #print(np.shape(img))
+        img = img/10 # crude something like a normalization
         # TODO: probably want to do transform somewhere else
         #sio.savemat('img_dataset_test.mat',{'img':img.numpy(), 'img_before_scale':img_before_scale.numpy()})
         #sys.exit()
