@@ -32,7 +32,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     # model parallel setup
     dev0 = rank*2
     dev1 = rank*2+1
-    
+
     # fixed parameters
     batch_size = 16 # with accumulation steps =16, this is an effective batch size of 96 (16*6)
     accumulation_steps = 1
@@ -236,7 +236,7 @@ if __name__ == "__main__":
     fourier_features_scale = 21
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_asinh_tx_2000scale'
+    experiment_name = 'DDP_asinh_tx_500kscale'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
