@@ -120,7 +120,7 @@ def objective(trial, device_id):
 if __name__ == "__main__":
     study = optuna.load_study(
         storage = "sqlite:///db.sqlite3_test",
-        study_name = 'test_asinh')
+        study_name = 'test_asinh_noACS')
     
     p = configargparse.ArgumentParser()
     p.add('-d', '--device_id', required=True, help='CUDA device ID.')
