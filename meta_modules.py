@@ -227,6 +227,68 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
             param.requires_grad = False
 
 
+class ConvolutionalNeuralProcessImplicit2DHypernetModelParallel(nn.Module):
+    def __init__(self, in_features, out_features, dev0, dev1, dev2, image_resolution=None, partial_conv=False, 
+                 fourier_features_size=512, latent_dim=256, hidden_features=256, 
+                 num_hidden_layers=5, hyper_hidden_features=512, hyper_hidden_layers=1, 
+                 conv_kernel_size=3, num_conv_res_blocks=4):
+        super().__init__()
+
+        self.dev0 = dev0
+        self.dev1 = dev1
+        self.dev2 = dev2
+
+        self.dc = data_consistency.DataConsistencyInKspace(noise_lvl=None)
+
+        if partial_conv:
+            self.encoder = modules.PartialConvImgEncoder(channel=2, image_resolution=image_resolution)
+        else:
+            self.encoder = modules.ConvImgEncoder(channel=2, image_resolution=image_resolution, hidden_size=latent_dim, 
+                                                  kernel_size=conv_kernel_size, num_conv_res_blocks=num_conv_res_blocks)
+        self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
+                                             in_features=fourier_features_size, hidden_features=hidden_features,num_hidden_layers=num_hidden_layers) # JBM USED TO BE 3 layer, 128 input. good perf with 5
+        self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=hyper_hidden_layers, hyper_hidden_features=hyper_hidden_features, # JBM used to be 256 hyperhidden
+                                      hypo_module=self.hypo_net)
+        
+        # model parallel setup
+        self.encoder.to(dev0)
+        self.hypo_net.to(dev1)
+        self.hyper_net.to(dev2)
+
+        print(self)
+
+    def forward(self, model_input):
+        if model_input.get('embedding', None) is None:
+            embedding = self.encoder(model_input['img_sparse'])
+        else:
+            embedding = model_input['embedding']
+        hypo_params = self.hyper_net(embedding)
+
+        model_output = self.hypo_net(model_input, params=hypo_params)
+
+        # TODO: What if have no img_sparse because doing latent space interpolation???
+        if "img_sparse" in model_input:
+            model_output['model_out'] = self.dc(model_output['model_out'], 
+                                                model_input['img_sparse'], 
+                                                model_input['dc_mask'])
+        else:
+            print('WARNING: not using DC')
+
+
+        return {'model_in': model_output['model_in'], 'model_out': model_output['model_out'], 'latent_vec': embedding,
+                'hypo_params': hypo_params}
+
+    def get_hypo_net_weights(self, model_input):
+        embedding = self.encoder(model_input['img_sparse'])
+        hypo_params = self.hyper_net(embedding)
+        return hypo_params, embedding
+
+    def freeze_hypernet(self):
+        for param in self.hyper_net.parameters():
+            param.requires_grad = False
+        for param in self.encoder.parameters():
+            param.requires_grad = False
+
 ############################
 # Initialization schemes
 def hyper_weight_init(m, in_features_main_net):
