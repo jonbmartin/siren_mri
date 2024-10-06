@@ -52,7 +52,7 @@ def objective(trial, device_id):
 
     generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                             train_sparsity_range=train_sparsity_range,
-                                                            test_sparsity= 'CS_cartesian',
+                                                            test_sparsity= 'CS_cartesian_noACS',
                                                             generalization_mode=gmode,
                                                             device=device)
 
@@ -64,7 +64,7 @@ def objective(trial, device_id):
     coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
     generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
                                                             train_sparsity_range=train_sparsity_range,
-                                                            test_sparsity= 'CS_cartesian',
+                                                            test_sparsity= 'CS_cartesian_noACS',
                                                             generalization_mode=gmode,
                                                             device=device)
     dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=batch_size,
@@ -120,7 +120,7 @@ def objective(trial, device_id):
 if __name__ == "__main__":
     study = optuna.load_study(
         storage = "sqlite:///db.sqlite3_test",
-        study_name = 'test_asinh_noACS')
+        study_name = 'test_asinh_noACS_40')
     
     p = configargparse.ArgumentParser()
     p.add('-d', '--device_id', required=True, help='CUDA device ID.')
