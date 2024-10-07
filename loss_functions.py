@@ -7,6 +7,7 @@ import numpy as np
 import dataio
 import scipy.io as sio
 import utils
+import sys
 
 def image_mse_log(mask, model_output, gt):
     # SAME as below, but no image domain loss/ fourier transforms 
@@ -114,8 +115,15 @@ def image_asinh(mask, model_output, gt):
     kspace_output_real = dataio.lin2img(model_output['model_out'])
     kspace_gt_real = dataio.lin2img(gt['img'])
 
+    output_before_tx = kspace_output_real
+    gt_before_tx = kspace_gt_real
     kspace_output_real = torch.asinh(400 * kspace_output_real)/6.7
     kspace_gt_real = torch.asinh(400 * kspace_gt_real)/6.7
+
+    print('Evaluating asinh loss')
+    sio.savemat('evaluating_asinh_loss.mat',{'pred_no_tx':output_before_tx, 'pred_tx':kspace_output_real,
+                                             'true_no_tx':gt_before_tx, 'true_tx':kspace_gt_real})
+    sys.exit()
     # add a kspace domain loss:
     kspace_weight = 1/(128*128)
     kspace_loss = kspace_weight * ((kspace_output_real-kspace_gt_real)**2).sum()
