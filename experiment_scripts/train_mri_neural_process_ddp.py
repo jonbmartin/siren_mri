@@ -126,19 +126,19 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         conv_kernel_size = 7
         num_conv_res_blocks=5
     elif config =='hyperopt_asinh':
-        num_fourier_features = 218
-        kl_weight = 1e-7 #1.3e-5
-        fw_weight = 6.5e-9 # JBM was e-5
-        lr = 1.67e-5 # JBM was e-5 
-        fourier_features_scale = 11.4
-        latent_dim = 512
-        hidden_features_hyper = 256
-        hidden_layers_hyper = 3
-        hidden_layers = 2 # was 1
-        hidden_features = 1024
+        num_fourier_features = 254
+        kl_weight = 4e-5 #1.3e-5
+        fw_weight = 6.2e-8 # JBM was e-5
+        lr = 2e-3 # JBM was e-5 
+        fourier_features_scale = 21.6
+        latent_dim = 128
+        hidden_features_hyper = 32
+        hidden_layers_hyper = 1
+        hidden_layers = 3 # was 1
+        hidden_features = 512
         partial_conv=False
         conv_kernel_size = 5
-        num_conv_res_blocks= 1
+        num_conv_res_blocks= 3
 
 
     image_resolution = (128, 128)
@@ -242,8 +242,8 @@ if __name__ == "__main__":
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
-    num_fourier_features = 218
-    fourier_features_scale = 11.4
+    num_fourier_features = 254
+    fourier_features_scale = 21.6
     device = 1
     resume_from_save = False
     experiment_name = 'DDP_asinh_tx_40scale_nonorm'
