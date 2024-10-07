@@ -655,7 +655,7 @@ class FastMRIBrainKspace(Dataset):
         # Apply transform here\
         kspace_stacked_before_tx = kspace_stacked
         #kspace_stacked = AsinhTransform(kspace_stacked)
-        kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
+        #kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
         #kspace_stacked = np.arcsinh(400 * kspace_stacked)/7
         #sio.savemat("asinh_transform.mat", {"before_tx":kspace_stacked_before_tx, "after_tx":kspace_stacked})
         #sys.exit()
@@ -761,7 +761,7 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
             self.transform = Compose([
                 ToTensor(),
                 #AsinhTransform(),
-                #Normalize(torch.Tensor([1]), torch.Tensor([0.5])),
+                Normalize(torch.Tensor([0]), torch.Tensor([0.5])),
                 # TODO: apply transformation here 
             ])
 
