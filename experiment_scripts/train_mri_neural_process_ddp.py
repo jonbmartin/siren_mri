@@ -49,7 +49,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     ddp_setup(rank, world_size)
 
     # CONFIG. TODO: transition to config.yml
-    config = 'hyperopt_asinh'
+    config = 'hand_tuned_manual'
     if config=='default_manual':
         num_fourier_features = 30
         kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -210,7 +210,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     #loss_fn = partial(loss_functions.image_hypernetwork_l1_loss, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
     # NOTE THAT THIS IS THE SMAPE NOT THE MAPE
-    loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
+    loss_fn = partial(loss_functions.image_hypernetwork_asinh_loss, None, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
     root_path = os.path.join(logging_root, experiment_name)
