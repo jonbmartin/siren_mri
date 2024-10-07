@@ -651,7 +651,12 @@ class FastMRIBrainKspace(Dataset):
         kspace_real = np.real(kspace)
         kspace_imag = np.imag(kspace)
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
-
+        
+        # Apply transform here\
+        kspace_stacked_before_tx = kspace_stacked
+        kspace_stacked = AsinhTransform(kspace_stacked)
+        sio.savemat("asinh_transform.mat", {"before_tx":kspace_stacked_before_tx, "after_tx":kspace_stacked})
+        sys.exit()
         # return is [Nchannels, Nx, Ny]
         return np.float32(kspace_stacked)
 
@@ -753,7 +758,7 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
             # resize does not work on numpy files. just leave as is
             self.transform = Compose([
                 ToTensor(),
-                AsinhTransform(),
+                #AsinhTransform(),
                 Normalize(torch.Tensor([0.]), torch.Tensor([0.5])),
                 # TODO: apply transformation here 
             ])
