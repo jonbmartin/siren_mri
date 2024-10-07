@@ -120,13 +120,38 @@ def image_asinh(mask, model_output, gt):
     kspace_output_real = torch.asinh(400 * kspace_output_real)/6.7
     kspace_gt_real = torch.asinh(400 * kspace_gt_real)/6.7
 
-    print('Evaluating asinh loss')
-    sio.savemat('evaluating_asinh_loss.mat',{'pred_no_tx':output_before_tx.detach().cpu().numpy(), 'pred_tx':kspace_output_real.detach().cpu().numpy(),
-                                             'true_no_tx':gt_before_tx.detach().cpu().numpy(), 'true_tx':kspace_gt_real.detach().cpu().numpy()})
-    sys.exit()
+    # print('Evaluating asinh loss')
+    # sio.savemat('evaluating_asinh_loss.mat',{'pred_no_tx':output_before_tx.detach().cpu().numpy(), 'pred_tx':kspace_output_real.detach().cpu().numpy(),
+    #                                          'true_no_tx':gt_before_tx.detach().cpu().numpy(), 'true_tx':kspace_gt_real.detach().cpu().numpy()})
+    # sys.exit()
     # add a kspace domain loss:
     kspace_weight = 1/(128*128)
     kspace_loss = kspace_weight * ((kspace_output_real-kspace_gt_real)**2).sum()
+
+    if mask is None:
+        return {'img_loss': (kspace_loss)}
+    else:
+        return {'img_loss': (kspace_loss)}
+
+def image_perp(mask, model_output, gt):
+     # SAME as below, but no image domain loss/ fourier transforms 
+
+    kspace_output_real = dataio.lin2img(model_output['model_out'])
+    kspace_gt_real = dataio.lin2img(gt['img'])
+    
+    kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
+    kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
+
+
+    output_before_tx = kspace_pred
+    gt_before_tx = kspace_gt
+
+    eps = 1e-8
+    loss = torch.abs(torch.real(kspace_pred)*torch.imag(kspace_gt)-torch.imag(kspace_pred)*torch.real(kspace_gt))/(torch.abs(kspace_pred)+eps)
+
+    loss = loss^(1/3)
+    kspace_weight = 1/(128*128)
+    kspace_loss = kspace_weight*loss.sum()
 
     if mask is None:
         return {'img_loss': (kspace_loss)}
