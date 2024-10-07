@@ -126,19 +126,19 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         conv_kernel_size = 7
         num_conv_res_blocks=5
     elif config =='hyperopt_asinh':
-        num_fourier_features = 32
-        kl_weight = 0 #1.3e-5
-        fw_weight = 5.7e-8 # JBM was e-5
-        lr = 4.4e-6 # JBM was e-5 
-        fourier_features_scale = 17
-        latent_dim = 256
-        hidden_features_hyper = 64
+        num_fourier_features = 205
+        kl_weight = 0.0587 #1.3e-5
+        fw_weight = 4.5e-6 # JBM was e-5
+        lr = 2.9e-6 # JBM was e-5 
+        fourier_features_scale = 24.4
+        latent_dim = 128
+        hidden_features_hyper = 512
         hidden_layers_hyper = 3
-        hidden_layers = 2 # was 1
-        hidden_features = 1024
+        hidden_layers = 3 # was 1
+        hidden_features = 512
         partial_conv=False
-        conv_kernel_size = 7
-        num_conv_res_blocks= 3
+        conv_kernel_size = 5
+        num_conv_res_blocks= 2
 
 
     image_resolution = (128, 128)
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     fourier_features_scale = 17
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_asinh_tx_2000scale_hypopt'
+    experiment_name = 'DDP_asinh_tx_40scale_hypopt'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
