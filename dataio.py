@@ -753,8 +753,8 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
             # resize does not work on numpy files. just leave as is
             self.transform = Compose([
                 ToTensor(),
+                AsinhTransform(),
                 Normalize(torch.Tensor([0.]), torch.Tensor([0.5])),
-                AsinhTransform()
                 # TODO: apply transformation here 
             ])
 
