@@ -273,8 +273,8 @@ def hypo_weight_loss(model_output):
     return weight_sum * (1 / total_weights)
 
 
-def image_hypernetwork_loss(mask, kl, fw, model_output, gt, weighted=True):
-    return {'img_loss': image_mse(mask, model_output, gt, weighted=weighted)['img_loss'],
+def image_hypernetwork_loss(mask, kl, fw, model_output, gt):
+    return {'img_loss': image_mse(mask, model_output, gt)['img_loss'],
             'latent_loss': kl * latent_loss(model_output),
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
