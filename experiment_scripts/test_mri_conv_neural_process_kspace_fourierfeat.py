@@ -50,7 +50,7 @@ assert opt.dataset == 'mri_image'
 image_resolution = (128, 128)
 
 # CONFIG. TODO: transition to config.yml
-config = 'hyperoptIV_homebrew'
+config = 'hyperopt_asinh'
 if config=='default_manual':
     num_fourier_features = 30
     kl_weight = 0 # Not assuming anything about the weights of the latent 
