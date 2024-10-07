@@ -49,6 +49,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     # DDP setup
     ddp_setup(rank, world_size)
 
+
     # CONFIG. TODO: transition to config.yml
     config = 'hyperoptIV_homebrew'
     if config=='default_manual':
