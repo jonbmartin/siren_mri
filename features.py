@@ -53,7 +53,11 @@ class GaussianFourierFeatureTransform(torch.nn.Module):
         self._B_spatial = B
 
 
-        
+class AsinhTransform(torch.nn.Module):
+    def forward(self, img):
+
+        img_tx = torch.asinh(40 * img)
+        return img_tx
 
     
 

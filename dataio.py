@@ -20,6 +20,8 @@ from torch.utils.data import Dataset
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize
 import sys
 
+from features import AsinhTransform
+
 
 
 def get_mgrid(sidelen, dim=2):
@@ -751,7 +753,8 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
             # resize does not work on numpy files. just leave as is
             self.transform = Compose([
                 ToTensor(),
-                Normalize(torch.Tensor([0.]), torch.Tensor([0.5]))
+                Normalize(torch.Tensor([0.]), torch.Tensor([0.5])),
+                AsinhTransform()
                 # TODO: apply transformation here 
             ])
 
@@ -802,9 +805,9 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
 
     def get_item_small(self, idx):
         img = self.transform(self.dataset[idx])
-        img = torch.asinh(40*img)
+        #img = torch.asinh(40*img)
         #print(np.shape(img))
-        img = img/10 # crude something like a normalization
+        #img = img/10 # crude something like a normalization
         # TODO: probably want to do transform somewhere else
         #sio.savemat('img_dataset_test.mat',{'img':img.numpy(), 'img_before_scale':img_before_scale.numpy()})
         #sys.exit()
