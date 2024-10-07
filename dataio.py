@@ -654,7 +654,8 @@ class FastMRIBrainKspace(Dataset):
         
         # Apply transform here\
         kspace_stacked_before_tx = kspace_stacked
-        kspace_stacked = AsinhTransform(kspace_stacked)
+        #kspace_stacked = AsinhTransform(kspace_stacked)
+        kspace_stacked = torch.asinh(40 * kspace_stacked)
         sio.savemat("asinh_transform.mat", {"before_tx":kspace_stacked_before_tx, "after_tx":kspace_stacked})
         sys.exit()
         # return is [Nchannels, Nx, Ny]
