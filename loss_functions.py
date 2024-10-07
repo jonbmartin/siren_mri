@@ -114,8 +114,8 @@ def image_asinh(mask, model_output, gt):
     kspace_output_real = dataio.lin2img(model_output['model_out'])
     kspace_gt_real = dataio.lin2img(gt['img'])
 
-    kspace_output_real = np.arcsinh(400 * kspace_output_real)/7
-    kspace_gt_real = np.arcsinh(400 * kspace_gt_real)/7
+    kspace_output_real = torch.asinh(400 * kspace_output_real)/7
+    kspace_gt_real = torch.asinh(400 * kspace_gt_real)/7
     # add a kspace domain loss:
     kspace_weight = 1/(128*128)
     kspace_loss = kspace_weight * ((kspace_output_real-kspace_gt_real)**2).sum()
