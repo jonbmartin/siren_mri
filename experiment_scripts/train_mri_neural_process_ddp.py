@@ -49,7 +49,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     ddp_setup(rank, world_size)
 
     # CONFIG. TODO: transition to config.yml
-    config = 'hyperoptIV'
+    config = 'hyperopt_asinh'
     if config=='default_manual':
         num_fourier_features = 30
         kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -126,19 +126,19 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         conv_kernel_size = 7
         num_conv_res_blocks=5
     elif config =='hyperopt_asinh':
-        num_fourier_features = 205
-        kl_weight = 0.0587 #1.3e-5
-        fw_weight = 4.5e-6 # JBM was e-5
-        lr = 2.9e-6 # JBM was e-5 
-        fourier_features_scale = 24.4
-        latent_dim = 128
-        hidden_features_hyper = 512
+        num_fourier_features = 218
+        kl_weight = 1e-7 #1.3e-5
+        fw_weight = 6.5e-9 # JBM was e-5
+        lr = 1.67e-5 # JBM was e-5 
+        fourier_features_scale = 11.4
+        latent_dim = 512
+        hidden_features_hyper = 256
         hidden_layers_hyper = 3
-        hidden_layers = 3 # was 1
-        hidden_features = 512
+        hidden_layers = 2 # was 1
+        hidden_features = 1024
         partial_conv=False
         conv_kernel_size = 5
-        num_conv_res_blocks= 2
+        num_conv_res_blocks= 1
 
 
     image_resolution = (128, 128)
@@ -242,11 +242,11 @@ if __name__ == "__main__":
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
-    num_fourier_features = 150
-    fourier_features_scale = 21
+    num_fourier_features = 218
+    fourier_features_scale = 11.4
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_asinh_tx_40scale_old_hyper'
+    experiment_name = 'DDP_asinh_tx_40scale_nonorm'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
