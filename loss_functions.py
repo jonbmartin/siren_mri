@@ -151,7 +151,7 @@ def image_perp(mask, model_output, gt):
 
     # dynamic range shift
     #loss = loss**(1/3)
-    kspace_weight = 1/(128*128)
+    kspace_weight = 1/(128*128)*1000
     kspace_loss = kspace_weight*loss.sum()
 
     if mask is None:
