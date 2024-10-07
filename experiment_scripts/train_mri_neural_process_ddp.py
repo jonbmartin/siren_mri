@@ -196,7 +196,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     #loss_fn = partial(loss_functions.image_hypernetwork_l1_loss, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
     # NOTE THAT THIS IS THE SMAPE NOT THE MAPE
-    loss_fn = partial(loss_functions.image_hypernetwork_mape_loss, None, kl_weight, fw_weight)
+    loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
     root_path = os.path.join(logging_root, experiment_name)
@@ -238,6 +238,6 @@ if __name__ == "__main__":
                                                         scale=fourier_features_scale, device=device)
         # Record the fourier feature transform matrix
         fourier_transformer.save_B('current_B_DDP.pt')
-        
+
 
     mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path), nprocs=world_size)
