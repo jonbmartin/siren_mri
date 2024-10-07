@@ -150,7 +150,7 @@ def image_perp(mask, model_output, gt):
     loss = torch.abs(torch.real(kspace_pred)*torch.imag(kspace_gt)-torch.imag(kspace_pred)*torch.real(kspace_gt))/(torch.abs(kspace_pred)+eps)
 
     # dynamic range shift
-    loss = loss^(1/3)
+    loss = loss**(1/3)
     kspace_weight = 1/(128*128)
     kspace_loss = kspace_weight*loss.sum()
 
