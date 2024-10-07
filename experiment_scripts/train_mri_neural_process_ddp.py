@@ -210,7 +210,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     #loss_fn = partial(loss_functions.image_hypernetwork_l1_loss, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
     # NOTE THAT THIS IS THE SMAPE NOT THE MAPE
-    loss_fn = partial(loss_functions.image_hypernetwork_asinh_loss, None, kl_weight, fw_weight)
+    loss_fn = partial(loss_functions.image_hypernetwork_perp_loss, None, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
     root_path = os.path.join(logging_root, experiment_name)
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     fourier_features_scale = 20
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_asinh_tx_in_loss'
+    experiment_name = 'DDP_perp_tx'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
