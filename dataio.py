@@ -653,9 +653,9 @@ class FastMRIBrainKspace(Dataset):
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
         
         # Apply transform here\
-        kspace_stacked_before_tx = kspace_stacked
+        #kspace_stacked_before_tx = kspace_stacked
         #kspace_stacked = AsinhTransform(kspace_stacked)
-        kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
+        #kspace_stacked = kspace_stacked/np.max(np.abs(kspace_stacked))
         #kspace_stacked = np.arcsinh(400 * kspace_stacked)/7
         #sio.savemat("asinh_transform.mat", {"before_tx":kspace_stacked_before_tx, "after_tx":kspace_stacked})
         #sys.exit()
