@@ -656,8 +656,8 @@ class FastMRIBrainKspace(Dataset):
         kspace_stacked_before_tx = kspace_stacked
         #kspace_stacked = AsinhTransform(kspace_stacked)
         kspace_stacked = np.arcsinh(400 * kspace_stacked)
-        sio.savemat("asinh_transform.mat", {"before_tx":kspace_stacked_before_tx, "after_tx":kspace_stacked})
-        sys.exit()
+        #sio.savemat("asinh_transform.mat", {"before_tx":kspace_stacked_before_tx, "after_tx":kspace_stacked})
+        #sys.exit()
         # return is [Nchannels, Nx, Ny]
         return np.float32(kspace_stacked)
 
