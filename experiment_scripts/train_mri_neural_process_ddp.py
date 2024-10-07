@@ -35,7 +35,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path):
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
-    experiment_name = 'DDP_sMAPE_loss'
+    experiment_name = 'DDP_standard_loss'
     num_epochs = total_epochs
     steps_til_summary = 100
     gmode = 'conv_cnp'
@@ -238,5 +238,6 @@ if __name__ == "__main__":
                                                         scale=fourier_features_scale, device=device)
         # Record the fourier feature transform matrix
         fourier_transformer.save_B('current_B_DDP.pt')
+        
 
     mp.spawn(main, args=(world_size, total_epochs,save_every,load_from_checkpoint_path), nprocs=world_size)
