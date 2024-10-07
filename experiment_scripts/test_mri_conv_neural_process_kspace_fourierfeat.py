@@ -127,19 +127,19 @@ elif config =='hyperoptIV_homebrew':
     conv_kernel_size = 7
     num_conv_res_blocks=5
 elif config =='hyperopt_asinh':
-    num_fourier_features = 32
-    kl_weight = 1.3e-5
-    fw_weight = 5.7e-8 # JBM was e-5
-    lr = 4.4e-6 # JBM was e-5 
-    fourier_features_scale = 17
-    latent_dim = 256
-    hidden_features_hyper = 64
+    num_fourier_features = 205
+    kl_weight = 0.0587 #1.3e-5
+    fw_weight = 4.5e-6 # JBM was e-5
+    lr = 2.9e-6 # JBM was e-5 
+    fourier_features_scale = 24.4
+    latent_dim = 128
+    hidden_features_hyper = 512
     hidden_layers_hyper = 3
-    hidden_layers = 2 # was 1
-    hidden_features = 1024
+    hidden_layers = 3 # was 1
+    hidden_features = 512
     partial_conv=False
-    conv_kernel_size = 7
-    num_conv_res_blocks= 3
+    conv_kernel_size = 5
+    num_conv_res_blocks= 2
 
 device = 'cuda:5'
 
@@ -181,7 +181,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
 # Record the fourier feature transform matrix
 #fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
 # TODO this needs to be more automatic
-savepath = './logs/'+'DDP_asinh_tx_2000scale_hypopt'+'/current_B_DDP_mp1.pt'
+savepath = './logs/'+'DDP_asinh_tx_40scale_hypopt'+'/current_B_DDP_mp1.pt'
 fourier_transformer.load_B(savepath)
 print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
 
