@@ -77,7 +77,7 @@ def image_mse(mask, model_output, gt):
     #l1_cost = l1_reg * torch.abs(kspace_output).sum()
 
     # add a kspace domain loss:
-    kspace_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
+    kspace_weight = 1/(128*128)*10000 # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
 
     kspace_loss = ((torch.real(cplx_diff))**2).sum() + ((torch.imag(cplx_diff))**2).sum()
     kspace_loss = kspace_loss * kspace_weight
