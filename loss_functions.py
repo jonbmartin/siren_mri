@@ -76,7 +76,7 @@ def image_mse(mask, model_output, gt, high_freq=True):
     if high_freq:
         mask = utils.create_circular_mask_torch(129, 129,center=None, radius=20)
         mask = 1-mask
-        mask = 100 * mask.to(cplx_diff.device)
+        mask = 1 * mask.to(cplx_diff.device)
         cplx_diff = cplx_diff * mask
 
     # add a kspace domain loss:
