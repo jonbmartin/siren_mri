@@ -69,6 +69,11 @@ def image_mse(mask, model_output, gt, high_freq=True):
     kspace_output_real = dataio.lin2img(model_output['model_out'])
 
     kspace_gt_real = dataio.lin2img(gt['img'])
+
+    # transform
+    kspace_output_real = torch.asinh(400*kspace_output_real)/6.7
+    kspace_gt_real = torch.asinh(400*kspace_gt_real)/6.7
+
     kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
     kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
     cplx_diff = kspace_pred-kspace_gt
