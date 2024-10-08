@@ -63,7 +63,7 @@ def image_mse_cubic(mask, model_output, gt):
     else:
         return {'img_loss': (kspace_loss)}
 
-def image_mse(mask, model_output, gt):
+def image_mse(mask, model_output, gt, high_freq=True):
     # SAME as below, but no image domain loss/ fourier transforms 
 
     kspace_output_real = dataio.lin2img(model_output['model_out'])
@@ -72,9 +72,11 @@ def image_mse(mask, model_output, gt):
     kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
     kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
     cplx_diff = kspace_pred-kspace_gt
-    # add l1 reg in kspace dim to encourage sparsity
-    #l1_reg = 0
-    #l1_cost = l1_reg * torch.abs(kspace_output).sum()
+
+    if high_freq:
+        mask = utils.create_circular_mask_torch(128, 128,center=None, radius=20)
+        mask = 1-mask
+        cplx_diff = cplx_diff * mask
 
     # add a kspace domain loss:
     kspace_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred

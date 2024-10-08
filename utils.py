@@ -22,7 +22,21 @@ def safe_sign(x):
 
     return torch.nan_to_num(torch.sign(x))
     
+def create_circular_mask_torch(h, w, center=None, radius=None):
+    # defaults to a low-frequency mask
+
+    if center is None: # use the middle of the image
+        center = (int(w/2), int(h/2))
+    if radius is None: # use the smallest distance between the center and image walls
+        radius = min(center[0], center[1], w-center[0], h-center[1])
     
+    y = torch.arange(1,h)
+    x = torch.arange(1,w)
+    Y, X = torch.meshgrid(y, x)
+    dist_from_center = torch.sqrt((X - center[0])**2 + (Y-center[1])**2)
+
+    mask = dist_from_center <= radius
+    return mask
 
 
 def write_result_img(experiment_name, filename, img):
