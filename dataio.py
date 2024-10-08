@@ -904,7 +904,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 mask = torch.zeros_like(spatial_img)
                 ny = mask.shape[1]
                 mask[:,row_inds[0:int(0.3333*ny)],:] = 1
-                circ_mask = utils.create_circular_mask_torch(128, 128, center=None,radius=20)
+                circ_mask = utils.create_circular_mask_torch(129, 129, center=None,radius=20)
                 circ_mask = 1 - circ_mask
                 img_sparse = circ_mask * mask * spatial_img
             elif self.test_sparsity == 'CS_cartesian_noACS':
