@@ -74,7 +74,7 @@ def image_mse(mask, model_output, gt, high_freq=True):
     cplx_diff = kspace_pred-kspace_gt
 
     if high_freq:
-        mask = utils.create_circular_mask_torch(128, 128,center=None, radius=20)
+        mask = utils.create_circular_mask_torch(129, 129,center=None, radius=20)
         mask = 1-mask
         cplx_diff = cplx_diff * mask
 
