@@ -113,7 +113,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         num_conv_res_blocks=5
     elif config =='hyperoptIV_homebrew':
         num_fourier_features = 60
-        kl_weight = 2.78e-6
+        kl_weight = 2.78e-7
         fw_weight = 6.4e-6 # JBM was e-5
         lr = 5.57e-5 # JBM was e-5 
         fourier_features_scale = 21
@@ -151,7 +151,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     # TODO: right now, test_sparsity= ... overwrites train sparsity for training. using this to get CS
     generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                             train_sparsity_range=train_sparsity_range,
-                                                            test_sparsity= 'CS_cartesian',
+                                                            test_sparsity= 'CS_cartesian_no_low_freq',
                                                             generalization_mode=gmode,
                                                             device=rank)
 
@@ -163,7 +163,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
     generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
                                                             train_sparsity_range=train_sparsity_range,
-                                                            test_sparsity= 'CS_cartesian',
+                                                            test_sparsity= 'CS_cartesian_no_low_freq',
                                                             generalization_mode=gmode,
                                                             device=rank)
     dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=batch_size,
