@@ -33,7 +33,8 @@ class Sine(nn.Module):
 
     def forward(self, input):
         # See paper sec. 3.2, final paragraph, and supplement Sec. 1.5 for discussion of factor 30
-        return torch.sin(30 * input)
+        #return torch.sin(30 * input)
+        return torch.sin(60 * input)
 
 class FCBlock(MetaModule):
     '''A fully connected neural network that also allows swapping out the weights when used with a hypernetwork.
