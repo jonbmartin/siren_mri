@@ -36,6 +36,7 @@ def create_circular_mask_torch(h, w, center=None, radius=None):
     dist_from_center = torch.sqrt((X - center[0])**2 + (Y-center[1])**2)
 
     mask = dist_from_center <= radius
+    mask = mask.long()
     return mask
 
 
