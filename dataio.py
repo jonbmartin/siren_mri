@@ -19,6 +19,7 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize
 import sys
+import utils
 
 from features import AsinhTransform
 
@@ -895,6 +896,17 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 mask[:,row_inds[0:int(0.3333*ny)],:] = 1
                 mask[:,int(ny/2-4):int(ny/2+4),:] = 1
                 img_sparse = mask * spatial_img
+
+            elif self.test_sparsity == 'CS_cartesian_no_low_freq':
+                #print('Using a CS Cartesian mask!')
+                row_inds = [int(number) for number in range(spatial_img.size(1))]
+                random.shuffle(row_inds)
+                mask = torch.zeros_like(spatial_img)
+                ny = mask.shape[1]
+                mask[:,row_inds[0:int(0.3333*ny)],:] = 1
+                circ_mask = utils.create_circular_mask_torch(129, 129, center=None,radius=20)
+                circ_mask = 1 - circ_mask
+                img_sparse = circ_mask * mask * spatial_img
             elif self.test_sparsity == 'CS_cartesian_noACS':
                 #print('Using a CS Cartesian mask!')
                 row_inds = [int(number) for number in range(spatial_img.size(1))]

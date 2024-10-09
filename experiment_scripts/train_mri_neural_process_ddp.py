@@ -112,10 +112,10 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         conv_kernel_size = 7
         num_conv_res_blocks=5
     elif config =='hyperoptIV_homebrew':
-        num_fourier_features = 60
+        num_fourier_features = 8
         kl_weight = 2.78e-8
-        fw_weight = 6.4e-4 # JBM was e-5
-        lr = 5.57e-5 # JBM was e-5 
+        fw_weight = 6.4e-6 # JBM was e-5
+        lr = 5.57e-5 # JBM was e-5 # increased to -3
         fourier_features_scale = 21
         latent_dim = 128
         hidden_features_hyper = 128
@@ -125,6 +125,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         partial_conv=False
         conv_kernel_size = 7
         num_conv_res_blocks=5
+        w0 = 30
     elif config =='hyperopt_asinh':
         num_fourier_features = 103
         kl_weight = 2.08e-9 #1.3e-5
@@ -139,7 +140,36 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         partial_conv=False
         conv_kernel_size = 7
         num_conv_res_blocks= 6
-
+    elif config =='hyperopt_highfreq':
+        num_fourier_features = 228
+        kl_weight = 1.35e-8 #1.3e-5
+        fw_weight = 2.6e-6 # JBM was e-5
+        lr = 1.35e-6 # JBM was e-5 
+        fourier_features_scale = 21
+        latent_dim = 64
+        hidden_features_hyper = 256
+        hidden_layers_hyper = 2
+        hidden_layers = 4 # was 1
+        hidden_features = 512
+        partial_conv=False
+        conv_kernel_size = 7
+        num_conv_res_blocks= 3
+        w0=30
+    elif config =='hyperoptIV_homebrew_small':
+        num_fourier_features = 60
+        kl_weight = 2.78e-8
+        fw_weight = 6.4e-6 # JBM was e-5
+        lr = 5.57e-5 # JBM was e-5 
+        fourier_features_scale = 21
+        latent_dim = 128
+        hidden_features_hyper = 128
+        hidden_layers_hyper = 2
+        hidden_layers = 3 # was 1
+        hidden_features = 256
+        partial_conv=False
+        conv_kernel_size = 3
+        num_conv_res_blocks=3
+        w0=30
 
     image_resolution = (128, 128)
     use_fourier_features = True
@@ -182,7 +212,8 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
                                                                     num_hidden_layers=hidden_layers,
                                                                     partial_conv=partial_conv,
                                                                     conv_kernel_size=conv_kernel_size,
-                                                                    num_conv_res_blocks=num_conv_res_blocks)
+                                                                    num_conv_res_blocks=num_conv_res_blocks,
+                                                                    w0=w0)
         else:
             model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
                                                                             out_features=img_dataset.img_channels,
@@ -242,7 +273,7 @@ if __name__ == "__main__":
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
-    num_fourier_features = 60
+    num_fourier_features = 8
     fourier_features_scale = 21
     device = 1
     resume_from_save = False

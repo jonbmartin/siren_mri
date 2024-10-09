@@ -69,21 +69,32 @@ def image_mse(mask, model_output, gt, high_freq=True):
     kspace_output_real = dataio.lin2img(model_output['model_out'])
 
     kspace_gt_real = dataio.lin2img(gt['img'])
-    kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
-    kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
-    cplx_diff = kspace_pred-kspace_gt
+
+    # transform
+    #kspace_output_real = torch.asinh(400*kspace_output_real)/6.7
+    #kspace_gt_real = torch.asinh(400*kspace_gt_real)/6.7
+
+    #kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
+    #kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
+    #cplx_diff = kspace_pred-kspace_gt
 
     if high_freq:
-        mask = utils.create_circular_mask_torch(129, 129,center=None, radius=20)
-        mask = 1-mask
-        mask = 10 * mask.to(cplx_diff.device)
-        cplx_diff = cplx_diff * mask
+        high_freq_mask = utils.create_circular_mask_torch(129, 129,center=None, radius=20)
+        high_freq_mask = 1-high_freq_mask
+        high_freq_mask = 1 * high_freq_mask.to(kspace_gt_real.device)
+        #cplx_diff = cplx_diff * mask
 
     # add a kspace domain loss:
     kspace_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
 
-    kspace_loss = ((torch.real(cplx_diff))**2).sum() + ((torch.imag(cplx_diff))**2).sum()
+    #kspace_loss = ((torch.real(cplx_diff))**2).sum() + ((torch.imag(cplx_diff))**2).sum()
+    if high_freq:
+        kspace_loss = (torch.abs(high_freq_mask*(kspace_output_real-kspace_gt_real))**2).sum()
+    else:
+        kspace_loss = (torch.abs((kspace_output_real-kspace_gt_real))**2).sum()
+    #print(f'kspace loss (unweighted): {kspace_loss}')
     kspace_loss = kspace_loss * kspace_weight
+
     if mask is None:
         return {'img_loss': (kspace_loss)}
     else:
