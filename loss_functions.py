@@ -92,7 +92,7 @@ def image_mse(mask, model_output, gt, high_freq=False):
         kspace_loss = (torch.abs(high_freq_mask*(kspace_output_real-kspace_gt_real))**2).sum()
     else:
         kspace_loss = (torch.abs((kspace_output_real-kspace_gt_real))**2).sum()
-    print(f'kspace loss (unweighted): {kspace_loss}')
+    #print(f'kspace loss (unweighted): {kspace_loss}')
     kspace_loss = kspace_loss * kspace_weight
 
     if mask is None:
