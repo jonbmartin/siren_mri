@@ -31,18 +31,26 @@ def objective(trial, device_id):
     partial_conv = False
 
     # hyperopt parameters
-    num_fourier_features = trial.suggest_int('num_fourier_features', 4, 256)
-    latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024])
-    kernel_size = trial.suggest_categorical('conv_kernel_size', [3, 5, 7])
-    hidden_features = trial.suggest_categorical('hidden_features', [64, 128, 256, 512])
-    hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512])
-    hidden_layers = trial.suggest_int('hidden_layers', 1,7)
-    hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,3)
+    #num_fourier_features = trial.suggest_int('num_fourier_features', 4, 256)
+    num_fourier_features=60
+    #latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024])
+    latent_dim=128
+    #kernel_size = trial.suggest_categorical('conv_kernel_size', [3, 5, 7])
+    kernel_size=7
+    #hidden_features = trial.suggest_categorical('hidden_features', [64, 128, 256, 512])
+    hidden_features=256
+    #hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512])
+    hidden_features_hyper=128
+    #hidden_layers = trial.suggest_int('hidden_layers', 1,7)
+    hidden_layers=3
+    #hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,3)
+    hidden_layers_hyper=1
     lr = trial.suggest_float('lr', 1e-6, 1e-2, log=True)
-    kl_weight = trial.suggest_float('kl_weight', 1e-9, 1e-1, log=True)
-    fw_weight = trial.suggest_float('fw_weight', 1e-9, 1e-1, log=True)
-    fourier_feat_scale = trial.suggest_float('fourier_scale', 5, 40, log=False)
-    num_conv_res_blocks = trial.suggest_int('num_conv_res_blocks', 1,6)
+    kl_weight = trial.suggest_float('kl_weight', 1e-8, 1e-1, log=True)
+    fw_weight = trial.suggest_float('fw_weight', 1e-8, 1e-1, log=True)
+    fourier_feat_scale = trial.suggest_float('fourier_scale', 1, 100, log=False)
+    #num_conv_res_blocks = trial.suggest_int('num_conv_res_blocks', 1,6)
+    num_conv_res_blocks=4
     w0 = trial.suggest_float('w0',1,100)
     #accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
     accumulation_steps=32
@@ -53,7 +61,7 @@ def objective(trial, device_id):
 
     generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                             train_sparsity_range=train_sparsity_range,
-                                                            test_sparsity= 'CS_cartesian_noACS',
+                                                            test_sparsity= 'CS_cartesian',
                                                             generalization_mode=gmode,
                                                             device=device)
 
@@ -65,7 +73,7 @@ def objective(trial, device_id):
     coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
     generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
                                                             train_sparsity_range=train_sparsity_range,
-                                                            test_sparsity= 'CS_cartesian_noACS',
+                                                            test_sparsity= 'CS_cartesian',
                                                             generalization_mode=gmode,
                                                             device=device)
     dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=batch_size,
@@ -122,7 +130,7 @@ def objective(trial, device_id):
 if __name__ == "__main__":
     study = optuna.load_study(
         storage = "sqlite:///db.sqlite3_test",
-        study_name = 'hyperopt_w0_trial3')
+        study_name = 'hyperopt_reg_params')
     
     p = configargparse.ArgumentParser()
     p.add('-d', '--device_id', required=True, help='CUDA device ID.')
