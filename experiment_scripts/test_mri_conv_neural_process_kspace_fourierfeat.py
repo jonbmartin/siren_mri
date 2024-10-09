@@ -181,7 +181,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
 # Record the fourier feature transform matrix
 #fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
 # TODO this needs to be more automatic
-savepath = './logs/'+'DDP_RESET_high_freq_training'+'/current_B_DDP_mp4.pt'
+savepath = './logs/'+'DDP_RESET_high_freq_training'+'/current_B_DDP_mp1.pt'
 fourier_transformer.load_B(savepath)
 print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
 

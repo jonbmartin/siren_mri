@@ -114,7 +114,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     elif config =='hyperoptIV_homebrew':
         num_fourier_features = 60
         kl_weight = 2.78e-8
-        fw_weight = 6.4e-5 # JBM was e-5
+        fw_weight = 6.4e-4 # JBM was e-5
         lr = 5.57e-5 # JBM was e-5 
         fourier_features_scale = 21
         latent_dim = 128
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     import sys
     total_epochs = 200
     save_every = 5
-    world_size = 6 #torch.cuda.device_count()
+    world_size = 5 #torch.cuda.device_count()
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
