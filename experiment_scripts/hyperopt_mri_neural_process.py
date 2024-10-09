@@ -19,7 +19,7 @@ def objective(trial, device_id):
 
     # fixed parameters
     n_trials = 1
-    batch_size = 32 # with accumulation steps =16, this is an effective batch size of 64
+    batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
     device = torch.device(device_id)  # or whatever device/cpu you like
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
@@ -50,10 +50,10 @@ def objective(trial, device_id):
     fw_weight = trial.suggest_float('fw_weight', 1e-8, 1e-1, log=True)
     fourier_feat_scale = trial.suggest_float('fourier_scale', 1, 100, log=False)
     #num_conv_res_blocks = trial.suggest_int('num_conv_res_blocks', 1,6)
-    num_conv_res_blocks=4
+    num_conv_res_blocks=3
     w0 = trial.suggest_float('w0',1,100)
     #accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
-    accumulation_steps=4
+    accumulation_steps=32
 
     
     img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
@@ -130,7 +130,7 @@ def objective(trial, device_id):
 if __name__ == "__main__":
     study = optuna.load_study(
         storage = "sqlite:///db.sqlite3_test",
-        study_name = 'hyperopt_reg_params_trial2')
+        study_name = 'hyperopt_reg_params_trial3')
     
     p = configargparse.ArgumentParser()
     p.add('-d', '--device_id', required=True, help='CUDA device ID.')
