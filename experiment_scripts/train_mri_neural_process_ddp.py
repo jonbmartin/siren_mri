@@ -269,7 +269,7 @@ if __name__ == "__main__":
     import sys
     total_epochs = 200
     save_every = 5
-    world_size = 5 #torch.cuda.device_count()
+    world_size = 4 #torch.cuda.device_count()
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
