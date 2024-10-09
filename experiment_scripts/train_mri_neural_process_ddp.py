@@ -147,8 +147,8 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         fourier_features_scale = 21
         latent_dim = 64
         hidden_features_hyper = 256
-        hidden_layers_hyper = 1
-        hidden_layers = 7 # was 1
+        hidden_layers_hyper = 2
+        hidden_layers = 4 # was 1
         hidden_features = 512
         partial_conv=False
         conv_kernel_size = 7
