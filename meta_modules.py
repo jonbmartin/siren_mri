@@ -199,6 +199,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         if model_input.get('embedding', None) is None:
             # image domain embedding: 
             img_complex = model_input['img_sparse']
+            print(np.shape(img_complex))
             img_complex = img_complex[0,:,:] + 1j* img_complex[1,:,:]
             img_complex = torch.fft.ifft2(img_complex)
             print(np.shape(img_complex))
