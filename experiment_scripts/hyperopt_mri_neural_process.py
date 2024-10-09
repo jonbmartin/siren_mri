@@ -32,17 +32,18 @@ def objective(trial, device_id):
 
     # hyperopt parameters
     num_fourier_features = trial.suggest_int('num_fourier_features', 4, 256)
-    latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024, 2048])
+    latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024])
     kernel_size = trial.suggest_categorical('conv_kernel_size', [3, 5, 7])
-    hidden_features = trial.suggest_categorical('hidden_features', [64, 128, 256, 512, 1024])
-    hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512, 1024])
-    hidden_layers = trial.suggest_int('hidden_layers', 1,5)
+    hidden_features = trial.suggest_categorical('hidden_features', [64, 128, 256, 512])
+    hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512])
+    hidden_layers = trial.suggest_int('hidden_layers', 1,7)
     hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,3)
     lr = trial.suggest_float('lr', 1e-6, 1e-2, log=True)
     kl_weight = trial.suggest_float('kl_weight', 1e-9, 1e-1, log=True)
     fw_weight = trial.suggest_float('fw_weight', 1e-9, 1e-1, log=True)
     fourier_feat_scale = trial.suggest_float('fourier_scale', 5, 40, log=False)
     num_conv_res_blocks = trial.suggest_int('num_conv_res_blocks', 1,6)
+    w0 = trial.suggest_float('w0',1,100)
     #accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
     accumulation_steps=32
 
@@ -97,7 +98,8 @@ def objective(trial, device_id):
                                                         num_hidden_layers=hidden_layers,
                                                         partial_conv=partial_conv,
                                                         conv_kernel_size=kernel_size,
-                                                        num_conv_res_blocks=num_conv_res_blocks)
+                                                        num_conv_res_blocks=num_conv_res_blocks, 
+                                                        w0=w0)
             model.cuda(device)
 
             print(f'Parameter Hyperopt trial #: {ii}')
@@ -120,7 +122,7 @@ def objective(trial, device_id):
 if __name__ == "__main__":
     study = optuna.load_study(
         storage = "sqlite:///db.sqlite3_test",
-        study_name = 'test_asinh_in_loss')
+        study_name = 'hyperopt_w0')
     
     p = configargparse.ArgumentParser()
     p.add('-d', '--device_id', required=True, help='CUDA device ID.')
