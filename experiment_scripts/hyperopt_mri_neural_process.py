@@ -25,7 +25,7 @@ def objective(trial, device_id):
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
     experiment_name = 'hyperopt'
-    num_epochs = 5
+    num_epochs = 8
     steps_til_summary = 1000
     gmode = 'conv_cnp'
     partial_conv = False
