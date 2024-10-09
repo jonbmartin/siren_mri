@@ -273,7 +273,7 @@ if __name__ == "__main__":
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
-    num_fourier_features = 60
+    num_fourier_features = 16
     fourier_features_scale = 21
     device = 1
     resume_from_save = False
