@@ -49,7 +49,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     ddp_setup(rank, world_size)
 
     # CONFIG. TODO: transition to config.yml
-    config = 'hyperopt_highfreq'
+    config = 'hyperoptIV_homebrew_small'
     if config=='default_manual':
         num_fourier_features = 30
         kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -153,6 +153,21 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         partial_conv=False
         conv_kernel_size = 7
         num_conv_res_blocks= 3
+        w0=30
+    elif config =='hyperoptIV_homebrew_small':
+        num_fourier_features = 60
+        kl_weight = 2.78e-8
+        fw_weight = 6.4e-6 # JBM was e-5
+        lr = 5.57e-5 # JBM was e-5 
+        fourier_features_scale = 21
+        latent_dim = 128
+        hidden_features_hyper = 128
+        hidden_layers_hyper = 2
+        hidden_layers = 3 # was 1
+        hidden_features = 256
+        partial_conv=False
+        conv_kernel_size = 3
+        num_conv_res_blocks=3
         w0=30
 
     image_resolution = (128, 128)
