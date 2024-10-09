@@ -50,7 +50,7 @@ assert opt.dataset == 'mri_image'
 image_resolution = (128, 128)
 
 # CONFIG. TODO: transition to config.yml
-config = 'hyperoptIV'
+config = 'hyperopt_highfreq'
 if config=='default_manual':
     num_fourier_features = 30
     kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -140,6 +140,21 @@ elif config =='hyperopt_asinh':
     partial_conv=False
     conv_kernel_size = 7
     num_conv_res_blocks= 6
+elif config =='hyperopt_highfreq':
+    num_fourier_features = 228
+    kl_weight = 1.35e-8 #1.3e-5
+    fw_weight = 2.6e-6 # JBM was e-5
+    lr = 1.35e-6 # JBM was e-5 
+    fourier_features_scale = 21
+    latent_dim = 64
+    hidden_features_hyper = 256
+    hidden_layers_hyper = 2
+    hidden_layers = 4 # was 1
+    hidden_features = 512
+    partial_conv=False
+    conv_kernel_size = 7
+    num_conv_res_blocks= 3
+    w0=30
 
 device = 'cuda:5'
 
@@ -181,7 +196,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
 # Record the fourier feature transform matrix
 #fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
 # TODO this needs to be more automatic
-savepath = './logs/'+'DDP_RESET_high_freq_training'+'/current_B_DDP_mp4.pt'
+savepath = './logs/'+'DDP_RESET_high_freq_training'+'/current_B_DDP_mp2.pt'
 fourier_transformer.load_B(savepath)
 print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
 
