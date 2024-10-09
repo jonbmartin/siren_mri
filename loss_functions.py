@@ -88,7 +88,10 @@ def image_mse(mask, model_output, gt, high_freq=False):
     kspace_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
 
     #kspace_loss = ((torch.real(cplx_diff))**2).sum() + ((torch.imag(cplx_diff))**2).sum()
-    kspace_loss = (torch.abs(high_freq_mask*(kspace_output_real-kspace_gt_real))**2).sum()
+    if high_freq:
+        kspace_loss = (torch.abs(high_freq_mask*(kspace_output_real-kspace_gt_real))**2).sum()
+    else:
+        kspace_loss = (torch.abs((kspace_output_real-kspace_gt_real))**2).sum()
     print(f'kspace loss (unweighted): {kspace_loss}')
     kspace_loss = kspace_loss * kspace_weight
 
