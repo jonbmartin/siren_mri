@@ -63,7 +63,7 @@ def image_mse_cubic(mask, model_output, gt):
     else:
         return {'img_loss': (kspace_loss)}
 
-def image_mse(mask, model_output, gt, high_freq=True):
+def image_mse(mask, model_output, gt, high_freq=False):
     # SAME as below, but no image domain loss/ fourier transforms 
 
     kspace_output_real = dataio.lin2img(model_output['model_out'])
