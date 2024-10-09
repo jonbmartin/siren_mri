@@ -19,7 +19,7 @@ def objective(trial, device_id):
 
     # fixed parameters
     n_trials = 1
-    batch_size = 32 # with accumulation steps =16, this is an effective batch size of 64
+    batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
     device = torch.device(device_id)  # or whatever device/cpu you like
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
@@ -53,7 +53,7 @@ def objective(trial, device_id):
     num_conv_res_blocks=4
     w0 = trial.suggest_float('w0',1,100)
     #accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
-    accumulation_steps=4
+    accumulation_steps=32
 
     
     img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
