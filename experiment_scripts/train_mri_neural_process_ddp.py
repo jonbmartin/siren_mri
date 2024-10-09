@@ -139,7 +139,21 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         partial_conv=False
         conv_kernel_size = 7
         num_conv_res_blocks= 6
-
+    elif config =='hyperopt_highfreq':
+        num_fourier_features = 228
+        kl_weight = 1.35e-8 #1.3e-5
+        fw_weight = 2.6e-6 # JBM was e-5
+        lr = 1.35e-6 # JBM was e-5 
+        fourier_features_scale = 21
+        latent_dim = 64
+        hidden_features_hyper = 256
+        hidden_layers_hyper = 1
+        hidden_layers = 7 # was 1
+        hidden_features = 512
+        partial_conv=False
+        conv_kernel_size = 7
+        num_conv_res_blocks= 3
+        w0=87
 
     image_resolution = (128, 128)
     use_fourier_features = True
@@ -183,7 +197,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
                                                                     partial_conv=partial_conv,
                                                                     conv_kernel_size=conv_kernel_size,
                                                                     num_conv_res_blocks=num_conv_res_blocks,
-                                                                    w0=30)
+                                                                    w0=w0)
         else:
             model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
                                                                             out_features=img_dataset.img_channels,
