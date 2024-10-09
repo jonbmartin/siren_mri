@@ -49,7 +49,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     ddp_setup(rank, world_size)
 
     # CONFIG. TODO: transition to config.yml
-    config = 'hyperoptIV_homebrew_small'
+    config = 'hyperoptIV_homebrew'
     if config=='default_manual':
         num_fourier_features = 30
         kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -125,6 +125,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         partial_conv=False
         conv_kernel_size = 7
         num_conv_res_blocks=5
+        w0 = 30
     elif config =='hyperopt_asinh':
         num_fourier_features = 103
         kl_weight = 2.08e-9 #1.3e-5
@@ -268,7 +269,7 @@ if __name__ == "__main__":
     import sys
     total_epochs = 200
     save_every = 5
-    world_size = 4 #torch.cuda.device_count()
+    world_size = 5 #torch.cuda.device_count()
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
