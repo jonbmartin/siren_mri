@@ -50,7 +50,7 @@ def objective(trial, device_id):
     fw_weight = trial.suggest_float('fw_weight', 1e-8, 1e-1, log=True)
     fourier_feat_scale = trial.suggest_float('fourier_scale', 1, 100, log=False)
     #num_conv_res_blocks = trial.suggest_int('num_conv_res_blocks', 1,6)
-    num_conv_res_blocks=4
+    num_conv_res_blocks=3
     w0 = trial.suggest_float('w0',1,100)
     #accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
     accumulation_steps=32
