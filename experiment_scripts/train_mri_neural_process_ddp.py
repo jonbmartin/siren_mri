@@ -112,7 +112,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         conv_kernel_size = 7
         num_conv_res_blocks=5
     elif config =='hyperoptIV_homebrew':
-        num_fourier_features = 60
+        num_fourier_features = 8
         kl_weight = 2.78e-8
         fw_weight = 6.4e-6 # JBM was e-5
         lr = 5.57e-5 # JBM was e-5 # increased to -3
