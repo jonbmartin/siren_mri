@@ -17,7 +17,7 @@ elif split =='val_small':
     dir = 'multicoil_val_recon_small/'
     newdir = 'multicoil_train_recon_byslice/'
 
-root = '../../fastMRIdata/' + dir
+root = '../fastMRIdata/' + dir
 filenames = os.listdir(root)
 
 for ii in range(len(filenames)):
