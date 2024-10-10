@@ -14,7 +14,6 @@ from features import GaussianFourierFeatureTransform
 import optuna
 
 
-
 def objective(trial, device_id):
 
     # fixed parameters
