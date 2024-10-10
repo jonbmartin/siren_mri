@@ -50,7 +50,7 @@ assert opt.dataset == 'mri_image'
 image_resolution = (128, 128)
 
 # CONFIG. TODO: transition to config.yml
-config = 'hyperoptIV_homebrew_small'
+config = 'from_early_expt'
 if config=='default_manual':
     num_fourier_features = 30
     kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -155,19 +155,19 @@ elif config =='hyperopt_highfreq':
     conv_kernel_size = 7
     num_conv_res_blocks= 3
     w0=30
-elif config =='hyperoptIV_homebrew_small':
-    num_fourier_features = 60
+elif config =='from_early_expt':
+    num_fourier_features = 512
     kl_weight = 2.78e-8
-    fw_weight = 6.4e-6 # JBM was e-5
-    lr = 5.57e-5 # JBM was e-5 
-    fourier_features_scale = 21
+    fw_weight = 1e-6
+    lr = 5.e-5
+    fourier_features_scale = 10
     latent_dim = 128
-    hidden_features_hyper = 128
+    hidden_features_hyper = 256
     hidden_layers_hyper = 2
-    hidden_layers = 3 # was 1
-    hidden_features = 256
+    hidden_layers = 6
+    hidden_features = 64
     partial_conv=False
-    conv_kernel_size = 3
+    conv_kernel_size = 5
     num_conv_res_blocks=3
     w0=30
 
@@ -200,7 +200,7 @@ model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures
                                                         num_hidden_layers=hidden_layers,
                                                         partial_conv=partial_conv,
                                                         num_conv_res_blocks=num_conv_res_blocks,
-                                                        conv_kernel_size=conv_kernel_size)
+                                                        conv_kernel_size=conv_kernel_size, w0=w0)
 model.cuda()
 model.eval()
 
@@ -211,7 +211,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
 # Record the fourier feature transform matrix
 #fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
 # TODO this needs to be more automatic
-savepath = './logs/'+'DDP_RESET_high_freq_training'+'/current_B_DDP_mp2.pt'
+savepath = './logs/'+'DDP_RESET_low_res'+'/current_B_DDP_mp2.pt'
 fourier_transformer.load_B(savepath)
 print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
 
