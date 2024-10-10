@@ -32,7 +32,6 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     # fixed parameters
     batch_size = 24 # with accumulation steps =16, this is an effective batch size of 96 (16*6)
     accumulation_steps = 1
-    image_resolution = (64, 64)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
     num_epochs = total_epochs
@@ -49,7 +48,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     ddp_setup(rank, world_size)
 
     # CONFIG. TODO: transition to config.yml
-    config = 'hyperoptIV_homebrew'
+    config = 'from_early_expt'
     if config=='default_manual':
         num_fourier_features = 30
         kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -155,19 +154,19 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         conv_kernel_size = 7
         num_conv_res_blocks= 3
         w0=30
-    elif config =='hyperoptIV_homebrew_small':
-        num_fourier_features = 60
+    elif config =='from_early_expt':
+        num_fourier_features = 512
         kl_weight = 2.78e-8
-        fw_weight = 6.4e-6 # JBM was e-5
-        lr = 5.57e-5 # JBM was e-5 
-        fourier_features_scale = 21
+        fw_weight = 1e-6
+        lr = 5.e-5
+        fourier_features_scale = 10
         latent_dim = 128
-        hidden_features_hyper = 128
+        hidden_features_hyper = 256
         hidden_layers_hyper = 2
-        hidden_layers = 3 # was 1
-        hidden_features = 256
+        hidden_layers = 6
+        hidden_features = 64
         partial_conv=False
-        conv_kernel_size = 3
+        conv_kernel_size = 5
         num_conv_res_blocks=3
         w0=30
 
