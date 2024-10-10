@@ -589,7 +589,7 @@ class FastMRIBrainKspace(Dataset):
 
         self.root = '../../fastMRIdata/'
         self.img_channels = 2
-        self._nframes = 3 # JBM The max you can push this is up to 10ish. Maybe try smaller 
+        self._nframes = 10 # JBM The max you can push this is up to 10ish. Maybe try smaller 
 
         self.downsampled = downsampled
 
