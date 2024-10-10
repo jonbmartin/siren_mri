@@ -612,6 +612,7 @@ class FastMRIBrainKspace(Dataset):
             f = h5py.File(self.root + filename, "r")
             # return data as numpy array
             data = f['reconstruction'][()]
+            f.close()
             slices, width, height = np.shape(data)
             for jj in range(slices):
                 self.slice_list.append((filename, jj))
