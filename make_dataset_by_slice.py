@@ -31,7 +31,7 @@ for ii in range(len(filenames)):
     slices, width, height = np.shape(data)
 
     for ss in range(slices):
-        with h5py.File(root+newdir+'slice_'+str(ss)+"_"+filenames[ii], 'w') as f:
+        with h5py.File('../fastMRIdata/'+newdir+'slice_'+str(ss)+"_"+filenames[ii], 'w') as f:
             data = f.create_dataset("reconstruction",data[ss,:,:], dtype='float32')
             f.close()
 
