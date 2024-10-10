@@ -21,7 +21,7 @@ def objective(trial, device_id):
     n_trials = 1
     batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
     device = torch.device(device_id)  # or whatever device/cpu you like
-    image_resolution = (128, 128)
+    image_resolution = (64, 64)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
     experiment_name = 'hyperopt'
@@ -38,7 +38,7 @@ def objective(trial, device_id):
     hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512, 1024])
     hidden_layers = trial.suggest_int('hidden_layers', 1,5)
     hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,3)
-    lr = trial.suggest_float('lr', 1e-6, 1e-2, log=True)
+    lr = trial.suggest_float('lr', 1e-7, 1e-4, log=True) # Generally see instability above e-4
     kl_weight = trial.suggest_float('kl_weight', 1e-9, 1e-1, log=True)
     fw_weight = trial.suggest_float('fw_weight', 1e-9, 1e-1, log=True)
     fourier_feat_scale = trial.suggest_float('fourier_scale', 5, 40, log=False)
