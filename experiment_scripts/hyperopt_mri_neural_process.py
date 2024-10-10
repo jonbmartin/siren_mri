@@ -14,14 +14,13 @@ from features import GaussianFourierFeatureTransform
 import optuna
 
 
-
 def objective(trial, device_id):
 
     # fixed parameters
     n_trials = 1
     batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
     device = torch.device(device_id)  # or whatever device/cpu you like
-    image_resolution = (128, 128)
+    image_resolution = (64, 64)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
     experiment_name = 'hyperopt'
@@ -31,27 +30,18 @@ def objective(trial, device_id):
     partial_conv = False
 
     # hyperopt parameters
-    #num_fourier_features = trial.suggest_int('num_fourier_features', 4, 256)
-    num_fourier_features=60
-    #latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024])
-    latent_dim=128
-    #kernel_size = trial.suggest_categorical('conv_kernel_size', [3, 5, 7])
-    kernel_size=7
-    #hidden_features = trial.suggest_categorical('hidden_features', [64, 128, 256, 512])
-    hidden_features=256
-    #hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512])
-    hidden_features_hyper=128
-    #hidden_layers = trial.suggest_int('hidden_layers', 1,7)
-    hidden_layers=3
-    #hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,3)
-    hidden_layers_hyper=1
-    lr = trial.suggest_float('lr', 1e-6, 1e-2, log=True)
-    kl_weight = trial.suggest_float('kl_weight', 1e-8, 1e-1, log=True)
-    fw_weight = trial.suggest_float('fw_weight', 1e-8, 1e-1, log=True)
-    fourier_feat_scale = trial.suggest_float('fourier_scale', 1, 100, log=False)
-    #num_conv_res_blocks = trial.suggest_int('num_conv_res_blocks', 1,6)
-    num_conv_res_blocks=3
-    w0 = trial.suggest_float('w0',1,100)
+    num_fourier_features = trial.suggest_int('num_fourier_features', 4, 256)
+    latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024, 2048])
+    kernel_size = trial.suggest_categorical('conv_kernel_size', [3, 5, 7])
+    hidden_features = trial.suggest_categorical('hidden_features', [64, 128, 256, 512, 1024])
+    hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512, 1024])
+    hidden_layers = trial.suggest_int('hidden_layers', 1,5)
+    hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,3)
+    lr = trial.suggest_float('lr', 1e-7, 1e-4, log=True) # Generally see instability above e-4
+    kl_weight = trial.suggest_float('kl_weight', 1e-9, 1e-1, log=True)
+    fw_weight = trial.suggest_float('fw_weight', 1e-9, 1e-1, log=True)
+    fourier_feat_scale = trial.suggest_float('fourier_scale', 5, 40, log=False)
+    num_conv_res_blocks = trial.suggest_int('num_conv_res_blocks', 1,6)
     #accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
     accumulation_steps=32
 
