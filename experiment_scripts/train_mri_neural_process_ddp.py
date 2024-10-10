@@ -272,8 +272,8 @@ if __name__ == "__main__":
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
-    num_fourier_features = 60
-    fourier_features_scale = 21
+    num_fourier_features = 512
+    fourier_features_scale = 10
     device = 1
     resume_from_save = False
     experiment_name = 'DDP_RESET_low_res'
