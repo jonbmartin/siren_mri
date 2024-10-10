@@ -546,7 +546,6 @@ class FastMRIBrain(Dataset):
         self.root = self.root + self.dir
         self.fnames = os.listdir(self.root)
         self.resolution = image_resolution
-        #print(self.fnames)
 
     def __len__(self):
         # JBM: ASSUMING 16 slices per dataset
@@ -583,7 +582,7 @@ class FastMRIBrain(Dataset):
         return data
 
 class FastMRIBrainKspace(Dataset):
-    def __init__(self, split, downsampled=False, image_resolution=(64, 64)):
+    def __init__(self, split, downsampled=False, image_resolution=(128, 128)):
         # SIZE (128 x 128)
         assert split in ['train', 'test', 'val', 'val_small'], "Unknown split"
 
@@ -624,8 +623,8 @@ class FastMRIBrainKspace(Dataset):
         slices, width, height = np.shape(data)
         
         # get slice indices from mod of index
-        # TODO: THIS IS BAD AND IS GOING TO BIAS RESULTS
-        if idx%self._nframes >= np.shape(data)[0]:
+        # TODO: THIS IS BAD AND IS GOING TO BIAS RESULTS TO 0 SLICE 
+        if idx%self._nframes >= slices:
             slice_idx = 0
         else:
             slice_idx = idx%self._nframes
