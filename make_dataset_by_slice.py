@@ -21,7 +21,7 @@ root = '../fastMRIdata/' + dir
 filenames = os.listdir(root)
 
 for ii in range(len(filenames)):
-    f = h5py.File(root + filenames[ii], "r")
+    f = h5py.File(root + filenames[ii], "w")
     
     # return data as numpy array
     data = f['reconstruction'][()]
