@@ -28,6 +28,7 @@ def objective(trial, device_id):
     steps_til_summary = 1000
     gmode = 'conv_cnp'
     partial_conv = False
+    w0 = 30
 
     # hyperopt parameters
     num_fourier_features = trial.suggest_int('num_fourier_features', 4, 256)
