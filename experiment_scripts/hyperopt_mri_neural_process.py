@@ -31,10 +31,10 @@ def objective(trial, device_id):
 
     # hyperopt parameters
     num_fourier_features = trial.suggest_int('num_fourier_features', 4, 256)
-    latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024, 2048])
+    latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024])
     kernel_size = trial.suggest_categorical('conv_kernel_size', [3, 5, 7])
-    hidden_features = trial.suggest_categorical('hidden_features', [64, 128, 256, 512, 1024])
-    hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512, 1024])
+    hidden_features = trial.suggest_categorical('hidden_features', [64, 128, 256, 512])
+    hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512])
     hidden_layers = trial.suggest_int('hidden_layers', 1,5)
     hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,3)
     lr = trial.suggest_float('lr', 1e-7, 1e-4, log=True) # Generally see instability above e-4
