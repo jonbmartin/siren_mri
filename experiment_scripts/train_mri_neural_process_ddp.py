@@ -112,7 +112,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         conv_kernel_size = 7
         num_conv_res_blocks=5
     elif config =='hyperoptIV_homebrew':
-        num_fourier_features = 8
+        num_fourier_features = 60
         kl_weight = 2.78e-8
         fw_weight = 6.4e-6 # JBM was e-5
         lr = 5.57e-5 # JBM was e-5 # increased to -3
@@ -273,7 +273,7 @@ if __name__ == "__main__":
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
-    num_fourier_features = 8
+    num_fourier_features = 60
     fourier_features_scale = 21
     device = 1
     resume_from_save = False
