@@ -604,14 +604,26 @@ class FastMRIBrainKspace(Dataset):
         self.root = self.root + self.dir
         self.fnames = os.listdir(self.root)
         self.resolution = image_resolution
-        #print(self.fnames)
 
+        self.slice_list = []
+
+        for ii in range(len(self.fnames)):
+            filename = self.fnames[ii]
+            f = h5py.File(self.root + filename, "r")
+            # return data as numpy array
+            data = f['reconstruction'][()]
+            slices, width, height = np.shape(data)
+            for jj in range(slices):
+                self.slice_list.append((filename, jj))
+
+            
     def __len__(self):
-        # JBM: ASSUMING 10 slices per dataset
-        return len(self.fnames)*self._nframes
+        return len(self.slice_list)
     
     def __getitem__(self, idx):
-        filename = self.fnames[idx//self._nframes]
+        slice_item = self.slice_list[idx]
+        filename = slice_item[0]
+        slice_idx = slice_item[1]
 
         f = h5py.File(self.root + filename, "r")
         
@@ -622,12 +634,6 @@ class FastMRIBrainKspace(Dataset):
 
         slices, width, height = np.shape(data)
         
-        # get slice indices from mod of index
-        # TODO: THIS IS BAD AND IS GOING TO BIAS RESULTS TO 0 SLICE 
-        if idx%self._nframes >= slices:
-            slice_idx = 0
-        else:
-            slice_idx = idx%self._nframes
         data = np.squeeze(data[slice_idx,:,:])
 
         # crop down size to square
