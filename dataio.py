@@ -607,6 +607,7 @@ class FastMRIBrainKspace(Dataset):
 
         self.slice_list = []
 
+        print(f'Creating {self.dir} file reference structure')
         for ii in range(len(self.fnames)):
             filename = self.fnames[ii]
             f = h5py.File(self.root + filename, "r")
@@ -616,6 +617,7 @@ class FastMRIBrainKspace(Dataset):
             slices, width, height = np.shape(data)
             for jj in range(slices):
                 self.slice_list.append((filename, jj))
+        print(f'Done creating {self.dir} file reference structure')
 
             
     def __len__(self):
