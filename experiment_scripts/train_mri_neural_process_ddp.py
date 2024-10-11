@@ -270,7 +270,7 @@ if __name__ == "__main__":
     import sys
     total_epochs = 200
     save_every = 5
-    world_size = 5 #torch.cuda.device_count()
+    world_size = 7 #torch.cuda.device_count()
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
@@ -278,7 +278,7 @@ if __name__ == "__main__":
     fourier_features_scale = 10
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_RESET_3frame_train'
+    experiment_name = 'DDP_RESET_large_dataset'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
