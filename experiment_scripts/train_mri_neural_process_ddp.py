@@ -161,14 +161,14 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         fw_weight = 1e-6
         lr = 5.e-5
         fourier_features_scale = 10
-        latent_dim = 128
-        hidden_features_hyper = 256
-        hidden_layers_hyper = 5 # try just 1, was 2
+        latent_dim = 256 # best = 128
+        hidden_features_hyper = 256 # best = 256
+        hidden_layers_hyper = 5 # try just 1. 3 gave 0.0011 after 15 epochs
         hidden_layers = 6
         hidden_features = 64
         partial_conv=False
         conv_kernel_size = 5
-        num_conv_res_blocks= 2 # go back to orig paper, was 3
+        num_conv_res_blocks= 3 # go back to orig paper, was 3
         w0=30
 
     image_resolution = (128, 128)
