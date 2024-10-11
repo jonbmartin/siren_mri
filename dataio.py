@@ -616,6 +616,7 @@ class FastMRIBrainKspace(Dataset):
             f.close()
             slices, width, height = np.shape(data)
             for jj in range(slices):
+                print(f'entry: {filename}, slice: {jj}')
                 self.slice_list.append((filename, jj))
         print(f'Done creating {self.dir} file reference structure')
 
