@@ -162,17 +162,17 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         fourier_features_scale = 10
         latent_dim = 128
         hidden_features_hyper = 256
-        hidden_layers_hyper = 2
+        hidden_layers_hyper = 1 # try just 1, was 2
         hidden_layers = 6
         hidden_features = 64
         partial_conv=False
         conv_kernel_size = 5
-        num_conv_res_blocks=3
+        num_conv_res_blocks= 4 # go back to orig paper, was 3
         w0=30
 
     image_resolution = (128, 128)
     use_fourier_features = True
-    img_dataset = dataio.FastMRIBrainKspaceOld(split='train', downsampled=True, image_resolution=image_resolution)
+    img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
     #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
     #img_dataset = dataio.MRIImageDomain(split='train',downsample=True)
     coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False)
@@ -188,7 +188,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
                             pin_memory=False, num_workers=0, sampler=DistributedSampler(generalization_dataset))
 
     # VAL DATASET
-    img_dataset_val = dataio.FastMRIBrainKspaceOld(split='val_small', downsampled=True, image_resolution=image_resolution)
+    img_dataset_val = dataio.FastMRIBrainKspace(split='val_small', downsampled=True, image_resolution=image_resolution)
     coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
     generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
                                                             train_sparsity_range=train_sparsity_range,
