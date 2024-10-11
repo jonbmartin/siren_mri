@@ -255,7 +255,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     #fourier_transformer.load_B('./logs/'+experiment_name+'/current_B_DDP_mp'+str(rank)+'.pt')
     fourier_transformer.save_B(savepath)
     # save an extra copy to be sure it doesn't get overwritten
-    fourier_transformer.save_B('./logs/'+experiment_name+'current_B_DDP_placeholder.pt')
+    fourier_transformer.save_B('./logs/'+experiment_name+'/current_B_DDP_placeholder.pt')
     print(f'rank {rank} successfully loaded B')
 
     training_ddp.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
