@@ -163,7 +163,7 @@ elif config =='from_early_expt':
     fourier_features_scale = 10
     latent_dim = 128
     hidden_features_hyper = 256
-    hidden_layers_hyper = 3 # try just 1, was 2
+    hidden_layers_hyper = 5 # try just 1, was 2
     hidden_layers = 6
     hidden_features = 64
     partial_conv=False
