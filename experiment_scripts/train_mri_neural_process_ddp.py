@@ -159,11 +159,11 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         num_fourier_features = 512
         kl_weight = 2.78e-8
         fw_weight = 1e-6
-        lr = 5.e-3
+        lr = 5.e-5
         fourier_features_scale = 10
         latent_dim = 128
         hidden_features_hyper = 256
-        hidden_layers_hyper = 1 # try just 1, was 2
+        hidden_layers_hyper = 3 # try just 1, was 2
         hidden_layers = 6
         hidden_features = 64
         partial_conv=False
