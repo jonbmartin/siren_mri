@@ -181,11 +181,11 @@ generalization_dataset_test = dataio.ImageGeneralizationWrapper(coord_dataset_te
                                                                 device=device)
 
 #img_dataset_train = dataio.CelebA(split='train', downsampled=True)
-# img_dataset_train = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
-# coord_dataset_train = dataio.Implicit2DWrapper(img_dataset_train, sidelength=image_resolution, image=False)
-# generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_train, test_sparsity=3000,
-#                                                                 generalization_mode='conv_cnp_test',
-#                                                                 device=device)
+img_dataset_train = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
+coord_dataset_train = dataio.Implicit2DWrapper(img_dataset_train, sidelength=image_resolution, image=False)
+generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_train, test_sparsity=3000,
+                                                                generalization_mode='conv_cnp_test',
+                                                                device=device)
 
 # Define the model.
 out_channels = 2
