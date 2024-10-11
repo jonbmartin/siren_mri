@@ -398,6 +398,7 @@ class WaveSource(Dataset):
                                     'squared_slowness': squared_slowness, 'squared_slowness_grid': squared_slowness_grid}
 
 
+
 class PointCloud(Dataset):
     def __init__(self, pointcloud_path, on_surface_points, keep_aspect_ratio=True):
         super().__init__()
@@ -665,6 +666,79 @@ class FastMRIBrainKspace(Dataset):
         kspace_imag = np.imag(kspace)
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
         
+        return np.float32(kspace_stacked)
+
+class FastMRIBrainKspaceOld(Dataset):
+    def __init__(self, split, downsampled=False, image_resolution=(64, 64)):
+        # SIZE (128 x 128)
+        assert split in ['train', 'test', 'val', 'val_small'], "Unknown split"
+
+        self.root = '../../fastMRIdata/'
+        self.img_channels = 2
+        self._nframes = 10
+
+        self.downsampled = downsampled
+
+        if split =='train':
+            self.dir = 'multicoil_train_recon/'
+        elif split =='test':
+            self.dir = 'multicoil_test_recon/'
+        elif split =='val':
+            self.dir = 'multicoil_val_recon/'
+        elif split =='val_small':
+            self.dir = 'multicoil_val_recon_small/'
+
+        self.root = self.root + self.dir
+        self.fnames = os.listdir(self.root)
+        self.resolution = image_resolution
+        #print(self.fnames)
+
+    def __len__(self):
+        # JBM: ASSUMING 10 slices per dataset
+        return len(self.fnames)*self._nframes
+
+    def __getitem__(self, idx):
+        filename = self.fnames[idx//self._nframes]
+
+        f = h5py.File(self.root + filename, "r")
+
+        # return data as numpy array
+        data = f['reconstruction'][()]
+
+        f.close()
+
+        slices, width, height = np.shape(data)
+
+        # get slice indices from mod of index
+        # TODO: THIS IS BAD AND IS GOING TO BIAS RESULTS
+        if idx%self._nframes >= np.shape(data)[0]:
+            slice_idx = 0
+        else:
+            slice_idx = idx%self._nframes
+        data = np.squeeze(data[slice_idx,:,:])
+
+        # crop down size to square
+        s = min(width, height) 
+
+        #s = s + 10 # JBM adding a little padding. Was clipping structure without
+
+        left = (width - s) // 2
+        top = (height - s) // 2
+        right = (width + s) // 2
+        bottom = (height + s) // 2
+
+        data = data[left:right, top:bottom]
+        #data = data * 1000
+
+        data = cv2.resize(data,self.resolution)
+
+        # naive - just pretending a single-channel dataset
+        kspace = np.fft.fftshift(np.fft.fft2(data))
+
+        kspace_real = np.real(kspace)
+        kspace_imag = np.imag(kspace)
+        kspace_stacked = np.dstack((kspace_real, kspace_imag))
+
         # Apply transform here\
         #kspace_stacked_before_tx = kspace_stacked
         #kspace_stacked = AsinhTransform(kspace_stacked)
