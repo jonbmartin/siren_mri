@@ -184,7 +184,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
                                                             generalization_mode=gmode,
                                                             device=rank)
 
-    dataloader = DataLoader(generalization_dataset, shuffle=False, batch_size=batch_size,
+    dataloader = DataLoader(generalization_dataset, shuffle=True, batch_size=batch_size,
                             pin_memory=False, num_workers=0, sampler=DistributedSampler(generalization_dataset))
 
     # VAL DATASET
