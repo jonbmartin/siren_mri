@@ -626,7 +626,7 @@ class FastMRIBrainKspace(Dataset):
     def __getitem__(self, idx):
         slice_item = self.slice_list[idx]
         filename = slice_item[0]
-        slice_idx = slice_item[1]q
+        slice_idx = slice_item[1]
 
         f = h5py.File(self.root + filename, "r")
         
