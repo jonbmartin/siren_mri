@@ -31,7 +31,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
 
     # fixed parameters
     print(B)
-    batch_size = 24 # with accumulation steps =16, this is an effective batch size of 96 (16*6)
+    batch_size = 16 # with accumulation steps =16, this is an effective batch size of 96 (16*6)
     accumulation_steps = 1
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
@@ -159,7 +159,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         num_fourier_features = 512
         kl_weight = 2.78e-8
         fw_weight = 1e-6
-        lr = 5.e-5
+        lr = 5.e-4
         fourier_features_scale = 10
         latent_dim = 128
         hidden_features_hyper = 256
