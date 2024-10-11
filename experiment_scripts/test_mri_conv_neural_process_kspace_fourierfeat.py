@@ -163,12 +163,12 @@ elif config =='from_early_expt':
     fourier_features_scale = 10
     latent_dim = 128
     hidden_features_hyper = 256
-    hidden_layers_hyper = 2
+    hidden_layers_hyper = 1 # try just 1, was 2
     hidden_layers = 6
     hidden_features = 64
     partial_conv=False
     conv_kernel_size = 5
-    num_conv_res_blocks=3
+    num_conv_res_blocks= 2 # go back to orig paper, was 3
     w0=30
 
 device = 'cuda:5'
@@ -211,7 +211,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
 # Record the fourier feature transform matrix
 #fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
 # TODO this needs to be more automatic
-savepath = './logs/'+'DDP_RESET_3frame_train'+'/current_B_DDP_placeholder.pt'
+savepath = './logs/'+'DDP_RESET_large_dataset'+'/current_B_DDP_placeholder.pt'
 fourier_transformer.load_B(savepath)
 print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
 
