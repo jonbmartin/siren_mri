@@ -156,6 +156,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         num_conv_res_blocks= 3
         w0=30
     elif config =='from_early_expt':
+        # Notes: Biggest improvements came from adding more hypernetwork layers. "Best = 0.0005 for batchsize 8"
         num_fourier_features = 512
         kl_weight = 2.78e-8
         fw_weight = 1e-6
