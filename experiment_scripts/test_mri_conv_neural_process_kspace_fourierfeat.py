@@ -161,8 +161,8 @@ elif config =='from_early_expt':
     kl_weight = 2.78e-8
     fw_weight = 1e-6
     lr = 5.e-5
-    fourier_features_scale = 10
-    latent_dim = 256 # best = 128
+    fourier_features_scale = 10 # best = 10
+    latent_dim = 256 # best = 256
     hidden_features_hyper = 256 # best = 256
     hidden_layers_hyper = 5 # try just 1. 3 gave 0.0011 after 15 epochs. 5 gave 0.0004!! 
     hidden_layers = 6
