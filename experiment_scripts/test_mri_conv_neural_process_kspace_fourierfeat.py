@@ -156,7 +156,7 @@ elif config =='hyperopt_highfreq':
     num_conv_res_blocks= 3
     w0=30
 elif config =='from_early_expt':
-    # Notes: Biggest improvements came from adding more hypernetwork layers. "Best = 0.0005 for batchsize 8"
+    # Notes: Biggest improvements came from adding more hypernetwork layers. "Best = 0.0004 for batchsize 8, 5 layers hyuper"
     num_fourier_features = 512
     kl_weight = 2.78e-8
     fw_weight = 1e-6
@@ -164,7 +164,7 @@ elif config =='from_early_expt':
     fourier_features_scale = 10
     latent_dim = 256 # best = 128
     hidden_features_hyper = 256 # best = 256
-    hidden_layers_hyper = 5 # try just 1. 3 gave 0.0011 after 15 epochs
+    hidden_layers_hyper = 8 # try just 1. 3 gave 0.0011 after 15 epochs
     hidden_layers = 6
     hidden_features = 64
     partial_conv=False
