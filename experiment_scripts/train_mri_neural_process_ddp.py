@@ -290,8 +290,7 @@ if __name__ == "__main__":
         print('Initializing ONE B feature encoding matrix')
         fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
                                                         scale=fourier_features_scale, device=device)
-        os.mkdir('./logs/'+experiment_name+'/feature_matrix')
-        fourier_transformer.save_B('./logs/'+experiment_name+'/feature_matrix/current_B_DDP_placeholder.pt')
+        fourier_transformer.save_B('./logs/fourier_feat_mats/current_B_DDP_placeholder_'+experiment_name+'.pt')
 
         # Record the fourier feature transform matrix and place in current experiment folder.
         # Making multiple copies for the different processes
