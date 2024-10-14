@@ -9,7 +9,7 @@ import numpy as np
 import data_consistency
 
 class HyperNetwork(nn.Module):
-    def __init__(self, hyper_in_features, hyper_hidden_layers, hyper_hidden_features, hypo_module):
+    def __init__(self, hyper_in_features, hyper_hidden_layers, hyper_hidden_features, hypo_module, nonlinearity='relu'):
         '''
 
         Args:
@@ -31,7 +31,7 @@ class HyperNetwork(nn.Module):
 
             hn = modules.FCBlock(in_features=hyper_in_features, out_features=int(torch.prod(torch.tensor(param.size()))),
                                  num_hidden_layers=hyper_hidden_layers, hidden_features=hyper_hidden_features,
-                                 outermost_linear=True, nonlinearity='relu')
+                                 outermost_linear=True, nonlinearity=nonlinearity)
             self.nets.append(hn)
 
             if 'weight' in name:
@@ -190,7 +190,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
                                              in_features=fourier_features_size, hidden_features=hidden_features,num_hidden_layers=num_hidden_layers,
                                              w0=w0) # JBM USED TO BE 3 layer, 128 input. good perf with 5
         self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=hyper_hidden_layers, hyper_hidden_features=hyper_hidden_features, # JBM used to be 256 hyperhidden
-                                      hypo_module=self.hypo_net)
+                                      hypo_module=self.hypo_net, nonlinearity='selu')
             # JBM hyper was 1 layer, 256
 
         print(self)
