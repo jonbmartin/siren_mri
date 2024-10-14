@@ -125,8 +125,8 @@ def image_asinh(mask, model_output, gt):
 
     output_before_tx = kspace_output_real
     gt_before_tx = kspace_gt_real
-    kspace_output_real = torch.asinh(400 * kspace_output_real)/6.7
-    kspace_gt_real = torch.asinh(400 * kspace_gt_real)/6.7
+    kspace_output_real = torch.asinh(50 * kspace_output_real)/4.67
+    kspace_gt_real = torch.asinh(50 * kspace_gt_real)/4.67
 
     # print('Evaluating asinh loss')
     # sio.savemat('evaluating_asinh_loss.mat',{'pred_no_tx':output_before_tx.detach().cpu().numpy(), 'pred_tx':kspace_output_real.detach().cpu().numpy(),
