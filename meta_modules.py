@@ -195,6 +195,17 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
 
         print(self)
 
+        model_parameters = filter(lambda p: p.requires_grad, self.encoder.parameters())
+        encoder_params = sum([np.prod(p.size()) for p in model_parameters])
+
+        model_parameters = filter(lambda p: p.requires_grad, self.hypo_net.parameters())
+        hypo_params = sum([np.prod(p.size()) for p in model_parameters])
+
+        model_parameters = filter(lambda p: p.requires_grad, self.hyper_net.parameters())
+        hyper_params = sum([np.prod(p.size()) for p in model_parameters])
+
+        print(f'Network has: {encoder_params} params in encoder, {hypo_params} params in SIREN, {hyper_params} params in hyper')
+
     def forward(self, model_input):
         if model_input.get('embedding', None) is None:
             # image domain embedding: 
