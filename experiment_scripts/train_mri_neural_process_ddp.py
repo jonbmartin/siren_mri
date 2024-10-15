@@ -280,7 +280,7 @@ if __name__ == "__main__":
     fourier_features_scale = 10
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_RESET_large_dataset_20featscale_kspacescale'
+    experiment_name = 'DDP_RESET_large_dataset_20featscale_NONORM'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
