@@ -855,6 +855,9 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
         self.compute_diff = compute_diff
         self.dataset = dataset
         self.mgrid = get_mgrid(sidelength)
+
+        # TODO: JBM REMOVE THIS
+        self.mgrid = self.mgrid/3
         
     def __len__(self):
         return len(self.dataset)
