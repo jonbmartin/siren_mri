@@ -53,6 +53,7 @@ class FCBlock(MetaModule):
         # TODO: changed sine init to xavier init
         nls_and_inits = {'sine':(Sine(w0=w0), init_weights_xavier, None),
                          'relu':(nn.ReLU(inplace=True), init_weights_normal, None),
+                         'leaky_relu':(nn.LeakyReLU(inplace=True), init_weights_normal, None),
                          'sigmoid':(nn.Sigmoid(), init_weights_xavier, None),
                          'tanh':(nn.Tanh(), init_weights_xavier, None),
                          'selu':(nn.SELU(inplace=True), init_weights_selu, None),
