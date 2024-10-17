@@ -219,6 +219,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
             embedding = self.encoder(model_input['img_sparse'])
         else:
             embedding = model_input['embedding']
+        print(f'Network embedding size: {np.shape(embedding)}')
         hypo_params = self.hyper_net(embedding)
 
         model_output = self.hypo_net(model_input, params=hypo_params)
