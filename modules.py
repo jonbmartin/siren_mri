@@ -51,7 +51,7 @@ class FCBlock(MetaModule):
         # Dictionary that maps nonlinearity name to the respective function, initialization, and, if applicable,
         # special first-layer initialization scheme
         # TODO: changed sine init to xavier init
-        nls_and_inits = {'sine':(Sine(w0=w0), init_weights_xavier, None),
+        nls_and_inits = {'sine':(Sine(w0=w0), sine_init, first_layer_sine_init),
                          'relu':(nn.ReLU(inplace=True), init_weights_normal, None),
                          'leaky_relu':(nn.LeakyReLU(inplace=True), init_weights_normal, None),
                          'sigmoid':(nn.Sigmoid(), init_weights_xavier, None),
