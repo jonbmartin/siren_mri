@@ -19,6 +19,8 @@ from torch.utils.data.distributed import DistributedSampler
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
 import os
+from pathlib import Path
+
 
 
 def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, experiment_name, B):
@@ -286,6 +288,7 @@ if __name__ == "__main__":
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
         print(f'Resuming training from checkpoint found at: {load_from_checkpoint_path}')
     else:
+        Path("./logs/"+experiment_name).mkdir(parents=False, exist_ok=True)
         load_from_checkpoint_path = None
         print('Initializing ONE B feature encoding matrix')
         fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2, mapping_size_spatial=num_fourier_features, 
