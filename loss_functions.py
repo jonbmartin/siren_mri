@@ -220,7 +220,7 @@ def ift_image_mse(mask, model_output, gt):
     gt_imag = torch.imag(img_gt)
 
     # add a kspace domain loss:
-    img_weight = 1/(128*128)
+    img_weight = 1/(128*128)*1e4
     kspace_loss = 0
 
     #print(f'size of output in LOSS = {np.shape(kspace_gt)}')
