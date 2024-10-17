@@ -190,7 +190,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
                                              in_features=fourier_features_size, hidden_features=hidden_features,num_hidden_layers=num_hidden_layers,
                                              w0=w0) # JBM USED TO BE 3 layer, 128 input. good perf with 5
         self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=hyper_hidden_layers, hyper_hidden_features=hyper_hidden_features, # JBM used to be 256 hyperhidden
-                                      hypo_module=self.hypo_net, nonlinearity='relu')
+                                      hypo_module=self.hypo_net, nonlinearity='leaky_relu')
             # JBM hyper was 1 layer, 256
 
         print(self)
