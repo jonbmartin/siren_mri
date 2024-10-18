@@ -224,16 +224,16 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
             embedding = model_input['embedding']
         hypo_params = self.hyper_net(embedding)
 
-        # all_weights = hypo_params.values()
-        # all_weights = list(all_weights)
-        # all_weights = [tensor.detach().cpu().numpy().flatten() for tensor in all_weights]
+        all_weights = hypo_params.values()
+        all_weights = list(all_weights)
+        all_weights = [tensor.detach().cpu().numpy().flatten() for tensor in all_weights]
 
-        # plt.hist(all_weights, bins=500, range=(-0.015, 0.015))
-        # plt.title("Weight Distribution")
-        # plt.xlabel("Weight Value")
-        # plt.ylabel("Frequency")
-        # plt.xlim([-0.035,0.035])
-        # plt.savefig('actual_weights.png')   
+        plt.hist(all_weights, bins=500, range=(-0.015, 0.015))
+        plt.title("Weight Distribution")
+        plt.xlabel("Weight Value")
+        plt.ylabel("Frequency")
+        plt.xlim([-0.035,0.035])
+        plt.savefig('actual_weights.png')   
 
         model_output = self.hypo_net(model_input, params=hypo_params)
 
