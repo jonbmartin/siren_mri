@@ -274,7 +274,6 @@ def getTestMSE(dataloader, subdir, trial_num=0):
 
             with torch.no_grad():
                 model_output = model(model_input)
-            plot_weight_distribution(model.hypo_net)
 
             out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
             gt_img = dataio.lin2img(gt['img'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()

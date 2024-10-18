@@ -8,6 +8,8 @@ import modules
 import numpy as np
 import data_consistency
 
+from plotting import plot_weight_distribution
+
 class HyperNetwork(nn.Module):
     def __init__(self, hyper_in_features, hyper_hidden_layers, hyper_hidden_features, hypo_module, nonlinearity='relu'):
         '''
@@ -223,6 +225,8 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         hypo_params = self.hyper_net(embedding)
 
         model_output = self.hypo_net(model_input, params=hypo_params)
+        plot_weight_distribution(self.hypo_net)
+
 
         # TODO: What if have no img_sparse because doing latent space interpolation???
         if "img_sparse" in model_input:
