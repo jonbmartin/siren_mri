@@ -165,8 +165,8 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         lr = 5.e-5
         fourier_features_scale = 16 # best = 10
         latent_dim = 256 # best = 256
-        hidden_features_hyper = 128 #256 # best = 256
-        hidden_layers_hyper = 5 # try just 1. 3 gave 0.0011 after 15 epochs. 5 gave 0.0004!! 
+        hidden_features_hyper = 256 #256 # best = 256
+        hidden_layers_hyper = 7 # try just 1. 3 gave 0.0011 after 15 epochs. 5 gave 0.0004- was best!! 
         hidden_layers = 6
         hidden_features = 64
         partial_conv=False
