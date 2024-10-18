@@ -377,8 +377,9 @@ class ConvImgEncoder(nn.Module):
     def forward(self, I):
         o = self.relu(self.conv_theta(I))
         o = self.cnn(o)
-
-        o = self.fc(self.relu_2(o).view(o.shape[0], self.hidden_size, -1)).squeeze(-1)
+        o = self.relu_2(o).view(o.shape[0], self.hidden_size, -1)
+        print(f'o out size in CNN encoder before last fc = {np.shape(o)}')
+        o = self.fc(o).squeeze(-1)
         print(f'o out size in CNN encoder = {np.shape(o)}')
         return o
 
