@@ -24,7 +24,7 @@ def train_ddp(model, train_dataloader, epochs, lr, steps_til_summary, epochs_til
           summary_fn, val_dataloader=None, double_precision=False, clip_grad=False, use_lbfgs=False, loss_schedules=None,
           fourier_feat_transformer=None, device=0, ddp_run=False, accumulation_steps=1,):
 
-    optim = torch.optim.Adam(lr=lr, weight_decay=1e-6, params=model.parameters())
+    optim = torch.optim.Adam(lr=lr, weight_decay=0, params=model.parameters())
 
     if device==0:
         if os.path.exists(model_dir):

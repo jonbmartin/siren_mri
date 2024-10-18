@@ -224,23 +224,21 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
             embedding = model_input['embedding']
         hypo_params = self.hyper_net(embedding)
 
-        all_weights = np.array([0])
-        for key, value in hypo_params.items():
-            all_weights = np.concatenate((all_weights,value.detach().cpu().numpy().flatten()))
-            print(key, value)
-        print(f'all_weights shape = {np.shape(all_weights)}')
-        # all_weights = hypo_params.values()
-        # all_weights = list(all_weights)
-        # all_weights = [tensor.detach().cpu().numpy().flatten() for tensor in all_weights]
-        # print(f'all_weights_shape {np.shape(all_weights)}')
-        plt.figure()
-        plt.hist(all_weights, bins=500, range=(-0.05, 0.05))
-        plt.title("Weight Distribution")
-        plt.xlabel("Weight Value")
-        plt.ylabel("Frequency")
-        plt.xlim([-0.02,0.02])
-        plt.savefig('actual_weights.png')   
-        plt.close()
+        # JBM : code to plot the weights of the hyponetwork
+        # all_weights = np.array([0])
+        # for key, value in hypo_params.items():
+        #     all_weights = np.concatenate((all_weights,value.detach().cpu().numpy().flatten()))
+        #     print(key, value)
+        # print(f'all_weights shape = {np.shape(all_weights)}')
+
+        # plt.figure()
+        # plt.hist(all_weights, bins=500, range=(-0.05, 0.05))
+        # plt.title("Weight Distribution")
+        # plt.xlabel("Weight Value")
+        # plt.ylabel("Frequency")
+        # plt.xlim([-0.02,0.02])
+        # plt.savefig('actual_weights.png')   
+        # plt.close()
 
         model_output = self.hypo_net(model_input, params=hypo_params)
 
