@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 # plot the weights of the network 
-def plot_weight_distribution(model):
+def plot_weight_distribution(model, savefile):
     """Plots the distribution of weights in a PyTorch model."""
 
     all_weights = []
@@ -16,5 +16,5 @@ def plot_weight_distribution(model):
     #plt.yscale('log')  # Set y-axis to log scale
     plt.xlim([-0.015,0.015])
     # plt.show()
-    plt.savefig('siren_weights.png')
+    plt.savefig(savefile)
 

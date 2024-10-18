@@ -7,6 +7,7 @@ from collections import OrderedDict
 import modules
 import numpy as np
 import data_consistency
+import matplotlib.pyplot as plt
 
 from plotting import plot_weight_distribution
 
@@ -221,11 +222,23 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
             embedding = self.encoder(model_input['img_sparse'])
         else:
             embedding = model_input['embedding']
-        # print(f'Network embedding size: {np.shape(embedding)}')
         hypo_params = self.hyper_net(embedding)
 
+        all_weights = []
+        for param in hypo_params.parameters():
+            if param.requires_grad:
+                all_weights.extend(param.data.view(-1).cpu().numpy())
+
+        plt.hist(all_weights, bins=500, range=(-0.015, 0.015))
+        plt.title("Weight Distribution")
+        plt.xlabel("Weight Value")
+        plt.ylabel("Frequency")
+        #plt.yscale('log')  # Set y-axis to log scale
+        plt.xlim([-0.015,0.015])
+        # plt.show()
+        plt.savefig('actual_weights.png')   
+
         model_output = self.hypo_net(model_input, params=hypo_params)
-        plot_weight_distribution(self.hypo_net)
 
 
         # TODO: What if have no img_sparse because doing latent space interpolation???
