@@ -226,7 +226,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
 
         all_weights = hypo_params.values()
         all_weights = list(all_weights)
-        all_weights = [tensor.detach().numpy() for tensor in all_weights]
+        all_weights = [tensor.detach().cpu().numpy() for tensor in all_weights]
         all_weights = np.array(list(all_weights))
         # all_weights = all_weights.cpu().numpy()
 
