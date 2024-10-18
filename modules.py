@@ -372,6 +372,9 @@ class ConvImgEncoder(nn.Module):
         self.relu_2 = nn.ReLU(inplace=True)
         self.fc = nn.Linear(image_resolution[0]*image_resolution[1], 1)
 
+        # JBM addition
+        # self.relu_3 = nn.Tanh(inplace=True)
+        # self.fc_last = nn.Linear()
         self.image_resolution = image_resolution
 
     def forward(self, I):
