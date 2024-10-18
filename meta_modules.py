@@ -225,7 +225,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         hypo_params = self.hyper_net(embedding)
 
         all_weights = hypo_params.values()
-        all_weights = all_weights.cpu().numpy()
+        all_weights = list(all_weights)
 
         plt.hist(all_weights, bins=500, range=(-0.015, 0.015))
         plt.title("Weight Distribution")
