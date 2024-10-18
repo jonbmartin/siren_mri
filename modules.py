@@ -379,6 +379,7 @@ class ConvImgEncoder(nn.Module):
         o = self.cnn(o)
 
         o = self.fc(self.relu_2(o).view(o.shape[0], self.hidden_size, -1)).squeeze(-1)
+        print(f'o out size in CNN encoder = {np.shape(o)}')
         return o
 
 
