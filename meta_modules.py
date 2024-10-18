@@ -224,7 +224,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
             embedding = model_input['embedding']
         hypo_params = self.hyper_net(embedding)
 
-        for key, value in odict.items():
+        for key, value in hypo_params.items():
             print(key, value)
 
         all_weights = hypo_params.values()
