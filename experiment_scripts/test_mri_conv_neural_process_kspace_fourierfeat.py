@@ -158,19 +158,19 @@ elif config =='hyperopt_highfreq':
 elif config =='from_early_expt':
     # Notes: Biggest improvements came from adding more hypernetwork layers. "Best = 0.0005 for batchsize 8"
     num_fourier_features = 512
-    kl_weight = 2.78e-8
-    fw_weight = 1e-6
+    kl_weight = 2.78e-8 #optim # 0.1 in paper
+    fw_weight = 1e-6#optim # 100 in paper
     lr = 5.e-5
-    fourier_features_scale = 10 # best = 10
+    fourier_features_scale = 16 # best = 10
     latent_dim = 256 # best = 256
-    hidden_features_hyper = 256 # best = 256
+    hidden_features_hyper = 128 #256 # best = 256
     hidden_layers_hyper = 5 # try just 1. 3 gave 0.0011 after 15 epochs. 5 gave 0.0004!! 
     hidden_layers = 6
     hidden_features = 64
     partial_conv=False
     conv_kernel_size = 5
     num_conv_res_blocks= 3 # go back to orig paper, was 3
-    w0=30
+    w0=50
 
 device = 'cuda:5'
 
