@@ -234,7 +234,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         # all_weights = [tensor.detach().cpu().numpy().flatten() for tensor in all_weights]
         # print(f'all_weights_shape {np.shape(all_weights)}')
         plt.figure()
-        plt.hist(all_weights, bins=500, range=(-0.015, 0.015))
+        plt.hist(all_weights, bins=500, range=(np.min(all_weights), np.max(all_weights)))
         plt.title("Weight Distribution")
         plt.xlabel("Weight Value")
         plt.ylabel("Frequency")
