@@ -237,7 +237,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         plt.xlabel("Weight Value")
         plt.ylabel("Frequency")
         #plt.yscale('log')  # Set y-axis to log scale
-        plt.xlim([-0.015,0.015])
+        plt.xlim([-0.035,0.035])
         # plt.show()
         plt.savefig('actual_weights.png')   
 
