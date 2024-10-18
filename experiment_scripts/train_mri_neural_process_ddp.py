@@ -172,7 +172,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         partial_conv=False
         conv_kernel_size = 5
         num_conv_res_blocks= 3 # go back to orig paper, was 3
-        w0=50
+        w0=30
 
     image_resolution = (128, 128)
     use_fourier_features = True

@@ -170,7 +170,7 @@ elif config =='from_early_expt':
     partial_conv=False
     conv_kernel_size = 5
     num_conv_res_blocks= 3 # go back to orig paper, was 3
-    w0=50
+    w0=30
 
 device = 'cuda:5'
 
