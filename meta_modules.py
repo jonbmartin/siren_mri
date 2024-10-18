@@ -232,7 +232,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         plt.title("Weight Distribution")
         plt.xlabel("Weight Value")
         plt.ylabel("Frequency")
-        plt.xlim([-0.035,0.035])
+        plt.xlim([-0.02,0.02])
         plt.savefig('actual_weights.png')   
 
         model_output = self.hypo_net(model_input, params=hypo_params)
