@@ -1077,7 +1077,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
 
                 kspace_real = np.real(kspace)
                 kspace_imag = np.imag(kspace)
-                kspace_stacked = np.dstack((kspace_real, kspace_imag))
+                kspace_stacked = np.stack((kspace_real, kspace_imag))
 
                 img_sparse = mask * kspace_stacked
 
