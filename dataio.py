@@ -1064,6 +1064,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 mask[:,row_inds[0:int(0.3333*ny)],:] = 1
                 mask[:,int(ny/2-4):int(ny/2+4),:] = 1
                 img_sparse = mask * spatial_img
+                print(f'SHAPE OF IMG AFTER MASKING = {np.shape(img_sparse)}')
 
             elif self.test_sparsity == 'CS_cartesian_from_img_domain':
                 row_inds = [int(number) for number in range(spatial_img.size(1))]
