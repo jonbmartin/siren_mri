@@ -17,7 +17,7 @@ import torch
 import random
 from PIL import Image
 from torch.utils.data import Dataset
-from torchvision.transforms import Resize, Compose, ToTensor, Normalize
+from torchvision.transforms import Resize, Compose, ToTensor, Normalize, Lambda
 import sys
 import utils
 
