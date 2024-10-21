@@ -918,9 +918,10 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
 
         if image:
             self.transform = Compose([
-                Resize(sidelength),
+                # Resize(sidelength),
                 ToTensor(),
-                Normalize(torch.Tensor([0.5]), torch.Tensor([0.5]))
+                Lambda(lambda x: x/torch.max(x))
+                # Normalize(torch.Tensor([0.5]), torch.Tensor([0.5]))
             ])
         else:
             #print('JBM: Resize transform does not work on numpy format. Size is unchanged.')
@@ -928,7 +929,7 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
             self.transform = Compose([
                 ToTensor(),
                 #AsinhTransform(),
-                # Normalize(torch.Tensor([0.5]), torch.Tensor([0.5])),
+                Normalize(torch.Tensor([0.0]), torch.Tensor([0.5])),
                 # Lambda(lambda x: torch.asinh(40000*x)/10)
                 # TODO: apply transformation here 
             ])
