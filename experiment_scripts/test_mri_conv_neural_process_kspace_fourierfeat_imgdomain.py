@@ -190,7 +190,7 @@ generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_t
                                                                 device=device)
 
 # Define the model.
-out_channels = 2
+out_channels = 1
 model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
                                                         out_features=out_channels,
                                                         image_resolution=image_resolution,
@@ -201,9 +201,9 @@ model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures
                                                         hyper_hidden_layers=hidden_layers_hyper,
                                                         num_hidden_layers=hidden_layers,
                                                         partial_conv=partial_conv,
+                                                        conv_kernel_size=conv_kernel_size,
                                                         num_conv_res_blocks=num_conv_res_blocks,
-                                                        conv_kernel_size=conv_kernel_size, w0=w0,
-                                                        use_dc=False)
+                                                        w0=w0, use_dc=False)
 model.cuda()
 model.eval()
 
