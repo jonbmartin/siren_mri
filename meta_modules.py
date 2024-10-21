@@ -249,9 +249,6 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
             model_output['model_out'] = self.dc(model_output['model_out'], 
                                                 model_input['img_sparse'], 
                                                 model_input['dc_mask'])
-        else:
-            print('WARNING: not using DC')
-
 
         return {'model_in': model_output['model_in'], 'model_out': model_output['model_out'], 'latent_vec': embedding,
                 'hypo_params': hypo_params}
