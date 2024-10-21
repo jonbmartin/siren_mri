@@ -276,8 +276,8 @@ def getTestMSE(dataloader, subdir, trial_num=0):
             with torch.no_grad():
                 model_output = model(model_input)
 
-            out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
-            gt_img = dataio.lin2img(gt['img'], image_resolution).squeeze().permute(1,2,0).detach().cpu().numpy()
+            out_img = dataio.lin2img(model_output['model_out'], image_resolution).squeeze().detach().cpu().numpy()
+            gt_img = dataio.lin2img(gt['img'], image_resolution).squeeze().detach().cpu().numpy()
 
 
             sparse_img = model_input['img_sparse'].squeeze().detach().cpu().permute(1,2,0).numpy()
