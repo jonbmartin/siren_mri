@@ -167,7 +167,7 @@ def image_perp(mask, model_output, gt):
     else:
         return {'img_loss': (kspace_loss)}
     
-def kspace_l1(mask, model_output, gt):
+def kspace_l1(mask, model_output, gt, customloss):
     # SAME as below, but no image domain loss/ fourier transforms 
 
     kspace_output_real = dataio.lin2img(model_output['model_out'])
@@ -175,8 +175,8 @@ def kspace_l1(mask, model_output, gt):
     kspace_gt_real = dataio.lin2img(gt['img'])
 
     # add a kspace domain loss:
-    hubloss = torch.nn.HuberLoss()
-    kspace_loss = 1/(128*128) * hubloss(kspace_output_real,kspace_gt_real)
+    hubloss = customloss
+    kspace_loss = hubloss(kspace_output_real,kspace_gt_real)
     # kspace_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
     # kspace_loss = kspace_weight * (torch.abs(kspace_output_real-kspace_gt_real)).sum()
 
@@ -309,7 +309,7 @@ def image_hypernetwork_asinh_loss(mask, kl, fw, model_output, gt):
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
 def image_hypernetwork_l1_loss(mask, kl, fw, model_output, gt):
-    return {'img_loss': kspace_l1(mask, model_output, gt)['img_loss'],
+    return {'img_loss': kspace_l1(mask, model_output, gt,torch.nn.HuberLoss(delta=0.05))['img_loss'],
             'latent_loss': kl * latent_loss(model_output),
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
