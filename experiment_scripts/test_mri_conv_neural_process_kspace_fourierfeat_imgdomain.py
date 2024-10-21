@@ -177,14 +177,14 @@ device = 'cuda:5'
 
 #img_dataset_test = dataio.CelebA(split='test', downsampled=True)
 img_dataset_test = dataio.FastMRIBrainImageKspaceEncode(split='val', downsampled=True, image_resolution=image_resolution)
-coord_dataset_test = dataio.Implicit2DWrapper(img_dataset_test, sidelength=image_resolution, image=False)
+coord_dataset_test = dataio.Implicit2DWrapper(img_dataset_test, sidelength=image_resolution, image=True)
 generalization_dataset_test = dataio.ImageGeneralizationWrapper(coord_dataset_test, test_sparsity=3000,
                                                                 generalization_mode='conv_cnp_test',
                                                                 device=device)
 
 #img_dataset_train = dataio.CelebA(split='train', downsampled=True)
 img_dataset_train = dataio.FastMRIBrainImageKspaceEncode(split='train', downsampled=True, image_resolution=image_resolution)
-coord_dataset_train = dataio.Implicit2DWrapper(img_dataset_train, sidelength=image_resolution, image=False)
+coord_dataset_train = dataio.Implicit2DWrapper(img_dataset_train, sidelength=image_resolution, image=True)
 generalization_dataset_train = dataio.ImageGeneralizationWrapper(coord_dataset_train, test_sparsity=3000,
                                                                 generalization_mode='conv_cnp_test',
                                                                 device=device)

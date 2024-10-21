@@ -179,7 +179,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     img_dataset = dataio.FastMRIBrainImageKspaceEncode(split='train', downsampled=True, image_resolution=image_resolution)
     #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
     #img_dataset = dataio.MRIImageDomain(split='train',downsample=True)
-    coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False)
+    coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=True)
 
     # TODO: right now, test_sparsity= ... overwrites train sparsity for training. using this to get CS
     generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
@@ -193,7 +193,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
 
     # VAL DATASET
     img_dataset_val = dataio.FastMRIBrainImageKspaceEncode(split='val_small', downsampled=True, image_resolution=image_resolution)
-    coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
+    coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=True)
     generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
                                                             train_sparsity_range=train_sparsity_range,
                                                             test_sparsity= 'CS_cartesian_from_img_domain',
