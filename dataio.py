@@ -1080,7 +1080,6 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 kspace_stacked = np.stack((kspace_real, kspace_imag))
 
                 img_sparse = mask * kspace_stacked
-                img_sparse = img_sparse.astype(float)
 
             elif self.test_sparsity == 'CS_cartesian_no_low_freq':
                     #print('Using a CS Cartesian mask!')
