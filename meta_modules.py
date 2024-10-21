@@ -179,9 +179,10 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
     def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, 
                  fourier_features_size=512, latent_dim=256, hidden_features=256, 
                  num_hidden_layers=5, hyper_hidden_features=512, hyper_hidden_layers=1, 
-                 conv_kernel_size=3, num_conv_res_blocks=4, w0=30):
+                 conv_kernel_size=3, num_conv_res_blocks=4, w0=30, use_dc=True):
         super().__init__()
 
+        self.use_dc = use_dc
         self.dc = data_consistency.DataConsistencyInKspace(noise_lvl=None)
 
         if partial_conv:
@@ -244,7 +245,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
 
 
         # TODO: What if have no img_sparse because doing latent space interpolation???
-        if "img_sparse" in model_input:
+        if "img_sparse" in model_input and self.use_dc:
             model_output['model_out'] = self.dc(model_output['model_out'], 
                                                 model_input['img_sparse'], 
                                                 model_input['dc_mask'])

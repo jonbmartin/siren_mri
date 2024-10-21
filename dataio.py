@@ -667,6 +667,86 @@ class FastMRIBrainKspace(Dataset):
         kspace_stacked = np.dstack((kspace_real, kspace_imag))
         
         return np.float32(kspace_stacked)
+    
+
+class FastMRIBrainImageKspaceEncode(Dataset):
+    def __init__(self, split, downsampled=False, image_resolution=(128, 128)):
+        # SIZE (128 x 128)
+        assert split in ['train', 'test', 'val', 'val_small'], "Unknown split"
+
+        self.root = '../../fastMRIdata/'
+        self.img_channels = 1
+        self._nframes = 10 # JBM The max you can push this is up to 10ish. Maybe try smaller 
+
+        self.downsampled = downsampled
+
+        if split =='train':
+            self.dir = 'multicoil_train_recon/'
+        elif split =='test':
+            self.dir = 'multicoil_test_recon/'
+        elif split =='val':
+            self.dir = 'multicoil_val_recon/'
+        elif split =='val_small':
+            self.dir = 'multicoil_val_recon_small/'
+
+        self.root = self.root + self.dir
+        self.fnames = os.listdir(self.root)
+        self.resolution = image_resolution
+
+        self.slice_list = []
+
+        print(f'Creating {self.dir} file reference structure')
+        for ii in range(len(self.fnames)):
+            filename = self.fnames[ii]
+            f = h5py.File(self.root + filename, "r")
+            # return data as numpy array
+            data = f['reconstruction'][()]
+            f.close()
+            slices, width, height = np.shape(data)
+            for jj in range(slices):
+                if jj > 10:
+                    break
+                #print(f'entry: {filename}, slice: {jj}')
+                self.slice_list.append((filename, jj))
+        print(f'Done creating {self.dir} file reference structure')
+
+            
+    def __len__(self):
+        return len(self.slice_list)
+    
+    def __getitem__(self, idx):
+        slice_item = self.slice_list[idx]
+        filename = slice_item[0]
+        slice_idx = slice_item[1]
+        #print(f'Testing with file:{filename}, slice{slice_idx}')
+
+        f = h5py.File(self.root + filename, "r")
+        
+        # return data as numpy array
+        data = f['reconstruction'][()]
+
+        f.close()
+
+        slices, width, height = np.shape(data)
+        
+        data = np.squeeze(data[slice_idx,:,:])
+
+        # crop down size to square
+        s = min(width, height) 
+
+        #s = s + 10 # JBM adding a little padding. Was clipping structure without
+
+        left = (width - s) // 2
+        top = (height - s) // 2
+        right = (width + s) // 2
+        bottom = (height + s) // 2
+
+        data = data[left:right, top:bottom]
+        #data = data * 1000
+
+        data = cv2.resize(data,self.resolution)
+        
+        return np.float32(data)
 
 class FastMRIBrainKspaceOld(Dataset):
     def __init__(self, split, downsampled=False, image_resolution=(64, 64)):
@@ -985,16 +1065,32 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 mask[:,int(ny/2-4):int(ny/2+4),:] = 1
                 img_sparse = mask * spatial_img
 
-            elif self.test_sparsity == 'CS_cartesian_no_low_freq':
-                #print('Using a CS Cartesian mask!')
+            elif self.test_sparsity == 'CS_cartesian_from_img_domain':
                 row_inds = [int(number) for number in range(spatial_img.size(1))]
                 random.shuffle(row_inds)
                 mask = torch.zeros_like(spatial_img)
                 ny = mask.shape[1]
                 mask[:,row_inds[0:int(0.3333*ny)],:] = 1
-                circ_mask = utils.create_circular_mask_torch(129, 129, center=None,radius=20)
-                circ_mask = 1 - circ_mask
-                img_sparse = circ_mask * mask * spatial_img
+                mask[:,int(ny/2-4):int(ny/2+4),:] = 1
+
+                kspace = np.fft.fftshift(np.fft.fft2(spatial_img))
+
+                kspace_real = np.real(kspace)
+                kspace_imag = np.imag(kspace)
+                kspace_stacked = np.dstack((kspace_real, kspace_imag))
+
+                img_sparse = mask * kspace_stacked
+
+            elif self.test_sparsity == 'CS_cartesian_no_low_freq':
+                    #print('Using a CS Cartesian mask!')
+                    row_inds = [int(number) for number in range(spatial_img.size(1))]
+                    random.shuffle(row_inds)
+                    mask = torch.zeros_like(spatial_img)
+                    ny = mask.shape[1]
+                    mask[:,row_inds[0:int(0.3333*ny)],:] = 1
+                    circ_mask = utils.create_circular_mask_torch(129, 129, center=None,radius=20)
+                    circ_mask = 1 - circ_mask
+                    img_sparse = circ_mask * mask * spatial_img
             elif self.test_sparsity == 'CS_cartesian_noACS':
                 #print('Using a CS Cartesian mask!')
                 row_inds = [int(number) for number in range(spatial_img.size(1))]
