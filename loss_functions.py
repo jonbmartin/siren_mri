@@ -308,7 +308,7 @@ def image_hypernetwork_asinh_loss(mask, kl, fw, model_output, gt):
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
 def image_hypernetwork_l1_loss(mask, kl, fw, model_output, gt):
-    return {'img_loss': kspace_l1(mask, model_output, gt,torch.nn.HuberLoss(delta=0.05))['img_loss'],
+    return {'img_loss': kspace_l1(mask, model_output, gt,torch.nn.HuberLoss(delta=0.005))['img_loss'],
             'latent_loss': kl * latent_loss(model_output),
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
