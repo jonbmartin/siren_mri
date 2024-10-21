@@ -171,14 +171,8 @@ def kspace_l1(mask, model_output, gt):
     # SAME as below, but no image domain loss/ fourier transforms 
 
     kspace_output_real = dataio.lin2img(model_output['model_out'])
-    kspace_output = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
 
     kspace_gt_real = dataio.lin2img(gt['img'])
-    kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
-
-    # add l1 reg in kspace dim to encourage sparsity
-    l1_reg = 0
-    l1_cost = l1_reg * torch.abs(kspace_output).sum()
 
     # add a kspace domain loss:
     kspace_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
@@ -186,9 +180,9 @@ def kspace_l1(mask, model_output, gt):
 
 
     if mask is None:
-        return {'img_loss': (l1_cost + kspace_loss)}
+        return {'img_loss': (kspace_loss)}
     else:
-        return {'img_loss': (l1_cost + kspace_loss)}
+        return {'img_loss': (kspace_loss)}
 
 def ift_image_mse(mask, model_output, gt):
     
