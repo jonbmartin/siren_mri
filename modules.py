@@ -443,10 +443,10 @@ class Conv2dResBlock(nn.Module):
         super().__init__()
         self.convs = nn.Sequential(
             nn.Conv2d(in_channel, out_channel, 5, 1, 2),
-            nn.BatchNorm2d(out_channel)
+            nn.BatchNorm2d(out_channel),
             nn.ReLU(),
             nn.Conv2d(out_channel, out_channel, 5, 1, 2),
-            nn.BatchNorm2d(out_channel)
+            nn.BatchNorm2d(out_channel),
             nn.ReLU()
         )
 
