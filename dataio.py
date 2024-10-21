@@ -849,6 +849,7 @@ class Implicit2DWrapper(torch.utils.data.Dataset):
                 ToTensor(),
                 #AsinhTransform(),
                 Normalize(torch.Tensor([0]), torch.Tensor([0.5])),
+                Lambda(lambda x: torch.asinh(40000*x)/10)
                 # TODO: apply transformation here 
             ])
 
