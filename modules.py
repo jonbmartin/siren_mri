@@ -348,6 +348,7 @@ class ConvImgEncoder(nn.Module):
 
         # conv_theta is input convolution
         self.conv_theta = nn.Conv2d(channel, hidden_size//2, kernel_size, 1, padding) 
+        self.BN = nn.BatchNorm2d(num_features=hidden_size//2)
         self.relu = nn.ReLU(inplace=True)
 
         # Create net as list of modules first to allow dynamic # of layers for hyperopt
@@ -378,7 +379,7 @@ class ConvImgEncoder(nn.Module):
         self.image_resolution = image_resolution
 
     def forward(self, I):
-        o = self.relu(self.conv_theta(I))
+        o = self.relu(self.BN(self.conv_theta(I)))
         o = self.cnn(o)
         o = self.relu_2(o).view(o.shape[0], self.hidden_size, -1)
         # print(f'o out size in CNN encoder before last fc = {np.shape(o)}')
