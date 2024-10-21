@@ -175,8 +175,10 @@ def kspace_l1(mask, model_output, gt):
     kspace_gt_real = dataio.lin2img(gt['img'])
 
     # add a kspace domain loss:
-    kspace_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
-    kspace_loss = kspace_weight * (torch.abs(kspace_output_real-kspace_gt_real)).sum()
+    hubloss = torch.nn.HuberLoss()
+    kspace_loss = 1/(128*128) * hubloss(kspace_output_real,kspace_gt_real)
+    # kspace_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
+    # kspace_loss = kspace_weight * (torch.abs(kspace_output_real-kspace_gt_real)).sum()
 
 
     if mask is None:
