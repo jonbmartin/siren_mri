@@ -109,6 +109,46 @@ def image_mse(mask, model_output, gt, high_freq=False):
         return {'img_loss': dimension_weight*(kspace_loss)}
     else:
         return {'img_loss': dimension_weight*(kspace_loss)}
+    
+
+def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
+    # SAME as below, but no image domain loss/ fourier transforms 
+
+    kspace_output_real = dataio.lin2img(model_output['model_out'])
+
+    kspace_gt_real = dataio.lin2img(gt['img'])
+
+    # kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
+    # kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
+    kspace_pred_dc = torch.fft.fft2(kspace_output_real)
+    kspace_gt_dc = torch.fft.fft2(kspace_gt_real)
+
+    dc_mask = gt['dc_mask']
+    dc_mask = torch.squeeze(dc_mask[:,1,:,:])
+    print(f'dc mask shape = {np.shape(dc_mask)}')
+    print(f'kspace_pred shape = {np.shape(kspace_gt_dc)}')
+    dc_loss = torch.abs(dc_mask * (kspace_pred_dc - kspace_gt_dc))
+    dc_loss = dc_loss.sum()
+    print(f'DC loss = {dc_loss}')
+
+    # add a kspace domain loss:
+    dimension_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
+
+
+    kspace_loss = (torch.abs((kspace_output_real-kspace_gt_real))**2).sum()
+    print(f'kspace loss (unweighted): {kspace_loss}')
+
+    # maglog_loss = torch.abs(kspace_pred_maglog-kspace_gt_maglog)
+    # maglog_loss = maglog_loss.sum() # was * 2e-2 to balance with img domain
+    # print(f'img domain loss = {kspace_loss}')
+    # print(f'kspace domain loss = {maglog_loss}')
+
+    if mask is None:
+        return {'img_loss': dimension_weight*(kspace_loss)}
+    else:
+        return {'img_loss': dimension_weight*(kspace_loss)}
+    
+    
 
 def image_smape(mask, model_output, gt):
      # SAME as below, but no image domain loss/ fourier transforms 
@@ -303,6 +343,11 @@ def image_hypernetwork_img_domain_loss(mask, kl, fw, model_output, gt):
 
 def image_hypernetwork_loss(mask, kl, fw, model_output, gt):
     return {'img_loss': image_mse(mask, model_output, gt)['img_loss'],
+            'latent_loss': kl * latent_loss(model_output),
+            'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
+
+def image_hypernetwork_loss_dc(mask, kl, fw, model_output, gt):
+    return {'img_loss': image_mse_dc_loss(mask, model_output, gt)['img_loss'],
             'latent_loss': kl * latent_loss(model_output),
             'hypo_weight_loss': fw * hypo_weight_loss(model_output)}
 
