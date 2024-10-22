@@ -43,7 +43,7 @@ class FCBlock(MetaModule):
     '''
 
     def __init__(self, in_features, out_features, num_hidden_layers, hidden_features,
-                 outermost_linear=False, nonlinearity='relu', weight_init=None, w0=30):
+                 outermost_linear=False, nonlinearity='relu', weight_init=None, w0=30, dropout=0.0):
         super().__init__()
 
         self.first_layer_init = None
@@ -76,6 +76,7 @@ class FCBlock(MetaModule):
             self.net.append(MetaSequential(
                 BatchLinear(hidden_features, hidden_features), nl
             ))
+            self.net.append((nn.Dropout(dropout)))
 
         if outermost_linear:
             self.net.append(MetaSequential(BatchLinear(hidden_features, out_features)))

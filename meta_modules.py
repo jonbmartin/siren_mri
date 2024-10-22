@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from plotting import plot_weight_distribution
 
 class HyperNetwork(nn.Module):
-    def __init__(self, hyper_in_features, hyper_hidden_layers, hyper_hidden_features, hypo_module, nonlinearity='relu'):
+    def __init__(self, hyper_in_features, hyper_hidden_layers, hyper_hidden_features, hypo_module, nonlinearity='relu', dropout=0.0):
         '''
 
         Args:
@@ -34,7 +34,7 @@ class HyperNetwork(nn.Module):
 
             hn = modules.FCBlock(in_features=hyper_in_features, out_features=int(torch.prod(torch.tensor(param.size()))),
                                  num_hidden_layers=hyper_hidden_layers, hidden_features=hyper_hidden_features,
-                                 outermost_linear=True, nonlinearity=nonlinearity)
+                                 outermost_linear=True, nonlinearity=nonlinearity, dropout=dropout)
             self.nets.append(hn)
 
             if 'weight' in name:
@@ -179,7 +179,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
     def __init__(self, in_features, out_features, image_resolution=None, partial_conv=False, 
                  fourier_features_size=512, latent_dim=256, hidden_features=256, 
                  num_hidden_layers=5, hyper_hidden_features=512, hyper_hidden_layers=1, 
-                 conv_kernel_size=3, num_conv_res_blocks=4, w0=30, use_dc=True):
+                 conv_kernel_size=3, num_conv_res_blocks=4, w0=30, use_dc=True, hyper_dropout=0):
         super().__init__()
 
         self.use_dc = use_dc
@@ -194,7 +194,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
                                              in_features=fourier_features_size, hidden_features=hidden_features,num_hidden_layers=num_hidden_layers,
                                              w0=w0)
         self.hyper_net = HyperNetwork(hyper_in_features=latent_dim, hyper_hidden_layers=hyper_hidden_layers, hyper_hidden_features=hyper_hidden_features, # JBM used to be 256 hyperhidden
-                                      hypo_module=self.hypo_net, nonlinearity='relu')
+                                      hypo_module=self.hypo_net, nonlinearity='relu', dropout=hyper_dropout)
             # JBM hyper was 1 layer, 256
 
         print(self)

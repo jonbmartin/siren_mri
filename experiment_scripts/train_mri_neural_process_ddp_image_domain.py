@@ -173,6 +173,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         conv_kernel_size = 5
         num_conv_res_blocks= 3 # go back to orig paper, was 3
         w0=30
+        dropout = 0.2
 
     image_resolution = (128, 128)
     use_fourier_features = True
@@ -216,7 +217,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
                                                                     partial_conv=partial_conv,
                                                                     conv_kernel_size=conv_kernel_size,
                                                                     num_conv_res_blocks=num_conv_res_blocks,
-                                                                    w0=w0, use_dc=False)
+                                                                    w0=w0, use_dc=False, hyper_dropout=dropout)
         else:
             model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
                                                                             out_features=img_dataset.img_channels,
