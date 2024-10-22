@@ -159,7 +159,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         w0=30
     elif config =='from_early_expt':
         # Notes: Biggest improvements came from adding more hypernetwork layers. "Best = 0.0005 for batchsize 8"
-        num_fourier_features = 128 # 256 is best
+        num_fourier_features = 512 # 256 is best
         kl_weight = 2.78e-8 #optim # 0.1 in paper
         fw_weight = 1e-2#1e-2 best for mse #1e-6#optim # 100 in paper
         lr = 1e-5#5.e-5 best for mse
@@ -279,7 +279,7 @@ if __name__ == "__main__":
 
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
-    num_fourier_features = 128
+    num_fourier_features = 512
     fourier_features_scale = 1
     device = 1
     resume_from_save = False
