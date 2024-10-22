@@ -74,7 +74,7 @@ def image_mse(mask, model_output, gt, high_freq=False):
     # kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
     # kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
     kspace_pred_maglog = torch.log(torch.abs(torch.fft.fft2(kspace_output_real)))
-    kspace_gt_maglog = torch.log(torch.abs(torch.fft.fft2(kspace_output_real)))
+    kspace_gt_maglog = torch.log(torch.abs(torch.fft.fft2(kspace_gt_real)))
 
     # transform
     #kspace_output_real = torch.asinh(400*kspace_output_real)/6.7
