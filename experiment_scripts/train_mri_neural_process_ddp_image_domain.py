@@ -173,7 +173,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         conv_kernel_size = 5
         num_conv_res_blocks= 3 # go back to orig paper, was 3
         w0=30
-        dropout = 0.2
+        dropout = 0.0
 
     image_resolution = (128, 128)
     use_fourier_features = True
@@ -283,7 +283,7 @@ if __name__ == "__main__":
     fourier_features_scale = 1
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_RESET_img_domain_dropout'
+    experiment_name = 'DDP_RESET_img_domain'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
