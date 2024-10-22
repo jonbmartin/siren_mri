@@ -73,8 +73,8 @@ def image_mse(mask, model_output, gt, high_freq=False):
 
     # kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
     # kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
-    kspace_pred_maglog = torch.log(torch.abs(torch.fft.fft2(kspace_output_real)))
-    kspace_gt_maglog = torch.log(torch.abs(torch.fft.fft2(kspace_gt_real)))
+    # kspace_pred_maglog = torch.log(torch.abs(torch.fft.fft2(kspace_output_real)))
+    # kspace_gt_maglog = torch.log(torch.abs(torch.fft.fft2(kspace_gt_real)))
 
     # transform
     #kspace_output_real = torch.asinh(400*kspace_output_real)/6.7
@@ -100,15 +100,15 @@ def image_mse(mask, model_output, gt, high_freq=False):
         kspace_loss = (torch.abs((kspace_output_real-kspace_gt_real))**2).sum()
     #print(f'kspace loss (unweighted): {kspace_loss}')
 
-    maglog_loss = torch.abs(kspace_pred_maglog-kspace_gt_maglog)
-    maglog_loss = maglog_loss.sum()
+    # maglog_loss = torch.abs(kspace_pred_maglog-kspace_gt_maglog)
+    # maglog_loss = maglog_loss.sum() # was * 2e-2 to balance with img domain
     # print(f'img domain loss = {kspace_loss}')
     # print(f'kspace domain loss = {maglog_loss}')
 
     if mask is None:
-        return {'img_loss': dimension_weight*(kspace_loss+maglog_loss*(2e-2))}
+        return {'img_loss': dimension_weight*(kspace_loss)}
     else:
-        return {'img_loss': dimension_weight*(kspace_loss+maglog_loss*(2e-2))}
+        return {'img_loss': dimension_weight*(kspace_loss)}
 
 def image_smape(mask, model_output, gt):
      # SAME as below, but no image domain loss/ fourier transforms 
