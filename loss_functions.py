@@ -102,8 +102,8 @@ def image_mse(mask, model_output, gt, high_freq=False):
 
     maglog_loss = torch.abs(kspace_pred_maglog-kspace_gt_maglog)
     maglog_loss = maglog_loss.sum()
-    print(f'img domain loss = {kspace_loss}')
-    print(f'kspace domain loss = {maglog_loss}')
+    # print(f'img domain loss = {kspace_loss}')
+    # print(f'kspace domain loss = {maglog_loss}')
 
     if mask is None:
         return {'img_loss': dimension_weight*(kspace_loss+maglog_loss*(2e-2))}
