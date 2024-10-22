@@ -106,9 +106,9 @@ def image_mse(mask, model_output, gt, high_freq=False):
     print(f'kspace domain loss = {maglog_loss}')
 
     if mask is None:
-        return {'img_loss': dimension_weight*(kspace_loss+maglog_loss*(2e-7))}
+        return {'img_loss': dimension_weight*(kspace_loss+maglog_loss*(2e-2))}
     else:
-        return {'img_loss': dimension_weight*(kspace_loss+maglog_loss*(2e-7))}
+        return {'img_loss': dimension_weight*(kspace_loss+maglog_loss*(2e-2))}
 
 def image_smape(mask, model_output, gt):
      # SAME as below, but no image domain loss/ fourier transforms 
