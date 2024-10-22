@@ -162,7 +162,7 @@ elif config =='from_early_expt':
     kl_weight = 2.78e-8 #optim # 0.1 in paper
     fw_weight = 1e-6#1e-2 best for mse #1e-6#optim # 100 in paper
     lr = 1e-5#5.e-5 best for mse
-    fourier_features_scale = 16 # best = 10
+    fourier_features_scale = 1 # best = 10
     latent_dim = 256 # best = 256
     hidden_features_hyper = 256 #256 # best = 256
     hidden_layers_hyper = 5 # try just 1. 3 gave 0.0011 after 15 epochs. 5 gave 0.0004- was best!! 
