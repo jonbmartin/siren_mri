@@ -283,7 +283,7 @@ if __name__ == "__main__":
     fourier_features_scale = 1
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_RESET_img_domain_1e-2reg'
+    experiment_name = 'DDP_RESET_img_domain_dropout'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
