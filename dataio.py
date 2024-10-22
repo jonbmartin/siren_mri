@@ -1080,9 +1080,9 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 kspace_stacked = torch.cat((kspace_real, kspace_imag),0)
 
                 img_sparse = mask * kspace_stacked
-                sio.savemat('spatial_domain_image_loaded.mat',{'spatial_img':spatial_img.cpu().numpy(),
-                                                               'kspace':kspace_stacked.cpu().numpy(),
-                                                               'img_sparse':img_sparse.cpu().numpy()})
+                # sio.savemat('spatial_domain_image_loaded.mat',{'spatial_img':spatial_img.cpu().numpy(),
+                #                                                'kspace':kspace_stacked.cpu().numpy(),
+                #                                                'img_sparse':img_sparse.cpu().numpy()})
 
             elif self.test_sparsity == 'CS_cartesian_no_low_freq':
                     #print('Using a CS Cartesian mask!')
