@@ -71,6 +71,11 @@ def image_mse(mask, model_output, gt, high_freq=False):
 
     kspace_gt_real = dataio.lin2img(gt['img'])
 
+    # kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
+    # kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
+    kspace_pred_maglog = torch.log(torch.abs(torch.fft.fft2(kspace_output_real)))
+    kspace_gt_maglog = torch.log(torch.abs(torch.fft.fft2(kspace_output_real)))
+
     # transform
     #kspace_output_real = torch.asinh(400*kspace_output_real)/6.7
     #kspace_gt_real = torch.asinh(400*kspace_gt_real)/6.7
@@ -86,7 +91,7 @@ def image_mse(mask, model_output, gt, high_freq=False):
         #cplx_diff = cplx_diff * mask
 
     # add a kspace domain loss:
-    kspace_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
+    dimension_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
 
     #kspace_loss = ((torch.real(cplx_diff))**2).sum() + ((torch.imag(cplx_diff))**2).sum()
     if high_freq:
@@ -94,12 +99,16 @@ def image_mse(mask, model_output, gt, high_freq=False):
     else:
         kspace_loss = (torch.abs((kspace_output_real-kspace_gt_real))**2).sum()
     #print(f'kspace loss (unweighted): {kspace_loss}')
-    kspace_loss = kspace_loss * kspace_weight
+
+    maglog_loss = torch.abs(kspace_pred_maglog-kspace_gt_maglog)
+    maglog_loss = maglog_loss.sum()
+    print(f'img domain loss = {kspace_loss}')
+    print(f'kspace domain loss = {maglog_loss}')
 
     if mask is None:
-        return {'img_loss': (kspace_loss)}
+        return {'img_loss': dimension_weight*(kspace_loss+maglog_loss*1e-3)}
     else:
-        return {'img_loss': (kspace_loss)}
+        return {'img_loss': dimension_weight*(kspace_loss+maglog_loss*1e-3)}
 
 def image_smape(mask, model_output, gt):
      # SAME as below, but no image domain loss/ fourier transforms 
