@@ -1080,6 +1080,23 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 kspace_stacked = torch.cat((kspace_real, kspace_imag),0)
 
                 img_sparse = mask * kspace_stacked
+
+            elif self.test_sparsity == 'CS_cartesian_from_img_domain_fixed_mask':
+                # row_inds = [int(number) for number in range(spatial_img.size(1))]
+                # random.shuffle(row_inds)
+                # mask = torch.zeros_like(spatial_img)
+                # ny = mask.shape[1]
+                # mask[:,row_inds[0:int(0.3333*ny)],:] = 1
+                # mask[:,int(ny/2-5):int(ny/2+5),:] = 1
+                mask = sio.loadmat('../data/cartesian_mask.mat')['mask']
+                mask = torch.from_numpy(mask)
+                kspace = torch.fft.fftshift(torch.fft.fft2(spatial_img))
+
+                kspace_real = torch.real(kspace)
+                kspace_imag = torch.imag(kspace)
+                kspace_stacked = torch.cat((kspace_real, kspace_imag),0)
+
+                img_sparse = mask * kspace_stacked
                 # sio.savemat('spatial_domain_image_loaded.mat',{'spatial_img':spatial_img.cpu().numpy(),
                 #                                                'kspace':kspace_stacked.cpu().numpy(),
                 #                                                'img_sparse':img_sparse.cpu().numpy()})
