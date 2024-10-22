@@ -58,7 +58,8 @@ class FCBlock(MetaModule):
                          'tanh':(nn.Tanh(), init_weights_xavier, None),
                          'selu':(nn.SELU(inplace=True), init_weights_selu, None),
                          'softplus':(nn.Softplus(), init_weights_normal, None),
-                         'elu':(nn.ELU(inplace=True), init_weights_elu, None)}
+                         'elu':(nn.ELU(inplace=True), init_weights_elu, None),
+                         'swish':(nn.SiLU(inplace=True),init_weights_normal, None)}
 
         nl, nl_weight_init, first_layer_init = nls_and_inits[nonlinearity]
 
