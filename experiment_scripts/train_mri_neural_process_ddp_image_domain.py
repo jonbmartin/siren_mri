@@ -163,7 +163,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         kl_weight = 2.78e-8 #optim # 0.1 in paper
         fw_weight = 1e-2#1e-2 best for mse #1e-6#optim # 100 in paper
         lr = 1e-5#5.e-5 best for mse
-        fourier_features_scale = 16 # best = 10
+        fourier_features_scale = 0.1 # best = 1! not 16
         latent_dim = 256 # best = 256
         hidden_features_hyper = 256 #256 # best = 256
         hidden_layers_hyper = 5 # try just 1. 3 gave 0.0011 after 15 epochs. 5 gave 0.0004- was best!! 
@@ -280,10 +280,10 @@ if __name__ == "__main__":
     # TODO: manually setting this to be the same as that inside main()
     # create the fourier feature transform to be used by ALL DDP processes 
     num_fourier_features = 512
-    fourier_features_scale = 16
+    fourier_features_scale = 0.1
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_RESET_img_domain_AUGMENTED_FD_FFscale16'
+    experiment_name = 'DDP_RESET_img_domain_AUGMENTED_FD_FFscale0d1'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
