@@ -131,7 +131,6 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
     dc_loss = dc_loss.sum()
 
     # 2) calculate FD loss
-    print(f'shape of kspace = {np.shape(kspace_output_real)}')
     FD_pred = K.filters.sobel(torch.abs(kspace_output_real))
     FD_gt = K.filters.sobel(torch.abs(kspace_gt_real))
 
@@ -140,15 +139,15 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
 
     kspace_loss = (torch.abs((kspace_output_real-kspace_gt_real))**2).sum()
 
-    print(f'img mse loss = {kspace_loss}')
-    print(f'img dc loss = {dc_loss}')
-    print(f'img FD loss = {fd_loss}')
+    # print(f'img mse loss = {kspace_loss}')
+    # print(f'img dc loss = {dc_loss}')
+    # print(f'img FD loss = {fd_loss}')
 
     dimension_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
     if mask is None:
-        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/5000)}
+        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/5000+fd_loss/2)}
     else:
-        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/5000)}
+        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/5000+fd_loss/2)}
     
     
 
