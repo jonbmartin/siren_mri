@@ -10,6 +10,8 @@ import scipy.io as sio
 import utils
 import sys
 
+import kornia as K
+
 def image_mse_log(mask, model_output, gt):
     # SAME as below, but no image domain loss/ fourier transforms 
 
@@ -118,8 +120,7 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
 
     kspace_gt_real = dataio.lin2img(gt['img'])
 
-    # kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
-    # kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
+    # 1) calculate DC loss
     kspace_pred_dc = torch.fft.fft2(kspace_output_real)
     kspace_gt_dc = torch.fft.fft2(kspace_gt_real)
 
@@ -128,20 +129,23 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
     # print(f'kspace_pred shape = {np.shape(kspace_gt_dc)}')
     dc_loss = torch.abs(dc_mask * (kspace_pred_dc - kspace_gt_dc))
     dc_loss = dc_loss.sum()
-    # print(f'DC loss = {dc_loss}')
 
-    # add a kspace domain loss:
-    dimension_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
+    # 2) calculate FD loss
+    kspace_pred = kspace_output_real[:,0,:,:] + 1j * kspace_output_real[:,1,:,:]
+    kspace_gt = kspace_gt_real[:,0,:,:] + 1j * kspace_gt_real[:,1,:,:]
+    FD_pred = K.filters.sobel(torch.abs(kspace_pred))
+    FD_gt = K.filters.sobel(torch.abs(kspace_gt))
+
+    fd_loss = (torch.abs(FD_pred-FD_gt)).sum()
 
 
     kspace_loss = (torch.abs((kspace_output_real-kspace_gt_real))**2).sum()
-    # print(f'kspace loss (unweighted): {kspace_loss}')
 
-    # maglog_loss = torch.abs(kspace_pred_maglog-kspace_gt_maglog)
-    # maglog_loss = maglog_loss.sum() # was * 2e-2 to balance with img domain
-    # print(f'img domain loss = {kspace_loss}')
-    # print(f'kspace domain loss = {maglog_loss}')
+    print(f'img mse loss = {kspace_loss}')
+    print(f'img dc loss = {dc_loss}')
+    print(f'img FD loss = {fd_loss}')
 
+    dimension_weight = 1/(128*128) # if using 3, 0.0025. If using 6, 0.02 # dim sizekspace_pred
     if mask is None:
         return {'img_loss': dimension_weight*(kspace_loss+dc_loss/5000)}
     else:

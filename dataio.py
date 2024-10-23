@@ -1086,6 +1086,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 random.shuffle(row_inds)
                 mask = torch.zeros_like(spatial_img)
                 ny = mask.shape[1]
+                # randomly flip the mask 90 degrees 
                 if random.choice([True, False]):
                     mask[:,row_inds[0:int(0.3333*ny)],:] = 1
                     mask[:,int(ny/2-5):int(ny/2+5),:] = 1
