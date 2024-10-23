@@ -143,9 +143,9 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
     # print(f'kspace domain loss = {maglog_loss}')
 
     if mask is None:
-        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/1000)}
+        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/5000)}
     else:
-        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/1000)}
+        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/5000)}
     
     
 
