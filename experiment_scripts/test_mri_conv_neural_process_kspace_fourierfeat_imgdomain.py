@@ -215,7 +215,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
 #fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
 # TODO this needs to be more automatic
 #savepath = './logs/'+'DDP_RESET_large_dataset_20featscale'+'/current_B_DDP_placeholder.pt'
-experiment_name = 'DDP_RESET_img_domain_fixed_mask'
+experiment_name = 'DDP_RESET_img_domain_AUGMENTED'
 savepath = './logs/fourier_feat_mats/current_B_DDP_placeholder_'+experiment_name+'.pt'
 fourier_transformer.load_B(savepath)
 print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
@@ -299,7 +299,7 @@ def getTestMSE(dataloader, subdir, trial_num=0):
 
 
 #sparsities = [10, 100, 1000, 3000, 'full', 'half', 'CS_cartesian']
-sparsities = ['CS_cartesian_from_img_domain']
+sparsities = ['CS_cartesian_from_img_domain_AUGMENTED']
 #num_img_in_sparsity = 5
 for sparsity in sparsities:
     generalization_dataset_test.update_test_sparsity(sparsity)
