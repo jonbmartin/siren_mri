@@ -139,9 +139,9 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
 
     kspace_loss = (torch.abs((kspace_output_real-kspace_gt_real))**2).sum()
 
-    # print(f'img mse loss = {kspace_loss}')
-    # print(f'img dc loss = {dc_loss}')
-    # print(f'img FD loss = {fd_loss}')
+    print(f'img mse loss = {kspace_loss}')
+    print(f'img dc loss = {dc_loss}')
+    print(f'img FD loss = {fd_loss}')
 
     dimension_weight = 1/(128*128)
     if mask is None:
