@@ -162,7 +162,7 @@ elif config =='from_early_expt':
     kl_weight = 2.78e-8 #optim # 0.1 in paper
     fw_weight = 1e-6#1e-2 best for mse #1e-6#optim # 100 in paper
     lr = 1e-5#5.e-5 best for mse
-    fourier_features_scale = 6 # Best = 1! not 16
+    fourier_features_scale = 1 # Best = 1! not 16
     latent_dim = 256 # best = 256
     hidden_features_hyper = 256 #256 # best = 256
     hidden_layers_hyper = 5 # try just 1. 3 gave 0.0011 after 15 epochs. 5 gave 0.0004- was best!! 
@@ -215,7 +215,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
 #fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
 # TODO this needs to be more automatic
 #savepath = './logs/'+'DDP_RESET_large_dataset_20featscale'+'/current_B_DDP_placeholder.pt'
-experiment_name = 'DDP_RESET_img_domain_AUGMENTED_FD_FFscale6'
+experiment_name = 'DDP_RESET_img_domain_AUGMENTED_FD_FFscale1'
 savepath = './logs/fourier_feat_mats/current_B_DDP_placeholder_'+experiment_name+'.pt'
 fourier_transformer.load_B(savepath)
 print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
