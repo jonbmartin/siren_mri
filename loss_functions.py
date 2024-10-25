@@ -127,7 +127,7 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
     dc_mask = gt['dc_mask']
     # print(f'dc mask shape = {np.shape(dc_mask)}')
     # print(f'kspace_pred shape = {np.shape(kspace_gt_dc)}')
-    dc_loss = torch.abs(dc_mask * (kspace_pred_dc - kspace_gt_dc))
+    dc_loss = torch.abs(dc_mask * (torch.abs(kspace_pred_dc) - torch.abs(kspace_gt_dc)))
     dc_loss = dc_loss.sum()
 
     # 2) calculate FD loss
