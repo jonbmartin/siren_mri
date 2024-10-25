@@ -109,8 +109,9 @@ def objective(trial, device_id):
                         fourier_feat_transformer=fourier_transformer, device=device, hyperopt_run=True, accumulation_steps=accumulation_steps)
             trial_val_all += trial_val
         trial_val_all /= n_trials
-    except:
+    except Exception as error:
         print('Exception raised. Error in training with these parameters')
+        print(f'Error was: {error}')
         trial_val_all = 1e2
 
     print(f'OUTPUT TRIAL_VAL = {trial_val_all}')
