@@ -45,7 +45,7 @@ def objective(trial, device_id):
     num_conv_res_blocks = trial.suggest_int('num_conv_res_blocks', 2,5)
     dropout = trial.suggest_float('dropout', 0, 0.2)
     #accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
-    accumulation_steps=16
+    accumulation_steps=1
 
     
     img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
