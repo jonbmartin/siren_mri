@@ -49,7 +49,7 @@ def objective(trial, device_id):
 
     
     img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
-    coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=False)
+    coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=True)
 
     generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                             train_sparsity_range=train_sparsity_range,
@@ -62,7 +62,7 @@ def objective(trial, device_id):
 
     # VAL DATASET
     img_dataset_val = dataio.FastMRIBrainKspace(split='val_small', downsampled=True, image_resolution=image_resolution)
-    coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
+    coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=True)
     generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
                                                             train_sparsity_range=train_sparsity_range,
                                                             test_sparsity= 'CS_cartesian_from_img_domain_AUGMENTED',
