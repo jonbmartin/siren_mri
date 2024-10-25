@@ -20,31 +20,32 @@ def objective(trial, device_id):
     n_trials = 1
     batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
     device = torch.device(device_id)  # or whatever device/cpu you like
-    image_resolution = (64, 64)
+    image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
-    experiment_name = 'hyperopt'
+    experiment_name = 'hyperopt_img_domain'
     num_epochs = 4
     steps_til_summary = 1000
     gmode = 'conv_cnp'
     partial_conv = False
-    w0 = 30
+    w0 = 30 # keep fixed since feat scale will interact with this anyway
 
     # hyperopt parameters
-    num_fourier_features = trial.suggest_int('num_fourier_features', 4, 256)
-    latent_dim = trial.suggest_categorical('latent_dim', [32, 64, 128, 256, 512, 1024])
+    num_fourier_features = trial.suggest_int('num_fourier_features', 16, 1024)
+    latent_dim = trial.suggest_categorical('latent_dim', [128, 256, 512])
     kernel_size = trial.suggest_categorical('conv_kernel_size', [3, 5, 7])
     hidden_features = trial.suggest_categorical('hidden_features', [64, 128, 256, 512])
-    hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [32, 64, 128, 256, 512])
-    hidden_layers = trial.suggest_int('hidden_layers', 1,5)
+    hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [64,128,256])
+    hidden_layers = trial.suggest_int('hidden_layers', 3,5, 7)
     hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,3)
     lr = trial.suggest_float('lr', 1e-7, 1e-4, log=True) # Generally see instability above e-4
-    kl_weight = trial.suggest_float('kl_weight', 1e-9, 1e-1, log=True)
-    fw_weight = trial.suggest_float('fw_weight', 1e-9, 1e-1, log=True)
-    fourier_feat_scale = trial.suggest_float('fourier_scale', 5, 40, log=False)
-    num_conv_res_blocks = trial.suggest_int('num_conv_res_blocks', 1,6)
+    kl_weight = trial.suggest_float('kl_weight', 1e-7, 1e-1, log=True)
+    fw_weight = trial.suggest_float('fw_weight', 1e-7, 1e-1, log=True)
+    fourier_feat_scale = trial.suggest_float('fourier_scale', 0.05, 20, log=True)
+    num_conv_res_blocks = trial.suggest_int('num_conv_res_blocks', 2,5)
+    dropout = trial.suggest_float('dropout', 0, 0.2)
     #accumulation_steps = trial.suggest_int('accumulation_steps', 8, 128)
-    accumulation_steps=32
+    accumulation_steps=16
 
     
     img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
@@ -52,7 +53,7 @@ def objective(trial, device_id):
 
     generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
                                                             train_sparsity_range=train_sparsity_range,
-                                                            test_sparsity= 'CS_cartesian',
+                                                            test_sparsity= 'CS_cartesian_from_img_domain_AUGMENTED',
                                                             generalization_mode=gmode,
                                                             device=device)
 
@@ -64,14 +65,14 @@ def objective(trial, device_id):
     coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=False)
     generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
                                                             train_sparsity_range=train_sparsity_range,
-                                                            test_sparsity= 'CS_cartesian',
+                                                            test_sparsity= 'CS_cartesian_from_img_domain_AUGMENTED',
                                                             generalization_mode=gmode,
                                                             device=device)
     dataloader_val = DataLoader(generalization_dataset_val, shuffle=True, batch_size=batch_size,
                             pin_memory=False, num_workers=0,)
 
 
-    loss_fn = partial(loss_functions.image_hypernetwork_loss, None, kl_weight, fw_weight)
+    loss_fn = partial(loss_functions.image_hypernetwork_loss_dc, None, kl_weight, fw_weight)
     #loss_fn = partial(loss_functions.image_hypernetwork_ift_loss, kl_weight, fw_weight)
     summary_fn = partial(utils.write_image_summary_small, image_resolution, None)
 
@@ -87,18 +88,18 @@ def objective(trial, device_id):
     try:
         for ii in range(n_trials):
             model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(in_features=2*num_fourier_features,
-                                                        out_features=img_dataset.img_channels,
-                                                        image_resolution=image_resolution,
-                                                        fourier_features_size=2*num_fourier_features,
-                                                        latent_dim=latent_dim,
-                                                        hidden_features=hidden_features,
-                                                        hyper_hidden_features=hidden_features_hyper,
-                                                        hyper_hidden_layers=hidden_layers_hyper,
-                                                        num_hidden_layers=hidden_layers,
-                                                        partial_conv=partial_conv,
-                                                        conv_kernel_size=kernel_size,
-                                                        num_conv_res_blocks=num_conv_res_blocks, 
-                                                        w0=w0)
+                                                                    out_features=img_dataset.img_channels,
+                                                                    image_resolution=image_resolution,
+                                                                    fourier_features_size=2*num_fourier_features,
+                                                                    latent_dim=latent_dim,
+                                                                    hidden_features=hidden_features,
+                                                                    hyper_hidden_features=hidden_features_hyper,
+                                                                    hyper_hidden_layers=hidden_layers_hyper,
+                                                                    num_hidden_layers=hidden_layers,
+                                                                    partial_conv=partial_conv,
+                                                                    conv_kernel_size=kernel_size,
+                                                                    num_conv_res_blocks=num_conv_res_blocks,
+                                                                    w0=w0, use_dc=False, hyper_dropout=dropout)
             model.cuda(device)
 
             print(f'Parameter Hyperopt trial #: {ii}')
@@ -120,8 +121,8 @@ def objective(trial, device_id):
 
 if __name__ == "__main__":
     study = optuna.load_study(
-        storage = "sqlite:///db.sqlite3_test",
-        study_name = 'hyperopt_reg_params_trial3')
+        storage = "sqlite:///db.sqlite3_test_img_domain",
+        study_name = 'hyperopt_img_domain')
     
     p = configargparse.ArgumentParser()
     p.add('-d', '--device_id', required=True, help='CUDA device ID.')

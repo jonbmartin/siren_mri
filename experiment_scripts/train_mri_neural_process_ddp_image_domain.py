@@ -262,9 +262,10 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     #fourier_transformer.save_B('./logs/'+experiment_name+'/current_B_DDP_placeholder.pt')
     print(f'rank {rank} successfully loaded B')
 
+    # NOTE TO SELF : grad_clip was false prior to hyperparameter optimization
     training_ddp.train_ddp(model=model, train_dataloader=dataloader,val_dataloader=dataloader_val, epochs=num_epochs,
                 lr=lr, steps_til_summary=steps_til_summary, epochs_til_checkpoint=save_every,
-                model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=False,
+                model_dir=root_path, loss_fn=loss_fn, summary_fn=summary_fn, clip_grad=True,
                 fourier_feat_transformer=fourier_transformer, device=rank, accumulation_steps=accumulation_steps,
                 ddp_run=True)
 
