@@ -147,10 +147,11 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
     # print(f'img FD loss = {fd_loss}')
 
     dimension_weight = 1/(128*128)
+    # DC was /200 before.
     if mask is None:
-        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/200+fd_loss/2)}
+        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/5000+fd_loss/2)}
     else:
-        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/200+fd_loss/2)}
+        return {'img_loss': dimension_weight*(kspace_loss+dc_loss/5000+fd_loss/2)}
     
     
 
