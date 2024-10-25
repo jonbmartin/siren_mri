@@ -122,7 +122,7 @@ def objective(trial, device_id):
 
 if __name__ == "__main__":
     study = optuna.load_study(
-        storage = "sqlite:///db.sqlite3_test_img_domain",
+        storage = "sqlite:///db.sqlite3_test_img_domain_trial2",
         study_name = 'hyperopt_img_domain')
     
     p = configargparse.ArgumentParser()
