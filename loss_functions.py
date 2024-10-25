@@ -130,8 +130,8 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
     dc_loss = torch.abs(dc_mask * (kspace_pred_dc - kspace_gt_dc))
     dc_loss = dc_loss.sum()
 
-    sio.savemat('test_dc_QC.mat',{'dc_mask':dc_mask, 'img_pred':kspace_output_real, 'img_gt':kspace_gt_real,
-                                  'ks_pred':kspace_pred_dc, 'ks_gt':kspace_gt_dc})
+    sio.savemat('test_dc_QC.mat',{'dc_mask':dc_mask.detach().cpu().numpy(), 'img_pred':kspace_output_real.detach().cpu().numpy(), 'img_gt':kspace_gt_real.detach().cpu().numpy(),
+                                  'ks_pred':kspace_pred_dc.detach().cpu().numpy(), 'ks_gt':kspace_gt_dc.detach().cpu().numpy()})
 
     # 2) calculate FD loss
     FD_pred = K.filters.sobel(torch.abs(kspace_output_real))
