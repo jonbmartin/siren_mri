@@ -48,7 +48,7 @@ def objective(trial, device_id):
     accumulation_steps=1
 
     
-    img_dataset = dataio.FastMRIBrainKspace(split='train', downsampled=True, image_resolution=image_resolution)
+    img_dataset = dataio.FastMRIBrainImageKspaceEncode(split='train', downsampled=True, image_resolution=image_resolution)
     coord_dataset = dataio.Implicit2DWrapper(img_dataset, sidelength=image_resolution, image=True)
 
     generalization_dataset = dataio.ImageGeneralizationWrapper(coord_dataset,
@@ -61,7 +61,7 @@ def objective(trial, device_id):
                             pin_memory=False, num_workers=0,)
 
     # VAL DATASET
-    img_dataset_val = dataio.FastMRIBrainKspace(split='val_small', downsampled=True, image_resolution=image_resolution)
+    img_dataset_val = dataio.FastMRIBrainImageKspaceEncode(split='val_small', downsampled=True, image_resolution=image_resolution)
     coord_dataset_val = dataio.Implicit2DWrapper(img_dataset_val, sidelength=image_resolution, image=True)
     generalization_dataset_val = dataio.ImageGeneralizationWrapper(coord_dataset_val,
                                                             train_sparsity_range=train_sparsity_range,
