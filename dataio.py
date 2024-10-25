@@ -1099,6 +1099,9 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 kspace_imag = torch.imag(kspace)
                 kspace_stacked = torch.cat((kspace_real, kspace_imag),0)
 
+                print(np.shape(mask))
+                print(np.shape(kspace_stacked))
+
                 img_sparse = mask * kspace_stacked
 
             elif self.test_sparsity == 'CS_cartesian_from_img_domain_fixed_mask':
