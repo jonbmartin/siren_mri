@@ -18,7 +18,7 @@ def objective(trial, device_id):
 
     # fixed parameters
     n_trials = 1
-    batch_size =2 # with accumulation steps =16, this is an effective batch size of 64
+    batch_size = 4 # with accumulation steps =16, this is an effective batch size of 64
     device = torch.device(device_id)  # or whatever device/cpu you like
     image_resolution = (128, 128)
     train_sparsity_range = [2000, 4000] # this gets overwritten
@@ -36,7 +36,7 @@ def objective(trial, device_id):
     kernel_size = trial.suggest_categorical('conv_kernel_size', [3, 5, 7])
     hidden_features = trial.suggest_categorical('hidden_features', [64, 128, 256, 512])
     hidden_features_hyper = trial.suggest_categorical('hidden_features_hyper', [64,128,256])
-    hidden_layers = trial.suggest_int('hidden_layers', 3,5, 7)
+    hidden_layers = trial.suggest_int('hidden_layers', 3,7)
     hidden_layers_hyper = trial.suggest_int('hidden_layers_hyper', 1,3)
     lr = trial.suggest_float('lr', 1e-7, 1e-4, log=True) # Generally see instability above e-4
     kl_weight = trial.suggest_float('kl_weight', 1e-7, 1e-1, log=True)
