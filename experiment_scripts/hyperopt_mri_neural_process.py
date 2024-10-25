@@ -12,7 +12,7 @@ from functools import partial
 from features import GaussianFourierFeatureTransform
 
 import optuna
-
+import traceback
 
 def objective(trial, device_id):
 
@@ -112,6 +112,7 @@ def objective(trial, device_id):
     except Exception as error:
         print('Exception raised. Error in training with these parameters')
         print(f'Error was: {error}')
+        traceback.print_exc()
         trial_val_all = 1e2
 
     print(f'OUTPUT TRIAL_VAL = {trial_val_all}')
