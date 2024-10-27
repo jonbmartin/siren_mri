@@ -51,7 +51,7 @@ assert opt.dataset == 'mri_image'
 image_resolution = (128, 128)
 
 # CONFIG. TODO: transition to config.yml
-config = 'from_early_expt'
+config = 'hyperopt_img_domain'
 if config=='default_manual':
     num_fourier_features = 30
     kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -173,7 +173,6 @@ elif config =='from_early_expt':
     num_conv_res_blocks= 3 # go back to orig paper, was 3
     w0=30
     dropout = 0.0
-
 elif config =='hyperopt_img_domain':
     # Notes: Biggest improvements came from adding more hypernetwork layers. "Best = 0.0005 for batchsize 8"
     num_fourier_features = 575 # 256 is best
