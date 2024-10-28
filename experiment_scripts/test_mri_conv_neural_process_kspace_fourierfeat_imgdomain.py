@@ -51,7 +51,7 @@ assert opt.dataset == 'mri_image'
 image_resolution = (128, 128)
 
 # CONFIG. TODO: transition to config.yml
-config = 'hyperopt_img_domain'
+config = 'hyperopt_img_domain_LARGE'
 if config=='default_manual':
     num_fourier_features = 30
     kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -190,6 +190,23 @@ elif config =='hyperopt_img_domain':
     num_conv_res_blocks= 5 # go back to orig paper, was 3
     w0=30
     dropout = 0.0
+elif config =='hyperopt_img_domain_LARGE':
+    # Notes: Biggest improvements came from adding more hypernetwork layers. "Best = 0.0005 for batchsize 8"
+    num_fourier_features = 575 # 256 is best
+    kl_weight = 1.25e-4 #optim # 0.1 in paper
+    fw_weight = 7.6e-7#1e-2 best for mse #1e-6#optim # 100 in paper
+    lr = 4.3e-6#5.e-5 best for mse
+    fourier_features_scale = 5.5 # best = 1! not 16
+    latent_dim = 1024 # best = 256
+    hidden_features_hyper = 128 #256 # best = 256
+    hidden_layers_hyper = 1 # try just 1. 3 gave 0.0011 after 15 epochs. 5 gave 0.0004- was best!! 
+    hidden_layers = 3
+    hidden_features = 128
+    partial_conv=False
+    conv_kernel_size = 3
+    num_conv_res_blocks= 6 # go back to orig paper, was 3
+    w0=30
+    dropout = 0.0
 
 device = 'cuda:5'
 
@@ -233,7 +250,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
 #fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
 # TODO this needs to be more automatic
 #savepath = './logs/'+'DDP_RESET_large_dataset_20featscale'+'/current_B_DDP_placeholder.pt'
-experiment_name = 'DDP_RESET_img_domain_AUGMENTED_FD_hyperopt'
+experiment_name = 'DDP_RESET_img_domain_AUGMENTED_FD_hyperopt_LARGE'
 savepath = './logs/fourier_feat_mats/current_B_DDP_placeholder_'+experiment_name+'.pt'
 fourier_transformer.load_B(savepath)
 print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
