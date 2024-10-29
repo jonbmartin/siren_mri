@@ -198,7 +198,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         fw_weight = 7.6e-7#1e-2 best for mse #1e-6#optim # 100 in paper
         lr = 4.3e-6#5.e-5 best for mse
         fourier_features_scale = 5.5 # best = 1! not 16
-        latent_dim = 1024 # best = 256
+        latent_dim = 512 # best = 256
         hidden_features_hyper = 128 #256 # best = 256
         hidden_layers_hyper = 1 # try just 1. 3 gave 0.0011 after 15 epochs. 5 gave 0.0004- was best!! 
         hidden_layers = 3
