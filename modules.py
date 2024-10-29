@@ -36,6 +36,70 @@ class Sine(nn.Module):
         # See paper sec. 3.2, final paragraph, and supplement Sec. 1.5 for discussion of factor 30
         #return torch.sin(30 * input)
         return torch.sin(self.w0 * input)
+    
+
+class ComplexGaborLayer2D(nn.Module):
+    '''
+        Implicit representation with complex Gabor nonlinearity with 2D activation function
+        
+        Inputs;
+            in_features: Input features
+            out_features; Output features
+            bias: if True, enable bias for the linear operation
+            is_first: Legacy SIREN parameter
+            omega_0: Legacy SIREN parameter
+            omega0: Frequency of Gabor sinusoid term
+            sigma0: Scaling of Gabor Gaussian term
+            trainable: If True, omega and sigma are trainable parameters
+    '''
+    
+    def __init__(self, in_features, out_features, bias=True,
+                 is_first=False, omega0=10.0, sigma0=10.0,
+                 trainable=False):
+        super().__init__()
+        self.omega_0 = omega0
+        self.scale_0 = sigma0
+        self.is_first = is_first
+        
+        self.in_features = in_features
+        
+        if self.is_first:
+            dtype = torch.float
+        else:
+            dtype = torch.cfloat
+            
+        # Set trainable parameters if they are to be simultaneously optimized
+        self.omega_0 = nn.Parameter(self.omega_0*torch.ones(1), trainable)
+        self.scale_0 = nn.Parameter(self.scale_0*torch.ones(1), trainable)
+        
+        self.linear = nn.Linear(in_features,
+                                out_features,
+                                bias=bias,
+                                dtype=dtype)
+        
+        # Second Gaussian window
+        self.scale_orth = nn.Linear(in_features,
+                                    out_features,
+                                    bias=bias,
+                                    dtype=dtype)
+    
+    def forward(self, input):
+        lin = self.linear(input)
+        
+        scale_x = lin
+        scale_y = self.scale_orth(input)
+        
+        freq_term = torch.exp(1j*self.omega_0*lin)
+        
+        arg = scale_x.abs().square() + scale_y.abs().square()
+        gauss_term = torch.exp(-self.scale_0*self.scale_0*arg)
+                
+        return freq_term*gauss_term
+
+    def forward(self, input):
+        # See paper sec. 3.2, final paragraph, and supplement Sec. 1.5 for discussion of factor 30
+        #return torch.sin(30 * input)
+        return torch.sin(self.w0 * input)
 
 class FCBlock(MetaModule):
     '''A fully connected neural network that also allows swapping out the weights when used with a hypernetwork.
@@ -59,7 +123,9 @@ class FCBlock(MetaModule):
                          'selu':(nn.SELU(inplace=True), init_weights_selu, None),
                          'softplus':(nn.Softplus(), init_weights_normal, None),
                          'elu':(nn.ELU(inplace=True), init_weights_elu, None),
-                         'swish':(nn.SiLU(inplace=True),init_weights_normal, None)}
+                         'swish':(nn.SiLU(inplace=True),init_weights_normal, None),
+                         'complex_2d_gabor':(ComplexGaborLayer2D(in_features=hidden_features,out_features=hidden_features,
+                                                                omega0=30, sigma0=5.5), init_weights_normal,None)}
 
         nl, nl_weight_init, first_layer_init = nls_and_inits[nonlinearity]
 
