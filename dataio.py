@@ -1080,6 +1080,23 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 kspace_stacked = torch.cat((kspace_real, kspace_imag),0)
 
                 img_sparse = mask * kspace_stacked
+            
+            elif self.test_sparsity == 'randgauss_img_domain':
+                row_inds = [int(number) for number in range(spatial_img.size(1))]
+                random.shuffle(row_inds)
+                mask = torch.zeros_like(spatial_img)
+                ny = mask.shape[1]
+                samples = torch.randn(20) * 5 + int(ny/2)
+                samples = torch.round(samples).int()
+                mask[:,samples,:] = 1
+                mask[:,int(ny/2-5):int(ny/2+5),int(ny/2-5):int(ny/2+5)] = 1
+                kspace = torch.fft.fftshift(torch.fft.fft2(spatial_img))
+
+                kspace_real = torch.real(kspace)
+                kspace_imag = torch.imag(kspace)
+                kspace_stacked = torch.cat((kspace_real, kspace_imag),0)
+
+                img_sparse = mask * kspace_stacked
 
             elif self.test_sparsity == 'CS_cartesian_from_img_domain_AUGMENTED':
                 row_inds = [int(number) for number in range(spatial_img.size(1))]
