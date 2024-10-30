@@ -480,7 +480,7 @@ class ConvImgEncoder(nn.Module):
         return o
     
 class ConvImgEncoderAUTOM(nn.Module):
-    def __init__(self, channel, tfx_params, image_resolution, hidden_size=256, kernel_size=3, num_conv_res_blocks=4):
+    def __init__(self, channel, image_resolution, hidden_size=256, kernel_size=3, num_conv_res_blocks=4):
         super().__init__()
         self.hidden_size = hidden_size
 
