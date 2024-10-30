@@ -6,6 +6,7 @@ import numpy as np
 from collections import OrderedDict
 import math
 import torch.nn.functional as F
+from automap_modules import *
 
 
 class BatchLinear(nn.Linear, MetaModule):
@@ -479,19 +480,19 @@ class ConvImgEncoder(nn.Module):
         return o
     
 class ConvImgEncoderAUTOM(nn.Module):
-    def __init__(self, channel, image_resolution, hidden_size=256, kernel_size=3, num_conv_res_blocks=4):
+    def __init__(self, channel, tfx_params, image_resolution, hidden_size=256, kernel_size=3, num_conv_res_blocks=4):
         super().__init__()
         self.hidden_size = hidden_size
 
         padding = kernel_size//2
 
         n = image_resolution[0]*image_resolution[1]
-        self.fc1 = nn.Linear(2*n, n)
+        self.fc1 = GeneralisedIFT2Layer({'nrow':image_resolution[0], 'ncol':image_resolution[1], 'nch_in':2})
         self.tanh1 = nn.Tanh()
-        self.fc2 = nn.Linear(n, n)
+        self.fc2 = GeneralisedIFT2Layer({'nrow':image_resolution[0], 'ncol':image_resolution[1],'nch_in':2})
 
         # conv_theta is input convolution
-        self.conv_theta = nn.Conv2d(1, hidden_size//2, kernel_size, 1, padding) 
+        self.conv_theta = nn.Conv2d(2, hidden_size//2, kernel_size, 1, padding) 
         self.relu = nn.ReLU(inplace=True)
 
         # Create net as list of modules first to allow dynamic # of layers for hyperopt
@@ -514,10 +515,10 @@ class ConvImgEncoderAUTOM(nn.Module):
 
     def forward(self, I):
         # TODO: reshape to [batchsize, :]
-        o = self.tanh1(self.fc1(I.view(I.shape[0],2*self.image_resolution[0]*self.image_resolution[1])))
+        o = self.tanh1(self.fc1(I))
         o = self.tanh1(self.fc2(o))
         # TODO: reshape to [batchsize, 1, n, n]
-        o = o.view(o.shape[0], 1, self.image_resolution[0], self.image_resolution[1])
+        # o = o.view(o.shape[0], 1, self.image_resolution[0], self.image_resolution[1])
 
         o = self.relu((self.conv_theta(o)))
         o = self.cnn(o)
