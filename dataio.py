@@ -1088,7 +1088,7 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 ny = mask.shape[1]
                 samples = torch.randn(int(0.3*ny)) * int(ny/5) + int(ny/2) # std and mean specified 
                 samples = torch.round(samples).int()
-                samples = torch.clamp(samples, min=0, max=ny)
+                samples = torch.clamp(samples, min=0, max=ny-1)
                 if random.choice([True, False]):
                     mask[:,samples,:] = 1
                     mask[:,int(ny/2-5):int(ny/2+5),:] = 1   
