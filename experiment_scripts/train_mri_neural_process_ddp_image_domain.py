@@ -209,7 +209,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         w0=30
         dropout = 0.0
 
-    image_resolution = (128, 128)
+    image_resolution = (256, 256)
     use_fourier_features = True
     img_dataset = dataio.FastMRIBrainImageKspaceEncode(split='train', downsampled=True, image_resolution=image_resolution)
     #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)
