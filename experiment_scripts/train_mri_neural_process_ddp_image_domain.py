@@ -51,7 +51,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
     ddp_setup(rank, world_size)
 
     # CONFIG. TODO: transition to config.yml
-    config = 'hyperopt_img_domain'
+    config = 'hyperopt_w_autom'
     if config=='default_manual':
         num_fourier_features = 30
         kl_weight = 0 # Not assuming anything about the weights of the latent 
@@ -191,7 +191,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         num_conv_res_blocks= 5 # go back to orig paper, was 3
         w0=30
         dropout = 0.0
-    elif config =='hyperopt_img_domain_LARGE':
+    elif config =='hyperopt_w_autom':
         # Notes: Biggest improvements came from adding more hypernetwork layers. "Best = 0.0005 for batchsize 8"
         num_fourier_features = 575 # 256 is best
         kl_weight = 1.25e-4 #optim # 0.1 in paper
@@ -205,7 +205,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         hidden_features = 128
         partial_conv=False
         conv_kernel_size = 3
-        num_conv_res_blocks= 6 # go back to orig paper, was 3
+        num_conv_res_blocks= 2 # go back to orig paper, was 3
         w0=30
         dropout = 0.0
 
