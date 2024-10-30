@@ -48,7 +48,7 @@ else:
     opt.experiment_name = opt.checkpoint_path.split('/')[-3] + '_' + opt.experiment_name
 
 assert opt.dataset == 'mri_image'
-image_resolution = (128, 128)
+image_resolution = (256, 256)
 
 # CONFIG. TODO: transition to config.yml
 config = 'hyperopt_img_domain'
@@ -250,7 +250,7 @@ fourier_transformer = GaussianFourierFeatureTransform(num_input_channels=2,
 #fourier_transformer.load_B('./logs/'+opt.experiment_name+'/current_B_DDP.pt')
 # TODO this needs to be more automatic
 #savepath = './logs/'+'DDP_RESET_large_dataset_20featscale'+'/current_B_DDP_placeholder.pt'
-experiment_name = 'DDP_RESET_img_domain_AUGMENTED_FD_hyperopt_l1'
+experiment_name = 'DDP_RESET_img_domain_AUGMENTED_FD_hyperopt_l1_256res'
 savepath = './logs/fourier_feat_mats/current_B_DDP_placeholder_'+experiment_name+'.pt'
 fourier_transformer.load_B(savepath)
 print(f"size of fourier B = {np.shape(fourier_transformer._B_spatial)}")
