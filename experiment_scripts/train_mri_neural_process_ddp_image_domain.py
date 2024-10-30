@@ -33,7 +33,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
 
     # fixed parameters
     print(B)
-    batch_size = 8 # Was 16 for 128x128# with accumulation steps =16, this is an effective batch size of 96 (16*6)
+    batch_size = 2 # Was 16 for 128x128# with accumulation steps =16, this is an effective batch size of 96 (16*6)
     accumulation_steps = 1
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
@@ -198,7 +198,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         fw_weight = 7.6e-7#1e-2 best for mse #1e-6#optim # 100 in paper
         lr = 4.3e-6#5.e-5 best for mse
         fourier_features_scale = 5.5 # best = 1! not 16
-        latent_dim = 256 # best = 256
+        latent_dim = 512 # best = 256
         hidden_features_hyper = 128 #256 # best = 256
         hidden_layers_hyper = 1 # try just 1. 3 gave 0.0011 after 15 epochs. 5 gave 0.0004- was best!! 
         hidden_layers = 3
