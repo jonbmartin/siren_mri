@@ -542,7 +542,7 @@ class PartialConvImgEncoder(nn.Module):
 
 class Conv2dResBlock(nn.Module):
     '''Aadapted from https://github.com/makora9143/pytorch-convcnp/blob/master/convcnp/modules/resblock.py'''
-    def __init__(self, in_channel, out_channel=128):
+    def __init__(self, in_channel, out_channel=128,use_res=True):
         super().__init__()
         self.convs = nn.Sequential(
             nn.Conv2d(in_channel, out_channel, 5, 1, 2),
@@ -552,11 +552,15 @@ class Conv2dResBlock(nn.Module):
         )
 
         self.final_relu = nn.ReLU()
+        self.use_res=use_res
 
     def forward(self, x):
         shortcut = x
         output = self.convs(x)
-        output = self.final_relu(output + shortcut)
+        if self.use_res:
+            output = self.final_relu(output + shortcut)
+        else:
+            output = self.final_relu(output)
         return output
 
 
