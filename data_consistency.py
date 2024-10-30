@@ -38,20 +38,20 @@ class DataConsistencyInKspace(nn.Module):
         batchsize = np.shape(k0)[0]
 
         # reshape to size (batchsize, nspatial, dim), match prediction
-        print('DATA CONSISTENCY DIMS BEFORE')
-        print(np.shape(prediction))
-        print(np.shape(k0))
-        print(np.shape(mask))
+        # print('DATA CONSISTENCY DIMS BEFORE')
+        # print(np.shape(prediction))
+        # print(np.shape(k0))
+        # print(np.shape(mask))
         k0 = torch.permute(k0, (0, 2, 3, 1))
         mask = torch.permute(mask, (0, 2, 3, 1))
         mask = mask.repeat(1,2,1,1)
         k0 = k0.view(batchsize,-1, 2)
         mask = mask.view(batchsize,-1, 2)
 
-        print('DATA CONSISTENCY DIMS AFTER')
-        print(np.shape(prediction))
-        print(np.shape(k0))
-        print(np.shape(mask))
+        # print('DATA CONSISTENCY DIMS AFTER')
+        # print(np.shape(prediction))
+        # print(np.shape(k0))
+        # print(np.shape(mask))
 
         out = data_consistency(prediction, k0, mask, self.noise_lvl)
 
