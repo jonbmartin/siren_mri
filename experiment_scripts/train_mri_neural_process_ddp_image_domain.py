@@ -33,7 +33,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
 
     # fixed parameters
     print(B)
-    batch_size = 4 # with accumulation steps =16, this is an effective batch size of 96 (16*6)
+    batch_size = 16 # Was 16 for 128x128# with accumulation steps =16, this is an effective batch size of 96 (16*6)
     accumulation_steps = 1
     train_sparsity_range = [2000, 4000] # this gets overwritten
     logging_root = './logs'
@@ -209,7 +209,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         w0=30
         dropout = 0.0
 
-    image_resolution = (256, 256)
+    image_resolution = (128, 128)
     use_fourier_features = True
     img_dataset = dataio.FastMRIBrainImageKspaceEncode(split='train', downsampled=True, image_resolution=image_resolution)
     #img_dataset = dataio.FastMRIBrain(split='train', downsampled=True, image_resolution=image_resolution)

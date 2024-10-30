@@ -48,7 +48,7 @@ else:
     opt.experiment_name = opt.checkpoint_path.split('/')[-3] + '_' + opt.experiment_name
 
 assert opt.dataset == 'mri_image'
-image_resolution = (256, 256)
+image_resolution = (128, 128)
 
 # CONFIG. TODO: transition to config.yml
 config = 'hyperopt_img_domain'
