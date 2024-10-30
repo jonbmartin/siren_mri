@@ -251,7 +251,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
                                                                     partial_conv=partial_conv,
                                                                     conv_kernel_size=conv_kernel_size,
                                                                     num_conv_res_blocks=num_conv_res_blocks,
-                                                                    w0=w0, use_dc=True, hyper_dropout=dropout)
+                                                                    w0=w0, use_dc=False, hyper_dropout=dropout)
         else:
             model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernet(in_features=img_dataset.img_channels,
                                                                             out_features=img_dataset.img_channels,
