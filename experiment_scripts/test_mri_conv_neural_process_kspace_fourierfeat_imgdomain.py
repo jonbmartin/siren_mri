@@ -238,7 +238,7 @@ model = meta_modules.ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures
                                                         partial_conv=partial_conv,
                                                         conv_kernel_size=conv_kernel_size,
                                                         num_conv_res_blocks=num_conv_res_blocks,
-                                                        w0=w0, use_dc=False)
+                                                        w0=w0, use_dc=True)
 model.cuda()
 model.eval()
 
