@@ -514,7 +514,6 @@ class ConvImgEncoderAUTOM(nn.Module):
         self.image_resolution = image_resolution
 
     def forward(self, I):
-        print(f'Shape of image input to conv network is :{np.shape(I)}')
         # TODO: reshape to [batchsize, :]
         I = torch.flatten(I, start_dim=1)
         o = self.tanh1(self.fc1(I))
