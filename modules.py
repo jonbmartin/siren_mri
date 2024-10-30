@@ -489,7 +489,6 @@ class ConvImgEncoderAUTOM(nn.Module):
         self.fc1 = nn.Linear(2*n, n)
         self.tanh1 = nn.Tanh()
         self.fc2 = nn.Linear(n, n)
-        self.tanh2 = nn.Tanh()
 
         # conv_theta is input convolution
         self.conv_theta = nn.Conv2d(1, hidden_size//2, kernel_size, 1, padding) 
@@ -515,9 +514,8 @@ class ConvImgEncoderAUTOM(nn.Module):
 
     def forward(self, I):
         # TODO: reshape to [batchsize, :]
-        I = torch.flatten(I, start_dim=1)
-        o = self.tanh1(self.fc1(I))
-        o = self.tanh2(self.fc2(o))
+        o = self.tanh1(self.fc1(I.view(I.shape[0],2*self.image_resolution[0]*self.image_resolution[1])))
+        o = self.tanh1(self.fc2(o))
         # TODO: reshape to [batchsize, 1, n, n]
         o = o.view(o.shape[0], 1, self.image_resolution[0], self.image_resolution[1])
 
