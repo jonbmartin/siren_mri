@@ -44,6 +44,7 @@ class DataConsistencyInKspace(nn.Module):
         print(np.shape(mask))
         k0 = torch.permute(k0, (0, 2, 3, 1))
         mask = torch.permute(mask, (0, 2, 3, 1))
+        mask = mask.repeat(1,2,1,1)
         k0 = k0.view(batchsize,-1, 2)
         mask = mask.view(batchsize,-1, 2)
 
