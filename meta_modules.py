@@ -246,9 +246,14 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
 
         # TODO: What if have no img_sparse because doing latent space interpolation???
         if "img_sparse" in model_input and self.use_dc:
-            model_output['model_out'] = self.dc(model_output['model_out'], 
+            model_output_kspace = torch.fft.fftshift(torch.fft.fft2(model_output['model_out']))
+            # model_output['model_out'] = self.dc(model_output['model_out'], 
+            #                                     model_input['img_sparse'], 
+            #                                     model_input['dc_mask'])
+            model_output_kspace_with_dc = self.dc(model_output_kspace, 
                                                 model_input['img_sparse'], 
                                                 model_input['dc_mask'])
+            model_output['model_out'] = torch.abs(torch.fft.ifft2((model_output_kspace_with_dc)))
 
         return {'model_in': model_output['model_in'], 'model_out': model_output['model_out'], 'latent_vec': embedding,
                 'hypo_params': hypo_params}
