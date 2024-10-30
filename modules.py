@@ -487,7 +487,8 @@ class ConvImgEncoderAUTOM(nn.Module):
         padding = kernel_size//2
 
         n = image_resolution[0]*image_resolution[1]
-        param_dict = {'nrow':image_resolution[0], 'ncol':image_resolution[1], 'nch_in':2}
+        param_dict = {'nrow':image_resolution[0], 'ncol':image_resolution[1], 'nch_in':2,
+                      'init_fourier':False}
         self.fc1 = GeneralisedIFT2Layer(**param_dict)
         self.tanh1 = nn.Tanh()
         self.fc2 = GeneralisedIFT2Layer(**param_dict)
