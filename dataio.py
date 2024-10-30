@@ -1086,8 +1086,9 @@ class ImageGeneralizationWrapper(torch.utils.data.Dataset):
                 random.shuffle(row_inds)
                 mask = torch.zeros_like(spatial_img)
                 ny = mask.shape[1]
-                samples = torch.randn(20) * 5 + int(ny/2)
+                samples = torch.randn(20) * int(ny/5) + int(ny/2) # std and mean specified 
                 samples = torch.round(samples).int()
+                samples = torch.clamp(samples, min=0, max=ny)
                 mask[:,samples,:] = 1
                 mask[:,int(ny/2-5):int(ny/2+5),int(ny/2-5):int(ny/2+5)] = 1
                 kspace = torch.fft.fftshift(torch.fft.fft2(spatial_img))
