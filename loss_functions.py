@@ -124,11 +124,12 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
     kspace_pred_dc = torch.fft.fftshift(torch.fft.fft2(kspace_output_real))
     kspace_gt_dc = torch.fft.fftshift(torch.fft.fft2(kspace_gt_real))
 
-    dc_mask = gt['dc_mask']
-    # print(f'dc mask shape = {np.shape(dc_mask)}')
-    # print(f'kspace_pred shape = {np.shape(kspace_gt_dc)}')
-    dc_loss = torch.abs(dc_mask * (kspace_pred_dc - kspace_gt_dc))
-    dc_loss = dc_loss.sum()
+    # dc_mask = gt['dc_mask']
+    # # print(f'dc mask shape = {np.shape(dc_mask)}')
+    # # print(f'kspace_pred shape = {np.shape(kspace_gt_dc)}')
+    # dc_loss = torch.abs(dc_mask * (kspace_pred_dc - kspace_gt_dc))
+    # dc_loss = dc_loss.sum()
+    dc_loss = 0
 
     # sio.savemat('test_dc_QC.mat',{'dc_mask':dc_mask.detach().cpu().numpy(), 'img_pred':kspace_output_real.detach().cpu().numpy(), 'img_gt':kspace_gt_real.detach().cpu().numpy(),
     #                               'ks_pred':kspace_pred_dc.detach().cpu().numpy(), 'ks_gt':kspace_gt_dc.detach().cpu().numpy()})
@@ -146,7 +147,7 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
     # print(f'img dc loss = {dc_loss}')
     # print(f'img FD loss = {fd_loss}')
 
-    dimension_weight = 1/(256*256)
+    dimension_weight = 1/(128*128)
     # DC was /200 before.
     if mask is None:
         return {'img_loss': dimension_weight*(kspace_loss+dc_loss/5000+fd_loss/2)}
