@@ -188,7 +188,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         if partial_conv:
             self.encoder = modules.PartialConvImgEncoder(channel=2, image_resolution=image_resolution)
         else:
-            self.encoder = modules.ConvImgEncoder(channel=2, image_resolution=image_resolution, hidden_size=latent_dim, 
+            self.encoder = modules.ConvImgEncoderAUTOM(channel=2, image_resolution=image_resolution, hidden_size=latent_dim, 
                                                   kernel_size=conv_kernel_size, num_conv_res_blocks=num_conv_res_blocks)
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
                                              in_features=fourier_features_size, hidden_features=hidden_features,num_hidden_layers=num_hidden_layers,

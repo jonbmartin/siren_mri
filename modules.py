@@ -462,15 +462,6 @@ class ConvImgEncoder(nn.Module):
         modules.append(nn.Conv2d(hidden_size, hidden_size, 1, 1, 0))# kernel size, stride, padding, dilation(=1)
 
         self.cnn = nn.Sequential(*modules)
-        # self.cnn = nn.Sequential(
-        #     nn.Conv2d(hidden_size//2, hidden_size, kernel_size, 1, padding), 
-        #     nn.ReLU(),
-        #     Conv2dResBlock(hidden_size, hidden_size),
-        #     Conv2dResBlock(hidden_size, hidden_size),
-        #     Conv2dResBlock(hidden_size, hidden_size),
-        #     Conv2dResBlock(hidden_size, hidden_size),
-        #     nn.Conv2d(hidden_size, hidden_size, 1, 1, 0) 
-        # )
 
         self.relu_2 = nn.ReLU(inplace=True)
         self.fc = nn.Linear(image_resolution[0]*image_resolution[1], 1)
@@ -484,9 +475,44 @@ class ConvImgEncoder(nn.Module):
         o = self.relu(self.BN(self.conv_theta(I)))
         o = self.cnn(o)
         o = self.relu_2(o).view(o.shape[0], self.hidden_size, -1)
-        # print(f'o out size in CNN encoder before last fc = {np.shape(o)}')
         o = self.fc(o).squeeze(-1)
-        # print(f'o out size in CNN encoder = {np.shape(o)}')
+        return o
+    
+class ConvImgEncoderAUTOM(nn.Module):
+    def __init__(self, channel, image_resolution, hidden_size=256, kernel_size=3, num_conv_res_blocks=4):
+        super().__init__()
+        self.hidden_size = hidden_size
+
+        padding = kernel_size//2
+
+        # conv_theta is input convolution
+        self.conv_theta = nn.Conv2d(channel, hidden_size//2, kernel_size, 1, padding) 
+        self.relu = nn.ReLU(inplace=True)
+
+        # Create net as list of modules first to allow dynamic # of layers for hyperopt
+        modules = []
+        modules.append(nn.Conv2d(hidden_size//2, hidden_size, kernel_size, 1, padding))
+        modules.append(nn.ReLU())
+        for ii in range(num_conv_res_blocks):
+            modules.append(Conv2dResBlock(hidden_size, hidden_size))
+        modules.append(nn.Conv2d(hidden_size, hidden_size, 1, 1, 0))# kernel size, stride, padding, dilation(=1)
+
+        self.cnn = nn.Sequential(*modules)
+
+        self.relu_2 = nn.ReLU(inplace=True)
+        self.fc = nn.Linear(image_resolution[0]*image_resolution[1], 1)
+
+        # JBM addition
+        # self.relu_3 = nn.Tanh(inplace=True)
+        # self.fc_last = nn.Linear()
+        self.image_resolution = image_resolution
+
+    def forward(self, I):
+        print(f'Shape of image input to conv network is :{np.shape(I)}')
+        o = self.relu((self.conv_theta(I)))
+        o = self.cnn(o)
+        o = self.relu_2(o).view(o.shape[0], self.hidden_size, -1)
+        o = self.fc(o).squeeze(-1)
         return o
 
 
