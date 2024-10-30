@@ -318,7 +318,7 @@ if __name__ == "__main__":
     fourier_features_scale = 5.5
     device = 1
     resume_from_save = False
-    experiment_name = 'DDP_RESET_img_domain_AUGMENTED_FD_hyperopt_l1_256res'
+    experiment_name = 'DDP_RESET_img_domain_AUGMENTED_FD_hyperopt_l1_hardDC'
 
     if resume_from_save:
         load_from_checkpoint_path = './logs/DDP/checkpoints/model_epoch_0030.pth'
