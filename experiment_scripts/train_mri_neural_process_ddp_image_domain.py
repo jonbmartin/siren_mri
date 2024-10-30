@@ -193,7 +193,7 @@ def main(rank, world_size, total_epochs, save_every, load_from_checkpoint_path, 
         dropout = 0.0
     elif config =='hyperopt_w_autom':
         # Notes: Biggest improvements came from adding more hypernetwork layers. "Best = 0.0005 for batchsize 8"
-        num_fourier_features = 512 # 256 is best
+        num_fourier_features = 575 # 256 is best
         kl_weight = 1.25e-4 #optim # 0.1 in paper
         fw_weight = 7.6e-7#1e-2 best for mse #1e-6#optim # 100 in paper
         lr = 4.3e-6#5.e-5 best for mse
