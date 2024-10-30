@@ -517,12 +517,12 @@ class ConvImgEncoderAUTOM(nn.Module):
         print(f'Shape of image input to conv network is :{np.shape(I)}')
         # TODO: reshape to [batchsize, :]
         I = torch.flatten(I, start_dim=1)
-        f = self.tanh1(self.fc1(I))
-        f = self.tanh2(self.fc2(f))
+        o = self.tanh1(self.fc1(I))
+        o = self.tanh2(self.fc2(o))
         # TODO: reshape to [batchsize, 1, n, n]
-        f = f.view(f.shape[0], 1, self.image_resolution[0], self.image_resolution[1])
+        o = o.view(o.shape[0], 1, self.image_resolution[0], self.image_resolution[1])
 
-        o = self.relu((self.conv_theta(f)))
+        o = self.relu((self.conv_theta(o)))
         o = self.cnn(o)
         o = self.relu_2(o).view(o.shape[0], self.hidden_size, -1)
         o = self.fc(o).squeeze(-1)
