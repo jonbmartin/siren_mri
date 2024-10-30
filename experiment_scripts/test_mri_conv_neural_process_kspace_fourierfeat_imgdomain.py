@@ -333,7 +333,7 @@ def getTestMSE(dataloader, subdir, trial_num=0):
 
 
 #sparsities = [10, 100, 1000, 3000, 'full', 'half', 'CS_cartesian']
-sparsities = ['randgauss_img_domain']
+sparsities = ['CS_cartesian_from_img_domain_AUGMENTED']
 #num_img_in_sparsity = 5
 for sparsity in sparsities:
     generalization_dataset_test.update_test_sparsity(sparsity)
