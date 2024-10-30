@@ -485,8 +485,14 @@ class ConvImgEncoderAUTOM(nn.Module):
 
         padding = kernel_size//2
 
+        n = image_resolution[0]*image_resolution[1]
+        self.fc1 = nn.Linear(2*n, n)
+        self.tanh1 = nn.Tanh()
+        self.fc2 = nn.Linear(n, n)
+        self.tanh2 = nn.Tanh()
+
         # conv_theta is input convolution
-        self.conv_theta = nn.Conv2d(channel, hidden_size//2, kernel_size, 1, padding) 
+        self.conv_theta = nn.Conv2d(1, hidden_size//2, kernel_size, 1, padding) 
         self.relu = nn.ReLU(inplace=True)
 
         # Create net as list of modules first to allow dynamic # of layers for hyperopt
@@ -509,7 +515,14 @@ class ConvImgEncoderAUTOM(nn.Module):
 
     def forward(self, I):
         print(f'Shape of image input to conv network is :{np.shape(I)}')
-        o = self.relu((self.conv_theta(I)))
+        # TODO: reshape to [batchsize, :]
+        I = torch.flatten(I, start_dim=1)
+        f = self.tanh1(self.fc1(I))
+        f = self.tanh2(self.fc2(f))
+        # TODO: reshape to [batchsize, 1, n, n]
+        f = f.view(f.shape[0], 1, self.image_resolution[0], self.image_resolution[1])
+
+        o = self.relu((self.conv_theta(f)))
         o = self.cnn(o)
         o = self.relu_2(o).view(o.shape[0], self.hidden_size, -1)
         o = self.fc(o).squeeze(-1)
