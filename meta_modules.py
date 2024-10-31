@@ -188,7 +188,7 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
         if partial_conv:
             self.encoder = modules.PartialConvImgEncoder(channel=2, image_resolution=image_resolution)
         else:
-            self.encoder = modules.ConvImgEncoder(channel=1, image_resolution=image_resolution, hidden_size=latent_dim, 
+            self.encoder = modules.ConvImgEncoder(channel=2, image_resolution=image_resolution, hidden_size=latent_dim, 
                                                   kernel_size=conv_kernel_size, num_conv_res_blocks=num_conv_res_blocks)
         self.hypo_net = modules.SingleBVPNet(out_features=out_features, type='sine', sidelength=image_resolution,
                                              in_features=fourier_features_size, hidden_features=hidden_features,num_hidden_layers=num_hidden_layers,
@@ -213,16 +213,17 @@ class ConvolutionalNeuralProcessImplicit2DHypernetFourierFeatures(nn.Module):
     def forward(self, model_input):
         if model_input.get('embedding', None) is None:
             # image domain embedding: 
-            img_complex = model_input['img_sparse']
-            # print(np.shape(img_complex))
-            img_complex = img_complex[:,0,:,:] + 1j* img_complex[:,1,:,:]
-            img_complex = img_complex[:, None, :, :]
-            img_complex = torch.abs(torch.fft.ifft2(img_complex))
-            # print(np.shape(img_complex))
-            #img_complex = torch.stack((torch.real(img_complex),torch.imag(img_complex)),dim=1)
-            #print(np.shape(img_complex))
-            embedding = self.encoder(img_complex)
-            #embedding = self.encoder(model_input['img_sparse'])
+            # img_complex = model_input['img_sparse']
+            # # print(np.shape(img_complex))
+            # img_complex = img_complex[:,0,:,:] + 1j* img_complex[:,1,:,:]
+            # img_complex = img_complex[:, None, :, :]
+            # img_complex = torch.abs(torch.fft.ifft2(img_complex))
+            # # print(np.shape(img_complex))
+            # #img_complex = torch.stack((torch.real(img_complex),torch.imag(img_complex)),dim=1)
+            # #print(np.shape(img_complex))
+            # embedding = self.encoder(img_complex)
+            # k-space domain embedding (2 dimensions)
+            embedding = self.encoder(model_input['img_sparse'])
         else:
             embedding = model_input['embedding']
         hypo_params = self.hyper_net(embedding)
