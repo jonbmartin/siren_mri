@@ -135,13 +135,14 @@ def image_mse_dc_loss(mask, model_output, gt, high_freq=False):
     #                               'ks_pred':kspace_pred_dc.detach().cpu().numpy(), 'ks_gt':kspace_gt_dc.detach().cpu().numpy()})
 
     # 2) calculate FD loss
-    FD_pred = K.filters.sobel(torch.abs(kspace_output_real))
-    FD_gt = K.filters.sobel(torch.abs(kspace_gt_real))
+    # FD_pred = K.filters.sobel(torch.abs(kspace_output_real))
+    # FD_gt = K.filters.sobel(torch.abs(kspace_gt_real))
 
-    fd_loss = (torch.abs(FD_pred-FD_gt)).sum()
+    # fd_loss = (torch.abs(FD_pred-FD_gt)).sum()
+    fd_loss = 0
 
 
-    kspace_loss = (torch.abs((kspace_output_real-kspace_gt_real))).sum()
+    kspace_loss = ((kspace_output_real-kspace_gt_real)**2).sum()
 
     # print(f'img mse loss = {kspace_loss}')
     # print(f'img dc loss = {dc_loss}')
