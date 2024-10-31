@@ -477,6 +477,7 @@ class ConvImgEncoder(nn.Module):
         o = self.cnn(o)
         o = self.relu_2(o).view(o.shape[0], self.hidden_size, -1)
         o = self.fc(o).squeeze(-1)
+        print(f' latent space size output by conv encoder = {np.shape(o)}')
         return o
     
 class ConvImgEncoderAUTOM(nn.Module):
