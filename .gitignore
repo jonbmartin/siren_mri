@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# JBM additional gitignore:
+out_images/
+data/
