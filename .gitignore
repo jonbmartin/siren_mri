@@ -130,4 +130,4 @@ dmypy.json
 
 # JBM additional gitignore:
 out_images/
-data/
+data/aorta03trans_HR.h5
