@@ -131,3 +131,4 @@ dmypy.json
 # JBM additional gitignore:
 out_images/
 data/
+.h5
