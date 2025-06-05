@@ -132,3 +132,5 @@ dmypy.json
 out_images/
 data/
 .h5
+.mat
+.csv
